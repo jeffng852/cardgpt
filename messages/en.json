@@ -1,0 +1,37 @@
+{
+  "common": {
+    "appName": "CardGPT",
+    "tagline": "How much are you earning from spending today?"
+  },
+  "categories": {
+    "cashback": "Cash Back",
+    "miles": "Miles",
+    "points": "Points"
+  },
+  "merchants": {
+    "supermarket": "Supermarket",
+    "restaurant": "Restaurant",
+    "onlineShopping": "Online Shopping",
+    "gasStation": "Gas Station",
+    "departmentStore": "Department Store",
+    "travel": "Travel"
+  },
+  "input": {
+    "placeholder": "Enter your transaction (e.g., $500 at supermarket)",
+    "submit": "Find Best Card"
+  },
+  "results": {
+    "recommended": "Recommended",
+    "estimatedReward": "Estimated Rewards",
+    "transactionFee": "Transaction Fee",
+    "applyHere": "Apply Here",
+    "noResults": "No matching cards found for this transaction",
+    "noResultsHint": "Try adjusting the merchant type or amount",
+    "loading": "Analyzing transaction..."
+  },
+  "errors": {
+    "invalidInput": "Please enter a transaction amount",
+    "noAmount": "Unable to detect transaction amount",
+    "generic": "Something went wrong. Please try again."
+  }
+}

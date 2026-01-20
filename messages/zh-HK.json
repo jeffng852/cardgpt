@@ -1,0 +1,37 @@
+{
+  "common": {
+    "appName": "CardGPT",
+    "tagline": "你今日想點賺法？"
+  },
+  "categories": {
+    "cashback": "現金回贈",
+    "miles": "里數",
+    "points": "積分"
+  },
+  "merchants": {
+    "supermarket": "超市",
+    "restaurant": "餐廳",
+    "onlineShopping": "網購",
+    "gasStation": "油站",
+    "departmentStore": "百貨",
+    "travel": "旅遊"
+  },
+  "input": {
+    "placeholder": "輸入你嘅交易 (例如：$500喺超市)",
+    "submit": "搵最抵卡"
+  },
+  "results": {
+    "recommended": "推薦",
+    "estimatedReward": "預計獎賞",
+    "transactionFee": "交易費",
+    "applyHere": "立即申請",
+    "noResults": "搵唔到適合呢個交易嘅信用卡",
+    "noResultsHint": "試下調整商戶類別或金額",
+    "loading": "分析緊交易..."
+  },
+  "errors": {
+    "invalidInput": "請輸入交易金額",
+    "noAmount": "偵測唔到交易金額",
+    "generic": "出現錯誤，請再試一次。"
+  }
+}
