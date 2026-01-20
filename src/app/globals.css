@@ -1,21 +1,93 @@
 @import "tailwindcss";
 
 :root {
+  /* Light mode - ChatGPT inspired */
   --background: #ffffff;
-  --foreground: #171717;
+  --background-secondary: #f7f7f8;
+  --background-tertiary: #ececf1;
+  --foreground: #2e2e2e;
+  --foreground-muted: #6e6e80;
+  --foreground-subtle: #8e8ea0;
+  --border: #e5e5e5;
+  --border-light: #f0f0f0;
+
+  /* Primary/Accent colors - Teal/Green inspired by ChatGPT */
+  --primary: #10a37f;
+  --primary-hover: #0d8968;
+  --primary-light: #e6f7f2;
+
+  /* Card backgrounds */
+  --card-bg: #ffffff;
+  --card-hover: #f9f9f9;
+
+  /* State colors */
+  --success: #10a37f;
+  --error: #ef4146;
+  --warning: #ff9500;
+  --info: #0084ff;
 }
 
 @theme inline {
+  /* Background tokens */
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
+  --color-background-tertiary: var(--background-tertiary);
+
+  /* Foreground tokens */
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+
+  /* Border tokens */
+  --color-border: var(--border);
+  --color-border-light: var(--border-light);
+
+  /* Primary/Accent tokens */
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-light: var(--primary-light);
+
+  /* Card tokens */
+  --color-card-bg: var(--card-bg);
+  --color-card-hover: var(--card-hover);
+
+  /* State tokens */
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+
+  /* Font tokens */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode - ChatGPT inspired */
+    --background: #212121;
+    --background-secondary: #2f2f2f;
+    --background-tertiary: #3f3f3f;
+    --foreground: #ececec;
+    --foreground-muted: #c5c5d2;
+    --foreground-subtle: #9b9ba8;
+    --border: #4d4d4d;
+    --border-light: #3a3a3a;
+
+    /* Primary stays consistent in dark mode */
+    --primary: #19c37d;
+    --primary-hover: #1a9f6b;
+    --primary-light: #1a4d3c;
+
+    /* Card backgrounds - elevated in dark mode */
+    --card-bg: #2f2f2f;
+    --card-hover: #3a3a3a;
+
+    /* State colors adjusted for dark mode */
+    --success: #19c37d;
+    --error: #ff5f5f;
+    --warning: #ffb340;
+    --info: #4da6ff;
   }
 }
 
