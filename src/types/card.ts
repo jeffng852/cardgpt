@@ -94,6 +94,12 @@ export interface RewardRule {
 
   /** Excluded merchant categories (MCCs or types) */
   excludedMerchants?: string[];
+
+  /** Maximum spending amount eligible for this rate per month (e.g., first $10,000) */
+  monthlySpendingCap?: number;
+
+  /** Fallback rate after monthly cap is reached */
+  fallbackRate?: number;
 }
 
 /**
