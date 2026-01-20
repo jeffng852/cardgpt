@@ -1,6 +1,7 @@
 /**
  * Credit Card domain types
  * Based on CardGPT PRD requirements
+ * Enhanced to support complex reward structures like Citi Cash Back Card
  */
 
 /** Supported reward units */
@@ -10,10 +11,21 @@ export type RewardUnit = 'cash' | 'miles' | 'points';
 export type PaymentType = 'online' | 'offline';
 
 /** Currency codes */
-export type Currency = 'HKD' | 'USD' | 'CNY' | 'JPY' | 'EUR' | 'GBP';
+export type Currency = 'HKD' | 'USD' | 'CNY' | 'JPY' | 'EUR' | 'GBP' | 'SGD' | 'AUD' | 'CAD';
 
 /** Day of week for special promotions */
 export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+/**
+ * Geographic restrictions
+ */
+export interface GeographicRestriction {
+  /** Excluded countries/regions (ISO codes or names) */
+  excludedRegions?: string[];
+
+  /** Include online transactions even in excluded regions */
+  onlineExempt?: boolean;
+}
 
 /**
  * Conditions that must be met for a reward rule to apply
@@ -22,8 +34,11 @@ export interface RewardCondition {
   /** Payment type restriction (optional) */
   paymentType?: PaymentType;
 
-  /** Currency restriction (optional) */
-  currency?: Currency;
+  /** Currency restriction - 'HKD' or 'foreign' or specific currencies */
+  currency?: Currency | 'foreign';
+
+  /** Excluded currencies */
+  excludedCurrencies?: Currency[];
 
   /** Day of week restriction (optional) */
   dayOfWeek?: DayOfWeek[];
@@ -33,15 +48,31 @@ export interface RewardCondition {
 
   /** Maximum transaction amount (optional) */
   maxAmount?: number;
+
+  /** Minimum monthly spending to unlock this reward tier */
+  minMonthlySpending?: number;
+
+  /** Geographic restrictions */
+  geographic?: GeographicRestriction;
 }
+
+/**
+ * Priority determines which rule applies when multiple rules match
+ * Higher priority = applied first
+ * Rules with same priority are cumulative (rates add up)
+ */
+export type RulePriority = 'base' | 'bonus' | 'premium';
 
 /**
  * A reward rule defines how rewards are calculated
  * for specific merchant types and conditions
  */
 export interface RewardRule {
-  /** Merchant types this rule applies to */
-  merchantTypes: string[];
+  /** Unique ID for this rule (for debugging/tracking) */
+  id: string;
+
+  /** Merchant types this rule applies to ('all' for universal rules) */
+  merchantTypes: string[] | ['all'];
 
   /** Reward rate as percentage per dollar spent (e.g., 0.02 = 2%) */
   rewardRate: number;
@@ -49,11 +80,20 @@ export interface RewardRule {
   /** Unit of rewards earned */
   rewardUnit: RewardUnit;
 
+  /** Rule priority for conflict resolution */
+  priority: RulePriority;
+
+  /** Whether this rule is cumulative with base rate */
+  isCumulative: boolean;
+
   /** Optional conditions that must be met */
-  conditions?: RewardCondition[];
+  conditions?: RewardCondition;
 
   /** Description of this reward rule (for display) */
-  description?: string;
+  description: string;
+
+  /** Excluded merchant categories (MCCs or types) */
+  excludedMerchants?: string[];
 }
 
 /**
@@ -86,6 +126,9 @@ export interface RewardCap {
   /** Unit of the cap limit */
   unit: RewardUnit;
 
+  /** Minimum amount to trigger redemption */
+  redemptionThreshold?: number;
+
   /** Current accumulated rewards (for tracking, optional) */
   currentAccumulated?: number;
 }
@@ -109,7 +152,7 @@ export interface CreditCard {
   /** Application URL */
   applyUrl: string;
 
-  /** Reward rules for this card */
+  /** Reward rules for this card (ordered by priority) */
   rewards: RewardRule[];
 
   /** Fee structure */
@@ -129,4 +172,7 @@ export interface CreditCard {
 
   /** Last updated timestamp */
   lastUpdated: string;
+
+  /** Terms and conditions URL */
+  termsUrl?: string;
 }

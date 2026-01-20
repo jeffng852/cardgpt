@@ -1,0 +1,119 @@
+{
+  "_comment": "Citi Cash Back Card - Real example showing complex overlapping reward rules",
+  "_source": "https://www.citibank.com.hk/english/credit-cards/cashback-card-spending-rebate-tnc/",
+  "_lastVerified": "2026-01-20",
+
+  "id": "citi-cash-back",
+  "name": "Citi Cash Back Card",
+  "issuer": "Citibank",
+  "network": "Mastercard",
+  "applyUrl": "https://www.citibank.com.hk/english/credit-cards/cash-back-credit-card.htm",
+  "termsUrl": "https://www.citibank.com.hk/english/credit-cards/cashback-card-spending-rebate-tnc/",
+  "imageUrl": "https://www.citibank.com.hk/images/credit-cards/citi-cash-back-card.png",
+  "tags": ["cashback", "dining", "travel", "hotel"],
+  "isActive": true,
+  "lastUpdated": "2026-01-20T00:00:00.000Z",
+
+  "rewards": [
+    {
+      "id": "base-rebate",
+      "merchantTypes": ["all"],
+      "rewardRate": 0.01,
+      "rewardUnit": "cash",
+      "priority": "base",
+      "isCumulative": false,
+      "description": "1% rebate on all eligible spending",
+      "excludedMerchants": [
+        "fps-transfer",
+        "cash-advance",
+        "balance-transfer",
+        "installment",
+        "tax-payment",
+        "bill-payment",
+        "utilities",
+        "insurance",
+        "charity",
+        "mutual-fund",
+        "casino",
+        "government-fee"
+      ]
+    },
+    {
+      "id": "foreign-currency-bonus",
+      "merchantTypes": ["all"],
+      "rewardRate": 0.01,
+      "rewardUnit": "cash",
+      "priority": "bonus",
+      "isCumulative": true,
+      "description": "Additional 1% on foreign currency transactions (2% total)",
+      "conditions": {
+        "currency": "foreign",
+        "geographic": {
+          "excludedRegions": ["United Kingdom", "EEA"],
+          "onlineExempt": true
+        }
+      },
+      "excludedMerchants": [
+        "fps-transfer",
+        "cash-advance",
+        "balance-transfer",
+        "installment",
+        "tax-payment",
+        "bill-payment",
+        "utilities",
+        "insurance",
+        "charity",
+        "mutual-fund",
+        "casino",
+        "government-fee"
+      ]
+    },
+    {
+      "id": "local-dining-bonus",
+      "merchantTypes": ["restaurant", "dining", "fast-food", "cafe"],
+      "rewardRate": 0.01,
+      "rewardUnit": "cash",
+      "priority": "bonus",
+      "isCumulative": true,
+      "description": "Additional 1% on local dining (2% total)",
+      "conditions": {
+        "currency": "HKD"
+      },
+      "excludedMerchants": [
+        "fps-transfer",
+        "cash-advance",
+        "balance-transfer",
+        "casino"
+      ]
+    },
+    {
+      "id": "local-hotel-bonus",
+      "merchantTypes": ["hotel", "accommodation"],
+      "rewardRate": 0.01,
+      "rewardUnit": "cash",
+      "priority": "bonus",
+      "isCumulative": true,
+      "description": "Additional 1% on local hotel spending (2% total)",
+      "conditions": {
+        "currency": "HKD"
+      },
+      "excludedMerchants": [
+        "fps-transfer",
+        "cash-advance",
+        "balance-transfer"
+      ]
+    }
+  ],
+
+  "fees": {
+    "annualFee": 0,
+    "foreignTransactionFeeRate": 0.0195,
+    "cashAdvanceFee": 100,
+    "latePaymentFee": 230
+  },
+
+  "rewardCap": {
+    "unit": "cash",
+    "redemptionThreshold": 200
+  }
+}

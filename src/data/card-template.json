@@ -1,42 +1,68 @@
 {
-  "_comment": "Template for adding new credit cards to cards.json",
+  "_comment": "Enhanced template for adding new credit cards with complex reward rules",
+  "_instructions": "See SCHEMA_DESIGN.md for detailed explanation of the schema",
+
   "id": "unique-card-id",
   "name": "Card Name",
   "issuer": "Bank Name",
+  "network": "Visa",
   "imageUrl": "https://example.com/card-image.png",
   "applyUrl": "https://bank.com/apply",
-  "network": "Visa",
+  "termsUrl": "https://bank.com/terms",
   "tags": ["cashback", "dining"],
   "isActive": true,
   "lastUpdated": "2026-01-20T00:00:00.000Z",
+
   "rewards": [
     {
-      "merchantTypes": ["restaurant", "dining"],
-      "rewardRate": 0.05,
+      "id": "base-rate",
+      "merchantTypes": ["all"],
+      "rewardRate": 0.01,
       "rewardUnit": "cash",
-      "description": "5% cashback on dining",
-      "conditions": {
-        "paymentType": "offline",
-        "minAmount": 100
-      }
+      "priority": "base",
+      "isCumulative": false,
+      "description": "1% base cashback on all eligible spending",
+      "excludedMerchants": [
+        "fps-transfer",
+        "cash-advance",
+        "balance-transfer",
+        "installment",
+        "tax-payment",
+        "bill-payment",
+        "utilities",
+        "insurance",
+        "charity",
+        "casino"
+      ]
     },
     {
-      "merchantTypes": ["supermarket", "grocery"],
+      "id": "category-bonus",
+      "merchantTypes": ["restaurant", "dining"],
       "rewardRate": 0.02,
       "rewardUnit": "cash",
-      "description": "2% cashback on supermarket",
-      "conditions": {}
+      "priority": "bonus",
+      "isCumulative": true,
+      "description": "Additional 2% on dining (3% total)",
+      "conditions": {
+        "currency": "HKD",
+        "paymentType": "offline",
+        "minAmount": 100
+      },
+      "excludedMerchants": []
     }
   ],
+
   "fees": {
     "annualFee": 0,
     "foreignTransactionFeeRate": 0.015,
     "cashAdvanceFee": 50,
     "latePaymentFee": 100
   },
+
   "rewardCap": {
     "monthlyLimit": 500,
     "yearlyLimit": 6000,
-    "unit": "cash"
+    "unit": "cash",
+    "redemptionThreshold": 200
   }
 }
