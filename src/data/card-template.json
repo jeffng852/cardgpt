@@ -1,0 +1,42 @@
+{
+  "_comment": "Template for adding new credit cards to cards.json",
+  "id": "unique-card-id",
+  "name": "Card Name",
+  "issuer": "Bank Name",
+  "imageUrl": "https://example.com/card-image.png",
+  "applyUrl": "https://bank.com/apply",
+  "network": "Visa",
+  "tags": ["cashback", "dining"],
+  "isActive": true,
+  "lastUpdated": "2026-01-20T00:00:00.000Z",
+  "rewards": [
+    {
+      "merchantTypes": ["restaurant", "dining"],
+      "rewardRate": 0.05,
+      "rewardUnit": "cash",
+      "description": "5% cashback on dining",
+      "conditions": {
+        "paymentType": "offline",
+        "minAmount": 100
+      }
+    },
+    {
+      "merchantTypes": ["supermarket", "grocery"],
+      "rewardRate": 0.02,
+      "rewardUnit": "cash",
+      "description": "2% cashback on supermarket",
+      "conditions": {}
+    }
+  ],
+  "fees": {
+    "annualFee": 0,
+    "foreignTransactionFeeRate": 0.015,
+    "cashAdvanceFee": 50,
+    "latePaymentFee": 100
+  },
+  "rewardCap": {
+    "monthlyLimit": 500,
+    "yearlyLimit": 6000,
+    "unit": "cash"
+  }
+}
