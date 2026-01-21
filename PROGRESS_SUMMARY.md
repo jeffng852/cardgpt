@@ -1,7 +1,7 @@
 # CardGPT Development Progress Summary
 
 **Last Updated**: 2026-01-21
-**Status**: ✅ Phase 1, 2 & 3 Complete | 🚧 Phase 4 (UI) In Progress
+**Status**: ✅ Phase 1, 2 & 3 Complete | 🚧 Phase 4 (UI) In Progress | ✅ THI-15 Complete
 
 ---
 
@@ -201,11 +201,11 @@
 | Credit Cards | 10 | - |
 | Reward Rules | 36 | - |
 | TypeScript Files | 11 | ~1,500 |
-| React Components | 1 | ~50 |
+| React Components | 1 | ~170 |
 | Engine Functions | 2 | ~400 |
 | Documentation Files | 5 | ~800 |
-| Translation Files | 2 | ~100 |
-| Git Commits | 10 | - |
+| Translation Files | 2 | ~120 |
+| Git Commits | 23 | - |
 
 ---
 
@@ -294,26 +294,37 @@ parseTransaction('$500 HKD McDonald\'s')
 
 ---
 
-## 🎯 Next Steps (THI-15 onwards)
+#### THI-15: Landing Page Layout ✓
+**Goal**: Build responsive landing page with dark/light mode
 
-### Phase 4: User Interface (Continued)
+**Implementation**:
+- ChatGPT-inspired clean layout
+- Sticky header with backdrop blur
+- Hero section with responsive typography (4xl → 5xl → 6xl)
+- Placeholder input card with credit card icon
+- 3-column features grid (Instant Analysis, 10 HK Cards, Bilingual)
+- Footer with links
+- Mobile-first responsive breakpoints
+
+**Components Built**:
+- Header with LanguageSwitcher
+- Hero section with tagline + subtitle
+- Main input area (placeholder - to be replaced in THI-16)
+- Features showcase grid
+- Footer
+
+**Files Updated**:
+- `src/app/[locale]/page.tsx` (174 lines)
+- `messages/en.json` - Added subtitle, getStarted
+- `messages/zh-HK.json` - Added Chinese translations
+
+**Committed**: 984e637
 
 ---
 
-#### THI-15: Landing Page Layout
-**Goal**: Build responsive landing page with dark/light mode
+## 🎯 Next Steps (THI-16 onwards)
 
-**Components**:
-- Header with language switcher
-- Hero section with tagline
-- Main input area
-- Footer
-
-**Design**:
-- ChatGPT-inspired clean layout
-- Mobile-first responsive
-- Dark/light mode toggle
-- Animated typing effect for tagline
+### Phase 4: User Interface (Continued)
 
 ---
 
@@ -536,7 +547,7 @@ npm run build
 - ✅ THI-12: Reward Calculation Engine (Done)
 - ✅ THI-13: Card Ranking Logic (Done)
 - ✅ THI-14: NLP Transaction Parser (Done)
-- 🔲 THI-15: Landing Page Layout
+- ✅ THI-15: Landing Page Layout (Done)
 - 🔲 THI-16: Input Interface
 - 🔲 THI-17: Results Display
 - 🔲 THI-18: Wire Up Full Flow
@@ -545,7 +556,7 @@ npm run build
 - 🔲 THI-21: Performance & SEO
 - 🔲 THI-22: Deploy to Vercel
 
-**Completion**: 9/17 tickets (53%)
+**Completion**: 10/17 tickets (59%)
 
 ---
 
@@ -576,4 +587,4 @@ npm run build
 
 ---
 
-**Status**: Core engine + NLP parser complete and verified. UI development in progress! 🎯
+**Status**: Core engine + NLP parser + Landing page complete. Input interface next! 🎯
