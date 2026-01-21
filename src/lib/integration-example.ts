@@ -49,7 +49,7 @@ async function demonstrateIntegration() {
     // Step 3: Display top 3 recommendations
     console.log('\n🏆 Top 3 Card Recommendations:\n');
 
-    const top3 = result.rankedCards.slice(0, 3);
+    const top3 = result.rankedCards?.slice(0, 3) || [];
     top3.forEach((rec, index) => {
       const card = cards.find(c => c.id === rec.calculation.cardId);
       if (!card) return;
