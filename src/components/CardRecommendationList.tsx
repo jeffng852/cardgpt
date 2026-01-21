@@ -157,10 +157,10 @@ export default function CardRecommendationList({
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-bold text-primary">
-                    {formatReward(recommendation.calculation.rewardAmount, recommendation.calculation.rewardUnit)}
+                    {formatReward(recommendation.calculation)}
                   </div>
                   <div className="text-xs text-text-secondary">
-                    {formatEffectiveRate(recommendation.calculation.effectiveRate)} back
+                    {formatEffectiveRate(recommendation.calculation)} back
                   </div>
                 </div>
               </div>
@@ -170,14 +170,14 @@ export default function CardRecommendationList({
                 <div>
                   <div className="text-xs text-text-tertiary mb-1">{t('estimatedReward')}</div>
                   <div className="text-sm font-medium text-text-primary">
-                    {formatReward(recommendation.calculation.rewardAmount, recommendation.calculation.rewardUnit)}
+                    {formatReward(recommendation.calculation)}
                   </div>
                 </div>
                 <div>
                   <div className="text-xs text-text-tertiary mb-1">{t('transactionFee')}</div>
                   <div className="text-sm font-medium text-text-primary">
-                    {recommendation.calculation.foreignTransactionFee > 0
-                      ? `HKD $${recommendation.calculation.foreignTransactionFee.toFixed(2)}`
+                    {recommendation.calculation.fees > 0
+                      ? `HKD $${recommendation.calculation.fees.toFixed(2)}`
                       : 'None'}
                   </div>
                 </div>
@@ -205,8 +205,8 @@ export default function CardRecommendationList({
                   <div>
                     <div className="text-xs text-text-tertiary mb-1">Annual Fee</div>
                     <div className="text-sm text-text-primary">
-                      {recommendation.card.annualFee > 0
-                        ? `HKD $${recommendation.card.annualFee.toFixed(2)}`
+                      {recommendation.card.fees.annualFee > 0
+                        ? `HKD $${recommendation.card.fees.annualFee.toFixed(2)}`
                         : 'Free'}
                     </div>
                   </div>
@@ -215,16 +215,22 @@ export default function CardRecommendationList({
                     <div>
                       <div className="text-xs text-text-tertiary mb-2">Applied Rewards</div>
                       <div className="space-y-2">
-                        {recommendation.calculation.appliedRules.map((rule, idx) => (
-                          <div key={idx} className="text-xs bg-surface p-2 rounded-lg">
-                            <div className="font-medium text-text-primary mb-1">
-                              {rule.description}
+                        {recommendation.calculation.appliedRules.map((ruleId, idx) => {
+                          // Find the rule details from the card's rewards
+                          const rule = recommendation.card.rewards.find(r => r.id === ruleId);
+                          if (!rule) return null;
+
+                          return (
+                            <div key={idx} className="text-xs bg-surface p-2 rounded-lg">
+                              <div className="font-medium text-text-primary mb-1">
+                                {rule.description || `Rule: ${ruleId}`}
+                              </div>
+                              <div className="text-text-secondary">
+                                Rate: {(rule.rewardRate * 100).toFixed(2)}% | Priority: {rule.priority}
+                              </div>
                             </div>
-                            <div className="text-text-secondary">
-                              Base: {rule.baseRate} | Bonus: {rule.bonusRate || 0} | Premium: {rule.premiumRate || 0}
-                            </div>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   )}

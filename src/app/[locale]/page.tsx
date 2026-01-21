@@ -5,7 +5,7 @@ import { useState } from 'react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import TransactionInput from '@/components/TransactionInput';
 import CardRecommendationList from '@/components/CardRecommendationList';
-import type { ParsedTransactionResult } from '@/lib/parser/transactionParser';
+import type { ParseResult } from '@/lib/parser/transactionParser';
 import type { CardRecommendation } from '@/types/recommendation';
 import { recommendCards } from '@/lib/engine';
 import { loadCards } from '@/lib/data/loadCards';
@@ -18,7 +18,7 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState<CardRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (result: ParsedTransactionResult, selectedRewardType?: RewardType) => {
+  const handleSubmit = async (result: ParseResult, selectedRewardType?: RewardType) => {
     setIsLoading(true);
     setShowResults(true);
 
@@ -28,17 +28,17 @@ export default function Home() {
 
       // Build user preferences from selected reward type
       const preferences = selectedRewardType
-        ? { preferredRewardTypes: [selectedRewardType] }
+        ? { preferredRewardUnits: [selectedRewardType] }
         : undefined;
 
       // Get recommendations
       const recommendationResult = recommendCards(
-        result.transaction,
         cards,
+        result.transaction,
         preferences
       );
 
-      setRecommendations(recommendationResult.rankedCards);
+      setRecommendations(recommendationResult.recommendations);
     } catch (error) {
       console.error('Error getting recommendations:', error);
       setRecommendations([]);

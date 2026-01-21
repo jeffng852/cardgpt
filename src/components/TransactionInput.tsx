@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { parseTransaction } from '@/lib/parser/transactionParser';
-import type { ParsedTransactionResult } from '@/lib/parser/transactionParser';
+import type { ParseResult } from '@/lib/parser/transactionParser';
 
 type RewardType = 'cash' | 'miles' | 'points';
 
 interface TransactionInputProps {
-  onSubmit: (result: ParsedTransactionResult, rewardType?: RewardType) => void;
+  onSubmit: (result: ParseResult, rewardType?: RewardType) => void;
 }
 
 export default function TransactionInput({ onSubmit }: TransactionInputProps) {
@@ -16,7 +16,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const [input, setInput] = useState('');
   const [selectedRewardType, setSelectedRewardType] = useState<RewardType | undefined>();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [parseResult, setParseResult] = useState<ParsedTransactionResult | null>(null);
+  const [parseResult, setParseResult] = useState<ParseResult | null>(null);
 
   // Popular merchant quick-tags
   const quickTags = [
