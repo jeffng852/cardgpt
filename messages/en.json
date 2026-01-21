@@ -1,7 +1,9 @@
 {
   "common": {
     "appName": "CardGPT",
-    "tagline": "How much are you earning from spending today?"
+    "tagline": "Find the best credit card for every purchase",
+    "subtitle": "Maximize your rewards with AI-powered card recommendations",
+    "getStarted": "Get Started"
   },
   "categories": {
     "cashback": "Cash Back",

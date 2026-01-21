@@ -1,7 +1,9 @@
 {
   "common": {
     "appName": "CardGPT",
-    "tagline": "你今日想點賺法？"
+    "tagline": "為每次消費搵最啱嘅信用卡",
+    "subtitle": "用AI推薦，賺盡每分獎賞",
+    "getStarted": "開始使用"
   },
   "categories": {
     "cashback": "現金回贈",
