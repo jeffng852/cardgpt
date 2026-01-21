@@ -4,25 +4,47 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import TransactionInput from '@/components/TransactionInput';
+import CardRecommendationList from '@/components/CardRecommendationList';
 import type { ParsedTransactionResult } from '@/lib/parser/transactionParser';
+import type { CardRecommendation } from '@/types/recommendation';
+import { recommendCards } from '@/lib/engine';
+import { loadCards } from '@/lib/data/loadCards';
 
 type RewardType = 'cash' | 'miles' | 'points';
 
 export default function Home() {
   const t = useTranslations('common');
   const [showResults, setShowResults] = useState(false);
-  const [parsedResult, setParsedResult] = useState<ParsedTransactionResult | null>(null);
-  const [rewardType, setRewardType] = useState<RewardType | undefined>();
+  const [recommendations, setRecommendations] = useState<CardRecommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (result: ParsedTransactionResult, selectedRewardType?: RewardType) => {
-    setParsedResult(result);
-    setRewardType(selectedRewardType);
+    setIsLoading(true);
     setShowResults(true);
 
-    // TODO: THI-17 - Replace this with actual results display
-    // For now, just scroll to show the parsed result
-    console.log('Parsed transaction:', result);
-    console.log('Selected reward type:', selectedRewardType);
+    try {
+      // Load all cards
+      const cards = await loadCards();
+
+      // Build user preferences from selected reward type
+      const preferences = selectedRewardType
+        ? { preferredRewardTypes: [selectedRewardType] }
+        : undefined;
+
+      // Get recommendations
+      const recommendationResult = recommendCards(
+        result.transaction,
+        cards,
+        preferences
+      );
+
+      setRecommendations(recommendationResult.rankedCards);
+    } catch (error) {
+      console.error('Error getting recommendations:', error);
+      setRecommendations([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,60 +79,12 @@ export default function Home() {
             {/* Transaction Input Interface (THI-16) */}
             <TransactionInput onSubmit={handleSubmit} />
 
-            {/* Temporary debug output - will be replaced in THI-17 */}
-            {showResults && parsedResult && (
-              <div className="mt-8 p-6 bg-surface border border-border rounded-2xl">
-                <h3 className="text-lg font-semibold text-text-primary mb-4">
-                  ✅ Transaction Parsed Successfully
-                </h3>
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="text-text-tertiary">Amount: </span>
-                    <span className="text-text-primary font-medium">
-                      {parsedResult.transaction.currency} ${parsedResult.transaction.amount}
-                    </span>
-                  </div>
-                  {parsedResult.transaction.category && (
-                    <div>
-                      <span className="text-text-tertiary">Category: </span>
-                      <span className="text-text-primary font-medium">
-                        {parsedResult.transaction.category}
-                      </span>
-                    </div>
-                  )}
-                  {parsedResult.transaction.merchantId && (
-                    <div>
-                      <span className="text-text-tertiary">Merchant: </span>
-                      <span className="text-text-primary font-medium">
-                        {parsedResult.transaction.merchantId}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <span className="text-text-tertiary">Payment Type: </span>
-                    <span className="text-text-primary font-medium">
-                      {parsedResult.transaction.paymentType}
-                    </span>
-                  </div>
-                  {rewardType && (
-                    <div>
-                      <span className="text-text-tertiary">Preferred Reward: </span>
-                      <span className="text-text-primary font-medium capitalize">
-                        {rewardType}
-                      </span>
-                    </div>
-                  )}
-                  <div>
-                    <span className="text-text-tertiary">Confidence: </span>
-                    <span className="text-primary font-medium">
-                      {(parsedResult.confidence.overall * 100).toFixed(0)}%
-                    </span>
-                  </div>
-                </div>
-                <p className="text-xs text-text-tertiary mt-4">
-                  🚧 Card recommendations will be shown here in THI-17
-                </p>
-              </div>
+            {/* Card Recommendations Display (THI-17) */}
+            {showResults && (
+              <CardRecommendationList
+                recommendations={recommendations}
+                isLoading={isLoading}
+              />
             )}
 
             {/* Features Grid */}
