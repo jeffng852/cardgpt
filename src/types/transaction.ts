@@ -4,6 +4,9 @@
 
 import type { Currency, PaymentType } from './card';
 
+// Re-export types for convenience
+export type { Currency, PaymentType } from './card';
+
 /**
  * Parsed transaction from user input
  */
