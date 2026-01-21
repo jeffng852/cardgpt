@@ -8,10 +8,10 @@
 export type RewardUnit = 'cash' | 'miles' | 'points';
 
 /** Payment types */
-export type PaymentType = 'online' | 'offline';
+export type PaymentType = 'online' | 'offline' | 'contactless' | 'recurring';
 
 /** Currency codes */
-export type Currency = 'HKD' | 'USD' | 'CNY' | 'JPY' | 'EUR' | 'GBP' | 'SGD' | 'AUD' | 'CAD';
+export type Currency = 'HKD' | 'USD' | 'CNY' | 'JPY' | 'EUR' | 'GBP' | 'SGD' | 'AUD' | 'CAD' | 'TWD';
 
 /** Day of week for special promotions */
 export type DayOfWeek = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
