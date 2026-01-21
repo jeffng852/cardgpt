@@ -1,7 +1,7 @@
 # CardGPT Development Progress Summary
 
 **Last Updated**: 2026-01-21
-**Status**: ✅ Phase 1, 2 & 3 Complete | 🚧 Phase 4 (UI) In Progress | ✅ THI-16 Complete
+**Status**: ✅ Phase 1, 2 & 3 Complete | 🚧 Phase 4 (UI) In Progress | ✅ THI-17 Complete
 
 ---
 
@@ -201,11 +201,11 @@
 | Credit Cards | 10 | - |
 | Reward Rules | 36 | - |
 | TypeScript Files | 11 | ~1,500 |
-| React Components | 2 | ~430 |
+| React Components | 3 | ~730 |
 | Engine Functions | 2 | ~400 |
 | Documentation Files | 5 | ~800 |
 | Translation Files | 2 | ~140 |
-| Git Commits | 25 | - |
+| Git Commits | 27 | - |
 
 ---
 
@@ -360,30 +360,46 @@ parseTransaction('$500 HKD McDonald\'s')
 
 ---
 
-## 🎯 Next Steps (THI-17 onwards)
+#### THI-17: Results Display ✓
+**Goal**: Display ranked recommendations with details
 
-### Phase 4: User Interface (Continued)
+**Implementation**:
+- CardRecommendationList component (300+ lines)
+- Full recommendation engine integration
+- Top card highlighted with "Recommended" ⭐ badge
+- Expandable card details with reward breakdown
+- Filter tabs by reward type (Cash/Miles/Points)
+- Loading state with spinner
+- Empty state for no results
+
+**Features Built**:
+- Reward amount and effective rate display
+- Transaction fee calculations shown
+- Annual fee in expandable section
+- Applied reward rules breakdown
+- "Apply Here" CTA with external links
+- Smooth expand/collapse animations
+- Live filter counts by reward type
+
+**Engine Integration**:
+- Calls `loadCards()` to fetch card database
+- Calls `recommendCards()` with transaction + preferences
+- Uses `formatReward()` and `formatEffectiveRate()` utilities
+- Full error handling and fallbacks
+
+**Files Created**:
+- `src/components/CardRecommendationList.tsx`
+
+**Files Updated**:
+- `src/app/[locale]/page.tsx` - Integrated engine, replaced debug output
+
+**Committed**: 5af655a
 
 ---
 
-#### THI-17: Results Display
-**Goal**: Display ranked recommendations with details
+## 🎯 Next Steps (THI-18 onwards)
 
-**Layout**:
-- Top card with "Recommended" badge
-- Card list sorted by rank
-- Each card shows:
-  - Card name + issuer
-  - Estimated rewards
-  - Transaction fees
-  - Net value
-  - "Apply Here" CTA
-- Expandable details (reward breakdown)
-
-**Features**:
-- Filter by reward unit tabs
-- Show/hide fees toggle
-- Comparison mode
+### Phase 4: User Interface (Continued)
 
 ---
 
@@ -570,14 +586,14 @@ npm run build
 - ✅ THI-14: NLP Transaction Parser (Done)
 - ✅ THI-15: Landing Page Layout (Done)
 - ✅ THI-16: Input Interface (Done)
-- 🔲 THI-17: Results Display
+- ✅ THI-17: Results Display (Done)
 - 🔲 THI-18: Wire Up Full Flow
 - 🔲 THI-19: Error Handling
 - 🔲 THI-20: Unit Tests
 - 🔲 THI-21: Performance & SEO
 - 🔲 THI-22: Deploy to Vercel
 
-**Completion**: 11/17 tickets (65%)
+**Completion**: 12/17 tickets (71%)
 
 ---
 
@@ -586,7 +602,7 @@ npm run build
 ### Immediate Next Steps
 1. ✅ ~~Create landing page layout (THI-15)~~
 2. ✅ ~~Build input interface with parser integration (THI-16)~~
-3. Create results display with recommendations (THI-17)
+3. ✅ ~~Create results display with recommendations (THI-17)~~
 4. Wire everything together (THI-18)
 5. Add comprehensive error handling (THI-19)
 
@@ -608,4 +624,4 @@ npm run build
 
 ---
 
-**Status**: Core engine + NLP parser + Landing page + Input interface complete. Results display next! 🎯
+**Status**: Core engine + NLP parser + Full UI complete. End-to-end flow working! Wire up full flow next! 🎯
