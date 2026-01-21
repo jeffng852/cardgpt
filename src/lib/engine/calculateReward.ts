@@ -53,11 +53,12 @@ function matchesRule(rule: RewardRule, transaction: Transaction): boolean {
   }
   // OLD SCHEMA (backward compatibility): Check merchantTypes
   else if (rule.merchantTypes) {
+    const merchantTypes = rule.merchantTypes as string[];
     const merchantMatch =
-      rule.merchantTypes.includes('all' as any) ||
-      (transaction.merchantType && rule.merchantTypes.includes(transaction.merchantType)) ||
-      (transaction.category && rule.merchantTypes.includes(transaction.category)) ||
-      (transaction.merchantId && rule.merchantTypes.includes(transaction.merchantId));
+      merchantTypes.includes('all') ||
+      (transaction.merchantType && merchantTypes.includes(transaction.merchantType)) ||
+      (transaction.category && merchantTypes.includes(transaction.category)) ||
+      (transaction.merchantId && merchantTypes.includes(transaction.merchantId));
 
     if (!merchantMatch) return false;
 
