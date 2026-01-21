@@ -3,52 +3,43 @@
  */
 
 import type { CreditCard, RewardUnit } from './card';
+import type { Transaction } from './transaction';
 
 /**
  * Calculated reward for a specific card and transaction
  */
 export interface RewardCalculation {
-  /** The credit card */
-  card: CreditCard;
+  /** The card ID this calculation is for */
+  cardId: string;
 
   /** Estimated reward amount */
-  estimatedReward: number;
+  rewardAmount: number;
 
   /** Reward unit */
   rewardUnit: RewardUnit;
 
+  /** Effective reward rate applied (as decimal, e.g., 0.02 = 2%) */
+  effectiveRate: number;
+
+  /** IDs of reward rules that were applied */
+  appliedRules: string[];
+
   /** Transaction fees for this transaction */
   fees: number;
 
-  /** Net benefit (reward minus fees) */
-  netBenefit: number;
-
-  /** Whether reward cap would be hit */
-  rewardCapHit: boolean;
-
-  /** Matching reward rule that was applied */
-  appliedRule?: {
-    merchantTypes: string[];
-    rewardRate: number;
-    description?: string;
-  };
+  /** Whether monthly spending cap was reached */
+  cappedOut: boolean;
 }
 
 /**
- * Ranked recommendation result
+ * Card recommendation with calculation and ranking
  */
-export interface RecommendationResult {
+export interface CardRecommendation {
   /** The credit card */
   card: CreditCard;
 
-  /** Estimated reward amount */
-  estimatedReward: number;
-
-  /** Reward unit (formatted for display) */
-  rewardUnit: RewardUnit;
-
-  /** Transaction fees */
-  fees: number;
+  /** Reward calculation for this card */
+  calculation: RewardCalculation;
 
   /** Rank (1 = best) */
   rank: number;
@@ -56,30 +47,26 @@ export interface RecommendationResult {
   /** Whether this is the top recommendation */
   isRecommended: boolean;
 
-  /** Net benefit (reward - fees) */
-  netBenefit: number;
-
-  /** Explanation of why this card was recommended */
-  explanation?: string;
+  /** Net value (reward - fees) for comparison */
+  netValue: number;
 }
 
 /**
- * Full recommendation response
+ * Full recommendation result
  */
-export interface RecommendationResponse {
-  /** Ranked list of recommended cards */
-  recommendations: RecommendationResult[];
+export interface RecommendationResult {
+  /** Ranked list of card recommendations */
+  recommendations: CardRecommendation[];
 
   /** The transaction that was analyzed */
-  transaction: {
-    amount: number;
-    currency: string;
-    merchantType?: string;
-  };
+  transaction: Transaction;
 
-  /** Timestamp of recommendation */
-  timestamp: string;
+  /** Total number of cards evaluated */
+  totalCardsEvaluated: number;
 
-  /** Any warnings or notes */
-  warnings?: string[];
+  /** Number of eligible cards after filtering */
+  eligibleCardsCount: number;
+
+  /** Whether any recommendations were found */
+  hasRecommendation: boolean;
 }
