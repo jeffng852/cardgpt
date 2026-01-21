@@ -7,23 +7,42 @@
       "network": "Mastercard",
       "applyUrl": "https://www.citibank.com.hk/english/credit-cards/cash-back-credit-card.htm",
       "termsUrl": "https://www.citibank.com.hk/english/credit-cards/cashback-card-spending-rebate-tnc/",
-      "tags": ["cashback", "dining", "travel", "hotel"],
+      "tags": [
+        "cashback",
+        "dining",
+        "travel",
+        "hotel"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "base-rebate",
-          "merchantTypes": ["all"],
           "rewardRate": 0.01,
           "rewardUnit": "cash",
           "priority": "base",
           "isCumulative": false,
           "description": "1% rebate on all eligible spending",
-          "excludedMerchants": ["fps-transfer", "cash-advance", "balance-transfer", "installment", "tax-payment", "bill-payment", "utilities", "insurance", "charity", "mutual-fund", "casino", "government-fee"]
+          "excludedMerchants": [
+            "fps-transfer",
+            "cash-advance",
+            "balance-transfer",
+            "installment",
+            "tax-payment",
+            "bill-payment",
+            "utilities",
+            "insurance",
+            "charity",
+            "mutual-fund",
+            "casino",
+            "government-fee"
+          ],
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "foreign-currency-bonus",
-          "merchantTypes": ["all"],
           "rewardRate": 0.01,
           "rewardUnit": "cash",
           "priority": "bonus",
@@ -32,15 +51,33 @@
           "conditions": {
             "currency": "foreign",
             "geographic": {
-              "excludedRegions": ["United Kingdom", "EEA"],
+              "excludedRegions": [
+                "United Kingdom",
+                "EEA"
+              ],
               "onlineExempt": true
             }
           },
-          "excludedMerchants": ["fps-transfer", "cash-advance", "balance-transfer", "installment", "tax-payment", "bill-payment", "utilities", "insurance", "charity", "mutual-fund", "casino", "government-fee"]
+          "excludedMerchants": [
+            "fps-transfer",
+            "cash-advance",
+            "balance-transfer",
+            "installment",
+            "tax-payment",
+            "bill-payment",
+            "utilities",
+            "insurance",
+            "charity",
+            "mutual-fund",
+            "casino",
+            "government-fee"
+          ],
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "local-dining-bonus",
-          "merchantTypes": ["restaurant", "dining", "fast-food", "cafe"],
           "rewardRate": 0.01,
           "rewardUnit": "cash",
           "priority": "bonus",
@@ -49,11 +86,18 @@
           "conditions": {
             "currency": "HKD"
           },
-          "excludedMerchants": ["fps-transfer", "cash-advance", "balance-transfer", "casino"]
+          "excludedMerchants": [
+            "fps-transfer",
+            "cash-advance",
+            "balance-transfer",
+            "casino"
+          ],
+          "categories": [
+            "dining"
+          ]
         },
         {
           "id": "local-hotel-bonus",
-          "merchantTypes": ["hotel", "accommodation"],
           "rewardRate": 0.01,
           "rewardUnit": "cash",
           "priority": "bonus",
@@ -62,7 +106,14 @@
           "conditions": {
             "currency": "HKD"
           },
-          "excludedMerchants": ["fps-transfer", "cash-advance", "balance-transfer"]
+          "excludedMerchants": [
+            "fps-transfer",
+            "cash-advance",
+            "balance-transfer"
+          ],
+          "categories": [
+            "travel"
+          ]
         }
       ],
       "fees": {
@@ -81,13 +132,16 @@
       "network": "Mastercard",
       "applyUrl": "https://www.sc.com/hk/credit-cards/smart/",
       "termsUrl": "https://av.sc.com/hk/zh/content/docs/hk-promo-smart-tnc.pdf",
-      "tags": ["cashback", "tiered", "designated-merchants"],
+      "tags": [
+        "cashback",
+        "tiered",
+        "designated-merchants"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "tier1-designated",
-          "merchantTypes": ["759-store", "china-mobile", "circle-k", "decathlon", "foodpanda", "hk-ticketing", "hktvmall", "japan-home-centre", "klook", "mcdonalds", "sasa", "parknshop", "watsons", "disney-plus", "netflix", "joox", "kkbox", "moov", "spotify"],
           "rewardRate": 0.05,
           "rewardUnit": "cash",
           "priority": "bonus",
@@ -97,11 +151,31 @@
             "minMonthlySpending": 4000
           },
           "monthlySpendingCap": 5000,
-          "fallbackRate": 0.0056
+          "fallbackRate": 0.0056,
+          "specificMerchants": [
+            "759-store",
+            "china-mobile",
+            "circle-k",
+            "decathlon",
+            "foodpanda",
+            "hk-ticketing",
+            "hktvmall",
+            "japan-home-centre",
+            "klook",
+            "mcdonalds",
+            "sasa",
+            "parknshop",
+            "watsons",
+            "disney-plus",
+            "netflix",
+            "joox",
+            "kkbox",
+            "moov",
+            "spotify"
+          ]
         },
         {
           "id": "tier1-other",
-          "merchantTypes": ["all"],
           "rewardRate": 0.0056,
           "rewardUnit": "cash",
           "priority": "base",
@@ -110,11 +184,20 @@
           "conditions": {
             "minMonthlySpending": 4000
           },
-          "excludedMerchants": ["cash-advance", "gambling", "insurance", "securities", "bill-payment", "money-transfer"]
+          "excludedMerchants": [
+            "cash-advance",
+            "gambling",
+            "insurance",
+            "securities",
+            "bill-payment",
+            "money-transfer"
+          ],
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "tier2-designated",
-          "merchantTypes": ["759-store", "china-mobile", "circle-k", "decathlon", "foodpanda", "hk-ticketing", "hktvmall", "japan-home-centre", "klook", "mcdonalds", "sasa", "parknshop", "watsons", "disney-plus", "netflix", "joox", "kkbox", "moov", "spotify"],
           "rewardRate": 0.05,
           "rewardUnit": "cash",
           "priority": "premium",
@@ -124,11 +207,31 @@
             "minMonthlySpending": 15000
           },
           "monthlySpendingCap": 5000,
-          "fallbackRate": 0.012
+          "fallbackRate": 0.012,
+          "specificMerchants": [
+            "759-store",
+            "china-mobile",
+            "circle-k",
+            "decathlon",
+            "foodpanda",
+            "hk-ticketing",
+            "hktvmall",
+            "japan-home-centre",
+            "klook",
+            "mcdonalds",
+            "sasa",
+            "parknshop",
+            "watsons",
+            "disney-plus",
+            "netflix",
+            "joox",
+            "kkbox",
+            "moov",
+            "spotify"
+          ]
         },
         {
           "id": "tier2-other",
-          "merchantTypes": ["all"],
           "rewardRate": 0.012,
           "rewardUnit": "cash",
           "priority": "premium",
@@ -137,7 +240,17 @@
           "conditions": {
             "minMonthlySpending": 15000
           },
-          "excludedMerchants": ["cash-advance", "gambling", "insurance", "securities", "bill-payment", "money-transfer"]
+          "excludedMerchants": [
+            "cash-advance",
+            "gambling",
+            "insurance",
+            "securities",
+            "bill-payment",
+            "money-transfer"
+          ],
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -157,13 +270,15 @@
       "network": "Visa",
       "applyUrl": "https://www.sc.com/hk/credit-cards/simplycash/",
       "termsUrl": "https://av.sc.com/hk/zh/content/docs/hk-promo-simply-cash-tnc.pdf",
-      "tags": ["cashback", "unlimited"],
+      "tags": [
+        "cashback",
+        "unlimited"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "local-cashback",
-          "merchantTypes": ["all"],
           "rewardRate": 0.015,
           "rewardUnit": "cash",
           "priority": "base",
@@ -171,11 +286,13 @@
           "description": "1.5% cashback on local spending (HKD)",
           "conditions": {
             "currency": "HKD"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "foreign-cashback",
-          "merchantTypes": ["all"],
           "rewardRate": 0.02,
           "rewardUnit": "cash",
           "priority": "bonus",
@@ -183,7 +300,10 @@
           "description": "2% cashback on overseas spending",
           "conditions": {
             "currency": "foreign"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -201,31 +321,40 @@
       "network": "Mastercard",
       "applyUrl": "https://www.sc.com/hk/credit-cards/cathay/",
       "termsUrl": "https://av.sc.com/hk/content/docs/hk-cc-cx-card-selected-category-tnc.pdf",
-      "tags": ["miles", "asia-miles", "travel"],
+      "tags": [
+        "miles",
+        "asia-miles",
+        "travel"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "cathay-hk-express",
-          "merchantTypes": ["cathay-pacific", "hk-express"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$2 = 1 Asia Mile on Cathay/HK Express"
+          "description": "HK$2 = 1 Asia Mile on Cathay/HK Express",
+          "categories": [
+            "cathay-pacific",
+            "hk-express"
+          ]
         },
         {
           "id": "dining-hotels-overseas",
-          "merchantTypes": ["restaurant", "dining", "hotel", "accommodation"],
           "rewardRate": 0.25,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$4 = 1 Asia Mile on dining, hotels"
+          "description": "HK$4 = 1 Asia Mile on dining, hotels",
+          "categories": [
+            "dining",
+            "travel"
+          ]
         },
         {
           "id": "overseas-spending",
-          "merchantTypes": ["all"],
           "rewardRate": 0.25,
           "rewardUnit": "miles",
           "priority": "bonus",
@@ -233,20 +362,24 @@
           "description": "HK$4 = 1 Asia Mile on overseas spending",
           "conditions": {
             "currency": "foreign"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "cathay-partner-restaurants",
-          "merchantTypes": ["cathay-partner-restaurant"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "premium",
           "isCumulative": false,
-          "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants"
+          "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
+          "categories": [
+            "cathay-partner-restaurant"
+          ]
         },
         {
           "id": "other-hkd",
-          "merchantTypes": ["all"],
           "rewardRate": 0.1667,
           "rewardUnit": "miles",
           "priority": "base",
@@ -254,7 +387,10 @@
           "description": "HK$6 = 1 Asia Mile on other HKD spending",
           "conditions": {
             "currency": "HKD"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -268,22 +404,29 @@
       "network": "Mastercard",
       "applyUrl": "https://www.sc.com/hk/credit-cards/cathay/",
       "termsUrl": "https://av.sc.com/hk/content/docs/hk-cc-cx-card-selected-category-tnc.pdf",
-      "tags": ["miles", "asia-miles", "travel", "priority-banking"],
+      "tags": [
+        "miles",
+        "asia-miles",
+        "travel",
+        "priority-banking"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "cathay-hk-express",
-          "merchantTypes": ["cathay-pacific", "hk-express"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$2 = 1 Asia Mile on Cathay/HK Express"
+          "description": "HK$2 = 1 Asia Mile on Cathay/HK Express",
+          "categories": [
+            "cathay-pacific",
+            "hk-express"
+          ]
         },
         {
           "id": "overseas-spending",
-          "merchantTypes": ["all"],
           "rewardRate": 0.3333,
           "rewardUnit": "miles",
           "priority": "bonus",
@@ -291,29 +434,36 @@
           "description": "HK$3 = 1 Asia Mile on overseas spending",
           "conditions": {
             "currency": "foreign"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "dining-hotels",
-          "merchantTypes": ["restaurant", "dining", "hotel", "accommodation"],
           "rewardRate": 0.25,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$4 = 1 Asia Mile on dining, hotels"
+          "description": "HK$4 = 1 Asia Mile on dining, hotels",
+          "categories": [
+            "dining",
+            "travel"
+          ]
         },
         {
           "id": "cathay-partner-restaurants",
-          "merchantTypes": ["cathay-partner-restaurant"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "premium",
           "isCumulative": false,
-          "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants"
+          "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
+          "categories": [
+            "cathay-partner-restaurant"
+          ]
         },
         {
           "id": "other-hkd",
-          "merchantTypes": ["all"],
           "rewardRate": 0.1667,
           "rewardUnit": "miles",
           "priority": "base",
@@ -321,7 +471,10 @@
           "description": "HK$6 = 1 Asia Mile on other HKD spending",
           "conditions": {
             "currency": "HKD"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -335,22 +488,29 @@
       "network": "Mastercard",
       "applyUrl": "https://www.sc.com/hk/credit-cards/cathay/",
       "termsUrl": "https://av.sc.com/hk/content/docs/hk-cc-cx-card-selected-category-tnc.pdf",
-      "tags": ["miles", "asia-miles", "travel", "priority-private"],
+      "tags": [
+        "miles",
+        "asia-miles",
+        "travel",
+        "priority-private"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "cathay-hk-express",
-          "merchantTypes": ["cathay-pacific", "hk-express"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$2 = 1 Asia Mile on Cathay/HK Express"
+          "description": "HK$2 = 1 Asia Mile on Cathay/HK Express",
+          "categories": [
+            "cathay-pacific",
+            "hk-express"
+          ]
         },
         {
           "id": "overseas-spending",
-          "merchantTypes": ["all"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "bonus",
@@ -358,29 +518,36 @@
           "description": "HK$2 = 1 Asia Mile on overseas spending (best rate)",
           "conditions": {
             "currency": "foreign"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "dining-hotels",
-          "merchantTypes": ["restaurant", "dining", "hotel", "accommodation"],
           "rewardRate": 0.25,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$4 = 1 Asia Mile on dining, hotels"
+          "description": "HK$4 = 1 Asia Mile on dining, hotels",
+          "categories": [
+            "dining",
+            "travel"
+          ]
         },
         {
           "id": "cathay-partner-restaurants",
-          "merchantTypes": ["cathay-partner-restaurant"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "premium",
           "isCumulative": false,
-          "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants"
+          "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
+          "categories": [
+            "cathay-partner-restaurant"
+          ]
         },
         {
           "id": "other-hkd",
-          "merchantTypes": ["all"],
           "rewardRate": 0.1667,
           "rewardUnit": "miles",
           "priority": "base",
@@ -388,7 +555,10 @@
           "description": "HK$6 = 1 Asia Mile on other HKD spending",
           "conditions": {
             "currency": "HKD"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -402,22 +572,32 @@
       "network": "Mastercard",
       "applyUrl": "https://www.hsbc.com.hk/credit-cards/products/everymile/",
       "termsUrl": "https://www.hsbc.com.hk/content/dam/hsbc/hk/docs/credit-cards/everymile/everymile-everyday-spend.pdf",
-      "tags": ["miles", "travel", "convertible"],
+      "tags": [
+        "miles",
+        "travel",
+        "convertible"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "designated-everyday-travel",
-          "merchantTypes": ["cafe", "light-meal", "local-transport", "cross-border-transport", "travel-service", "taxi-app"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "HK$2 = 1 mile on designated everyday & travel spending"
+          "description": "HK$2 = 1 mile on designated everyday & travel spending",
+          "categories": [
+            "dining",
+            "light-meal",
+            "local-transport",
+            "cross-border-transport",
+            "travel-service",
+            "taxi-app"
+          ]
         },
         {
           "id": "overseas-promotional",
-          "merchantTypes": ["all"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "bonus",
@@ -426,17 +606,25 @@
           "conditions": {
             "currency": "foreign",
             "minMonthlySpending": 12000
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "general-spending",
-          "merchantTypes": ["all"],
           "rewardRate": 0.2,
           "rewardUnit": "miles",
           "priority": "base",
           "isCumulative": false,
           "description": "HK$5 = 1 mile on general spending",
-          "excludedMerchants": ["tax-payment", "policy-loan-repayment"]
+          "excludedMerchants": [
+            "tax-payment",
+            "policy-loan-repayment"
+          ],
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -450,24 +638,39 @@
       "network": "Mastercard",
       "applyUrl": "https://www.hsbc.com.hk/credit-cards/products/red/",
       "termsUrl": "https://www.hsbc.com.hk/content/dam/hsbc/hk/docs/credit-cards/reward-scheme-terms-and-conditions.pdf",
-      "tags": ["cashback", "online", "designated-merchants"],
+      "tags": [
+        "cashback",
+        "online",
+        "designated-merchants"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "designated-merchants-high",
-          "merchantTypes": ["sushiro", "tamjai-samgor", "tamjai-yunnan", "coffee-academics", "gu", "decathlon", "lululemon", "namco", "taito-station"],
           "rewardRate": 0.08,
           "rewardUnit": "cash",
           "priority": "premium",
           "isCumulative": false,
           "description": "8% RewardCash at designated merchants (first HK$1,250/month)",
           "monthlySpendingCap": 1250,
-          "fallbackRate": 0.004
+          "fallbackRate": 0.004,
+          "categories": [
+            "tamjai-samgor",
+            "tamjai-yunnan",
+            "coffee-academics",
+            "gu",
+            "lululemon",
+            "namco",
+            "taito-station"
+          ],
+          "specificMerchants": [
+            "sushiro",
+            "decathlon"
+          ]
         },
         {
           "id": "online-purchases-high",
-          "merchantTypes": ["online"],
           "rewardRate": 0.04,
           "rewardUnit": "cash",
           "priority": "bonus",
@@ -477,16 +680,21 @@
             "paymentType": "online"
           },
           "monthlySpendingCap": 10000,
-          "fallbackRate": 0.004
+          "fallbackRate": 0.004,
+          "categories": [
+            "online"
+          ]
         },
         {
           "id": "base-rewardcash",
-          "merchantTypes": ["all"],
           "rewardRate": 0.004,
           "rewardUnit": "cash",
           "priority": "base",
           "isCumulative": false,
-          "description": "0.4% RewardCash on all other spending"
+          "description": "0.4% RewardCash on all other spending",
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -500,13 +708,16 @@
       "network": "Mastercard",
       "applyUrl": "https://www.dbs.com.hk/personal/credit-cards/credit-cards/black-mc",
       "termsUrl": "https://www.dbs.com.hk/iwov-resources/pdf/creditcards/DBS-rewards-master-tnc-201709.pdf",
-      "tags": ["miles", "dbs-points", "travel"],
+      "tags": [
+        "miles",
+        "dbs-points",
+        "travel"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "overseas-promotional",
-          "merchantTypes": ["all"],
           "rewardRate": 0.5,
           "rewardUnit": "miles",
           "priority": "premium",
@@ -515,11 +726,13 @@
           "conditions": {
             "currency": "foreign",
             "minMonthlySpending": 20000
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "overseas-base",
-          "merchantTypes": ["all"],
           "rewardRate": 0.25,
           "rewardUnit": "miles",
           "priority": "bonus",
@@ -527,16 +740,21 @@
           "description": "HK$4 = 1 mile on overseas spending (base rate)",
           "conditions": {
             "currency": "foreign"
-          }
+          },
+          "categories": [
+            "all"
+          ]
         },
         {
           "id": "local-spending",
-          "merchantTypes": ["all"],
           "rewardRate": 0.1667,
           "rewardUnit": "miles",
           "priority": "base",
           "isCumulative": false,
-          "description": "HK$6 = 1 mile on local spending"
+          "description": "HK$6 = 1 mile on local spending",
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {
@@ -550,27 +768,35 @@
       "network": "Visa",
       "applyUrl": "https://www.hangseng.com/en-hk/personal/cards/products/co-branded/enjoy-card/",
       "termsUrl": "https://www.hangseng.com/content/dam/hase/config/personal/cards/pdfs/enjoyplat_EN.pdf",
-      "tags": ["points", "yuu-rewards", "cashback"],
+      "tags": [
+        "points",
+        "yuu-rewards",
+        "cashback"
+      ],
       "isActive": true,
       "lastUpdated": "2026-01-20T00:00:00.000Z",
       "rewards": [
         {
           "id": "designated-merchants-4x",
-          "merchantTypes": ["yuu-partner"],
           "rewardRate": 0.02,
           "rewardUnit": "points",
           "priority": "bonus",
           "isCumulative": false,
-          "description": "4X yuu points at designated merchants (equivalent to 2% rebate)"
+          "description": "4X yuu points at designated merchants (equivalent to 2% rebate)",
+          "categories": [
+            "yuu-partner"
+          ]
         },
         {
           "id": "base-points",
-          "merchantTypes": ["all"],
           "rewardRate": 0.005,
           "rewardUnit": "points",
           "priority": "base",
           "isCumulative": false,
-          "description": "1 yuu point per HK$1 (equivalent to 0.5% rebate, 200 points = HK$1)"
+          "description": "1 yuu point per HK$1 (equivalent to 0.5% rebate, 200 points = HK$1)",
+          "categories": [
+            "all"
+          ]
         }
       ],
       "fees": {

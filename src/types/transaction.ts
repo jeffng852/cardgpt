@@ -14,11 +14,23 @@ export interface Transaction {
   /** Currency code */
   currency: Currency;
 
-  /** Merchant type (e.g., 'supermarket', 'restaurant') */
+  /** Broad merchant category (e.g., 'dining', 'retail', 'travel') */
+  category?: string;
+
+  /** Specific merchant identifier (e.g., 'mcdonalds', 'sushiro') */
+  merchantId?: string;
+
+  /**
+   * @deprecated Use category and/or merchantId instead
+   * Kept for backward compatibility during migration
+   */
   merchantType?: string;
 
   /** Payment type */
   paymentType: PaymentType;
+
+  /** Transaction location (country/region for geographic restrictions) */
+  location?: string;
 
   /** Transaction date (optional, defaults to current date) */
   date?: Date;
@@ -29,7 +41,7 @@ export interface Transaction {
   /** Raw user input for debugging */
   rawInput?: string;
 
-  /** Confidence score for merchant type detection (0-1) */
+  /** Confidence score for category/merchant detection (0-1) */
   merchantTypeConfidence?: number;
 }
 

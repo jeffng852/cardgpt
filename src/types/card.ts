@@ -71,8 +71,25 @@ export interface RewardRule {
   /** Unique ID for this rule (for debugging/tracking) */
   id: string;
 
-  /** Merchant types this rule applies to ('all' for universal rules) */
-  merchantTypes: string[] | ['all'];
+  /**
+   * Broad merchant categories this rule applies to
+   * Examples: 'dining', 'travel', 'retail', 'online-shopping'
+   * Use ['all'] for universal rules that apply to all merchants
+   */
+  categories?: string[] | ['all'];
+
+  /**
+   * Specific merchant identifiers this rule applies to
+   * Examples: 'mcdonalds', 'sushiro', '759-store', 'netflix'
+   * These are exact merchant names, not categories
+   */
+  specificMerchants?: string[];
+
+  /**
+   * @deprecated Use categories and/or specificMerchants instead
+   * Kept for backward compatibility during migration
+   */
+  merchantTypes?: string[] | ['all'];
 
   /** Reward rate as percentage per dollar spent (e.g., 0.02 = 2%) */
   rewardRate: number;
@@ -92,7 +109,10 @@ export interface RewardRule {
   /** Description of this reward rule (for display) */
   description: string;
 
-  /** Excluded merchant categories (MCCs or types) */
+  /** Excluded merchant categories */
+  excludedCategories?: string[];
+
+  /** Excluded specific merchants */
   excludedMerchants?: string[];
 
   /** Maximum spending amount eligible for this rate per month (e.g., first $10,000) */

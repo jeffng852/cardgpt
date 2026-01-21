@@ -24,6 +24,6 @@ export type {
 // Recommendation types
 export type {
   RewardCalculation,
+  CardRecommendation,
   RecommendationResult,
-  RecommendationResponse,
 } from './recommendation';

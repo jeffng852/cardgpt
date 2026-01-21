@@ -18,7 +18,8 @@ async function demo() {
   const diningTransaction: Transaction = {
     amount: 500,
     currency: 'HKD',
-    merchantType: 'restaurant',
+    category: 'dining',
+    merchantId: 'restaurant',
     paymentType: 'offline'
   };
 
@@ -40,7 +41,7 @@ async function demo() {
   const foreignTransaction: Transaction = {
     amount: 1000,
     currency: 'USD',
-    merchantType: 'online-shopping',
+    category: 'online-retail',
     paymentType: 'online'
   };
 
@@ -62,7 +63,7 @@ async function demo() {
   const supermarketTransaction: Transaction = {
     amount: 2000,
     currency: 'HKD',
-    merchantType: 'supermarket',
+    category: 'retail',
     paymentType: 'offline'
   };
 

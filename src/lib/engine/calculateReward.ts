@@ -13,18 +13,63 @@ import type { RewardCalculation } from '@/types/recommendation';
  * Check if a reward rule matches a transaction
  */
 function matchesRule(rule: RewardRule, transaction: Transaction): boolean {
-  // Check merchant type match
-  const merchantMatch =
-    rule.merchantTypes.includes('all') ||
-    (transaction.merchantType && rule.merchantTypes.includes(transaction.merchantType));
+  // NEW SCHEMA: Check categories and specific merchants
+  if (rule.categories || rule.specificMerchants) {
+    let matched = false;
 
-  if (!merchantMatch) return false;
-
-  // Check excluded merchants
-  if (rule.excludedMerchants && transaction.merchantType) {
-    if (rule.excludedMerchants.includes(transaction.merchantType)) {
-      return false;
+    // Check if rule applies to all merchants
+    if (rule.categories && rule.categories.includes('all' as any)) {
+      matched = true;
     }
+    // Check specific merchant ID match (highest priority)
+    else if (rule.specificMerchants && transaction.merchantId) {
+      if (rule.specificMerchants.includes(transaction.merchantId)) {
+        matched = true;
+      }
+    }
+    // Check category match
+    else if (rule.categories && transaction.category) {
+      if (rule.categories.some(cat => cat === transaction.category)) {
+        matched = true;
+      }
+    }
+
+    // If new schema is used but no match, return false
+    if (!matched) return false;
+
+    // Check excluded categories
+    if (rule.excludedCategories && transaction.category) {
+      if (rule.excludedCategories.includes(transaction.category)) {
+        return false;
+      }
+    }
+
+    // Check excluded specific merchants
+    if (rule.excludedMerchants && transaction.merchantId) {
+      if (rule.excludedMerchants.includes(transaction.merchantId)) {
+        return false;
+      }
+    }
+  }
+  // OLD SCHEMA (backward compatibility): Check merchantTypes
+  else if (rule.merchantTypes) {
+    const merchantMatch =
+      rule.merchantTypes.includes('all' as any) ||
+      (transaction.merchantType && rule.merchantTypes.includes(transaction.merchantType)) ||
+      (transaction.category && rule.merchantTypes.includes(transaction.category)) ||
+      (transaction.merchantId && rule.merchantTypes.includes(transaction.merchantId));
+
+    if (!merchantMatch) return false;
+
+    // Check excluded merchants (old schema)
+    if (rule.excludedMerchants && transaction.merchantType) {
+      if (rule.excludedMerchants.includes(transaction.merchantType)) {
+        return false;
+      }
+    }
+  } else {
+    // No merchant matching criteria specified
+    return false;
   }
 
   // Check conditions if present
