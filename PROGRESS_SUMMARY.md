@@ -1,7 +1,7 @@
 # CardGPT Development Progress Summary
 
 **Last Updated**: 2026-01-21
-**Status**: ✅ Phase 1, 2 & 3 Complete | 🚧 Phase 4 (UI) In Progress | ✅ THI-15 Complete
+**Status**: ✅ Phase 1, 2 & 3 Complete | 🚧 Phase 4 (UI) In Progress | ✅ THI-16 Complete
 
 ---
 
@@ -201,11 +201,11 @@
 | Credit Cards | 10 | - |
 | Reward Rules | 36 | - |
 | TypeScript Files | 11 | ~1,500 |
-| React Components | 1 | ~170 |
+| React Components | 2 | ~430 |
 | Engine Functions | 2 | ~400 |
 | Documentation Files | 5 | ~800 |
-| Translation Files | 2 | ~120 |
-| Git Commits | 23 | - |
+| Translation Files | 2 | ~140 |
+| Git Commits | 25 | - |
 
 ---
 
@@ -322,26 +322,47 @@ parseTransaction('$500 HKD McDonald\'s')
 
 ---
 
-## 🎯 Next Steps (THI-16 onwards)
+#### THI-16: Input Interface ✓
+**Goal**: Interactive input UI with NLP parser integration
 
-### Phase 4: User Interface (Continued)
+**Implementation**:
+- TransactionInput component with real-time NLP parsing
+- Reward type selector (Cash 💵, Miles ✈️, Points ⭐)
+- 6 popular merchant quick-tags (McDonald's, Wellcome, ParknShop, Sushiro, Shell, Cathay Pacific)
+- Main text input with autofocus
+- Real-time parsing feedback with confidence scores
+- Color-coded confidence display (green ≥70%, yellow ≥50%, red <50%)
+- Submit button with loading state
+- Temporary debug output for parsed results
+
+**Components Built**:
+- `TransactionInput.tsx` (260+ lines)
+- Real-time parser integration
+- Visual feedback system
+- Quick-tag insertion
+
+**Features**:
+- Parses transaction as user types
+- Shows detected: amount, currency, category, merchant
+- Optional reward type preference
+- One-click merchant insertion
+- Responsive design with hover effects
+
+**Files Created**:
+- `src/components/TransactionInput.tsx`
+
+**Files Updated**:
+- `src/app/[locale]/page.tsx` - Converted to client component, integrated TransactionInput
+- `messages/en.json` - Added rewardTypeLabel, quickTagsLabel, exampleText
+- `messages/zh-HK.json` - Added Chinese translations
+
+**Committed**: 6672c07
 
 ---
 
-#### THI-16: Input Interface
-**Goal**: Interactive input UI with tags and selectors
+## 🎯 Next Steps (THI-17 onwards)
 
-**Features**:
-- Reward category selector (Cash/Miles/Points)
-- Popular merchant quick-tags
-- Main text input field
-- Amount and currency inputs
-- Submit button
-
-**UX**:
-- Tags populate input field
-- Real-time validation
-- Clear error messages
+### Phase 4: User Interface (Continued)
 
 ---
 
@@ -548,7 +569,7 @@ npm run build
 - ✅ THI-13: Card Ranking Logic (Done)
 - ✅ THI-14: NLP Transaction Parser (Done)
 - ✅ THI-15: Landing Page Layout (Done)
-- 🔲 THI-16: Input Interface
+- ✅ THI-16: Input Interface (Done)
 - 🔲 THI-17: Results Display
 - 🔲 THI-18: Wire Up Full Flow
 - 🔲 THI-19: Error Handling
@@ -556,15 +577,15 @@ npm run build
 - 🔲 THI-21: Performance & SEO
 - 🔲 THI-22: Deploy to Vercel
 
-**Completion**: 10/17 tickets (59%)
+**Completion**: 11/17 tickets (65%)
 
 ---
 
 ## 💡 Notes for Future Development
 
 ### Immediate Next Steps
-1. Create landing page layout (THI-15)
-2. Build input interface with parser integration (THI-16)
+1. ✅ ~~Create landing page layout (THI-15)~~
+2. ✅ ~~Build input interface with parser integration (THI-16)~~
 3. Create results display with recommendations (THI-17)
 4. Wire everything together (THI-18)
 5. Add comprehensive error handling (THI-19)
@@ -587,4 +608,4 @@ npm run build
 
 ---
 
-**Status**: Core engine + NLP parser + Landing page complete. Input interface next! 🎯
+**Status**: Core engine + NLP parser + Landing page + Input interface complete. Results display next! 🎯
