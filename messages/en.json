@@ -19,8 +19,11 @@
     "travel": "Travel"
   },
   "input": {
-    "placeholder": "Enter your transaction (e.g., $500 at supermarket)",
-    "submit": "Find Best Card"
+    "placeholder": "e.g., $500 dining at McDonald's",
+    "submit": "Find Best Card",
+    "rewardTypeLabel": "Preferred Reward Type (Optional)",
+    "quickTagsLabel": "Popular Merchants",
+    "exampleText": "Try: \"$200 HKD at Wellcome\" or \"1000 USD online shopping\""
   },
   "results": {
     "recommended": "Recommended",

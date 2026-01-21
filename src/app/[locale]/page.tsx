@@ -1,8 +1,29 @@
+'use client';
+
 import { useTranslations } from 'next-intl';
+import { useState } from 'react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import TransactionInput from '@/components/TransactionInput';
+import type { ParsedTransactionResult } from '@/lib/parser/transactionParser';
+
+type RewardType = 'cash' | 'miles' | 'points';
 
 export default function Home() {
   const t = useTranslations('common');
+  const [showResults, setShowResults] = useState(false);
+  const [parsedResult, setParsedResult] = useState<ParsedTransactionResult | null>(null);
+  const [rewardType, setRewardType] = useState<RewardType | undefined>();
+
+  const handleSubmit = async (result: ParsedTransactionResult, selectedRewardType?: RewardType) => {
+    setParsedResult(result);
+    setRewardType(selectedRewardType);
+    setShowResults(true);
+
+    // TODO: THI-17 - Replace this with actual results display
+    // For now, just scroll to show the parsed result
+    console.log('Parsed transaction:', result);
+    console.log('Selected reward type:', selectedRewardType);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-surface">
@@ -33,38 +54,64 @@ export default function Home() {
               {t('subtitle')}
             </p>
 
-            {/* CTA Placeholder - Will be replaced with input form in THI-16 */}
-            <div className="bg-input-bg border border-border rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <svg
-                    className="w-5 h-5 text-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                    />
-                  </svg>
+            {/* Transaction Input Interface (THI-16) */}
+            <TransactionInput onSubmit={handleSubmit} />
+
+            {/* Temporary debug output - will be replaced in THI-17 */}
+            {showResults && parsedResult && (
+              <div className="mt-8 p-6 bg-surface border border-border rounded-2xl">
+                <h3 className="text-lg font-semibold text-text-primary mb-4">
+                  ✅ Transaction Parsed Successfully
+                </h3>
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-text-tertiary">Amount: </span>
+                    <span className="text-text-primary font-medium">
+                      {parsedResult.transaction.currency} ${parsedResult.transaction.amount}
+                    </span>
+                  </div>
+                  {parsedResult.transaction.category && (
+                    <div>
+                      <span className="text-text-tertiary">Category: </span>
+                      <span className="text-text-primary font-medium">
+                        {parsedResult.transaction.category}
+                      </span>
+                    </div>
+                  )}
+                  {parsedResult.transaction.merchantId && (
+                    <div>
+                      <span className="text-text-tertiary">Merchant: </span>
+                      <span className="text-text-primary font-medium">
+                        {parsedResult.transaction.merchantId}
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-text-tertiary">Payment Type: </span>
+                    <span className="text-text-primary font-medium">
+                      {parsedResult.transaction.paymentType}
+                    </span>
+                  </div>
+                  {rewardType && (
+                    <div>
+                      <span className="text-text-tertiary">Preferred Reward: </span>
+                      <span className="text-text-primary font-medium capitalize">
+                        {rewardType}
+                      </span>
+                    </div>
+                  )}
+                  <div>
+                    <span className="text-text-tertiary">Confidence: </span>
+                    <span className="text-primary font-medium">
+                      {(parsedResult.confidence.overall * 100).toFixed(0)}%
+                    </span>
+                  </div>
                 </div>
-                <p className="text-left text-text-tertiary text-sm">
-                  Enter your transaction to get started
+                <p className="text-xs text-text-tertiary mt-4">
+                  🚧 Card recommendations will be shown here in THI-17
                 </p>
               </div>
-
-              {/* Input Placeholder */}
-              <div className="w-full h-12 bg-surface border border-border rounded-lg flex items-center px-4 text-text-tertiary cursor-not-allowed opacity-60">
-                e.g., $500 dining at McDonald's
-              </div>
-
-              <p className="text-xs text-text-tertiary mt-4">
-                Input interface coming soon (THI-16)
-              </p>
-            </div>
+            )}
 
             {/* Features Grid */}
             <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-6">
