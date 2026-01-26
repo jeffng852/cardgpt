@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { parseTransaction } from '@/lib/parser/transactionParser';
 import type { ParseResult } from '@/lib/parser/transactionParser';
@@ -16,11 +16,14 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const tResults = useTranslations('results');
   const tMerchants = useTranslations('merchants');
   const tRewardTypes = useTranslations('rewardTypes');
+  const tCategories = useTranslations('categories');
   const [input, setInput] = useState('');
   const [selectedRewardType, setSelectedRewardType] = useState<RewardType | undefined>();
   const [selectedMerchantTag, setSelectedMerchantTag] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Popular merchant quick-tags
   const quickTags = [
@@ -32,21 +35,47 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     { key: 'cathay', label: t('quickTags.cathay'), icon: '✈️' },
   ];
 
-  // Parse input in real-time for feedback
+  // Parse input in real-time for feedback with debounce and artificial delay
   const handleInputChange = (value: string) => {
     setInput(value);
 
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
     if (value.trim()) {
-      try {
-        const result = parseTransaction(value);
-        setParseResult(result);
-      } catch (error) {
-        setParseResult(null);
-      }
+      setIsAnalyzing(true);
+      setParseResult(null);
+
+      // Debounce parsing with artificial delay (300ms + 200ms = 500ms total)
+      debounceTimerRef.current = setTimeout(() => {
+        try {
+          const result = parseTransaction(value);
+          // Add artificial delay for shimmer effect
+          setTimeout(() => {
+            setParseResult(result);
+            setIsAnalyzing(false);
+          }, 200);
+        } catch (error) {
+          setParseResult(null);
+          setIsAnalyzing(false);
+        }
+      }, 300);
     } else {
       setParseResult(null);
+      setIsAnalyzing(false);
     }
   };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   // Select merchant tag (single-select only)
   const handleQuickTag = (tagLabel: string) => {
@@ -170,39 +199,99 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
             />
           </div>
 
-          {/* Real-time Feedback */}
-          {parseResult && parseResult.transaction && (
-            <div className="mb-4 p-3 bg-surface rounded-lg border border-border">
-              <div className="flex items-center gap-2 text-sm text-text-secondary mb-2">
-                <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="font-medium">{tResults('detectedAmount')}:</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                <div>
-                  <span className="text-text-tertiary">{tResults('detectedAmount')}: </span>
-                  <span className="text-text-primary font-medium">
-                    {parseResult.transaction.currency} ${parseResult.transaction.amount}
-                  </span>
+          {/* Real-time Feedback with Shimmer Effect */}
+          {(isAnalyzing || (parseResult && parseResult.transaction)) && (
+            <div className="mb-4 p-4 bg-surface rounded-xl border border-border">
+              {isAnalyzing ? (
+                // Shimmer Loading Effect
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="relative overflow-hidden h-16 bg-background-secondary rounded-lg">
+                      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-foreground-subtle/10 to-transparent" />
+                    </div>
+                  ))}
                 </div>
-                {parseResult.transaction.category && (
-                  <div>
-                    <span className="text-text-tertiary">{tResults('detectedCategory')}: </span>
-                    <span className="text-text-primary font-medium capitalize">
-                      {parseResult.transaction.category}
-                    </span>
+              ) : parseResult && parseResult.transaction ? (
+                // Detected Information Badges
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* Amount Badge */}
+                  <div className="flex items-center gap-3 px-3 py-2.5 bg-primary-light rounded-lg border border-primary/20 transition-all hover:border-primary/40">
+                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10">
+                      <span className="text-lg">💵</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-medium text-foreground-muted mb-0.5">
+                        {tResults('detectedAmount')}
+                      </div>
+                      <div className="text-sm font-bold text-foreground truncate">
+                        {parseResult.transaction.currency} ${parseResult.transaction.amount}
+                      </div>
+                    </div>
                   </div>
-                )}
-                {parseResult.transaction.merchantId && (
-                  <div>
-                    <span className="text-text-tertiary">{tResults('detectedMerchant')}: </span>
-                    <span className="text-text-primary font-medium">
-                      {tMerchants(parseResult.transaction.merchantId)}
-                    </span>
-                  </div>
-                )}
-              </div>
+
+                  {/* Merchant Badge */}
+                  {parseResult.transaction.merchantId ? (
+                    <div className="flex items-center gap-3 px-3 py-2.5 bg-accent-blue-light rounded-lg border border-accent-blue/20 transition-all hover:border-accent-blue/40">
+                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-accent-blue/10">
+                        <span className="text-lg">🏪</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-foreground-muted mb-0.5">
+                          {tResults('detectedMerchant')}
+                        </div>
+                        <div className="text-sm font-bold text-foreground truncate">
+                          {tMerchants(parseResult.transaction.merchantId)}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 px-3 py-2.5 bg-background-tertiary/50 rounded-lg border border-border-light">
+                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-foreground-subtle/10">
+                        <span className="text-lg opacity-50">🏪</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-foreground-subtle">
+                          {tResults('detectedMerchant')}
+                        </div>
+                        <div className="text-xs text-foreground-muted italic">
+                          {tResults('merchantHint')}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Category Badge */}
+                  {parseResult.transaction.category ? (
+                    <div className="flex items-center gap-3 px-3 py-2.5 bg-accent-purple-light rounded-lg border border-accent-purple/20 transition-all hover:border-accent-purple/40">
+                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-accent-purple/10">
+                        <span className="text-lg">🏷️</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-foreground-muted mb-0.5">
+                          {tResults('detectedCategory')}
+                        </div>
+                        <div className="text-sm font-bold text-foreground truncate">
+                          {tCategories(parseResult.transaction.category)}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 px-3 py-2.5 bg-background-tertiary/50 rounded-lg border border-border-light">
+                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-foreground-subtle/10">
+                        <span className="text-lg opacity-50">🏷️</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-medium text-foreground-subtle">
+                          {tResults('detectedCategory')}
+                        </div>
+                        <div className="text-xs text-foreground-muted italic">
+                          {tResults('categoryHint')}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : null}
             </div>
           )}
 

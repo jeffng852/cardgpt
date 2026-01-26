@@ -34,12 +34,8 @@ export interface ParseResult {
  */
 const CATEGORY_KEYWORDS: Record<string, { en: string[]; zh: string[] }> = {
   dining: {
-    en: ['dining', 'restaurant', 'food', 'eat', 'meal', 'lunch', 'dinner', 'breakfast', 'cafe', 'coffee', 'brunch', 'supper', 'tea', 'dine', 'bistro', 'eatery', 'cuisine'],
-    zh: ['餐飲', '飲食', '食飯', '餐廳', '食店', '午餐', '晚餐', '早餐', '咖啡', '茶餐廳', '飯館'],
-  },
-  'fast-food': {
-    en: ['fast food', 'fastfood', 'fast-food', 'burger', 'pizza'],
-    zh: ['快餐', '速食'],
+    en: ['dining', 'restaurant', 'food', 'eat', 'meal', 'lunch', 'dinner', 'breakfast', 'cafe', 'coffee', 'brunch', 'supper', 'tea', 'dine', 'bistro', 'eatery', 'cuisine', 'fast food', 'fastfood', 'fast-food', 'burger', 'pizza'],
+    zh: ['餐飲', '飲食', '食飯', '餐廳', '食店', '午餐', '晚餐', '早餐', '咖啡', '茶餐廳', '飯館', '快餐', '速食'],
   },
   travel: {
     en: ['travel', 'flight', 'hotel', 'booking', 'airline', 'trip', 'vacation', 'tourism', 'holiday', 'fly', 'accommodation'],
@@ -58,24 +54,16 @@ const CATEGORY_KEYWORDS: Record<string, { en: string[]; zh: string[] }> = {
     zh: ['超市', '超級市場', '街市', '菜市場', '買菜'],
   },
   entertainment: {
-    en: ['entertainment', 'movie', 'cinema', 'concert', 'show', 'theatre', 'theater'],
-    zh: ['娛樂', '電影', '戲院', '演唱會'],
-  },
-  streaming: {
-    en: ['streaming', 'subscription', 'netflix', 'spotify', 'youtube'],
-    zh: ['串流', '訂閱'],
+    en: ['entertainment', 'movie', 'cinema', 'concert', 'show', 'theatre', 'theater', 'streaming', 'subscription', 'netflix', 'spotify', 'youtube'],
+    zh: ['娛樂', '電影', '戲院', '演唱會', '串流', '訂閱'],
   },
   transport: {
-    en: ['transport', 'taxi', 'uber', 'grab', 'bus', 'mtr', 'train', 'subway', 'metro', 'ride', 'commute', 'transit'],
-    zh: ['交通', '的士', '巴士', '港鐵', '火車', '搭車', '乘車'],
+    en: ['transport', 'taxi', 'uber', 'grab', 'bus', 'mtr', 'train', 'subway', 'metro', 'ride', 'commute', 'transit', 'fuel', 'gas', 'petrol', 'gasoline', 'station', 'fill up', 'shell', 'caltex', 'esso'],
+    zh: ['交通', '的士', '巴士', '港鐵', '火車', '搭車', '乘車', '燃油', '汽油', '油站', '加油', '入油'],
   },
   utilities: {
     en: ['utilities', 'electric', 'electricity', 'water', 'phone', 'internet', 'bill'],
     zh: ['公用事業', '電費', '水費', '電話', '上網', '帳單'],
-  },
-  fuel: {
-    en: ['fuel', 'gas', 'petrol', 'gasoline', 'station', 'fill up', 'shell', 'caltex', 'esso'],
-    zh: ['燃油', '汽油', '油站', '加油', '入油'],
   },
 };
 
@@ -85,7 +73,7 @@ const CATEGORY_KEYWORDS: Record<string, { en: string[]; zh: string[] }> = {
 const MERCHANT_KEYWORDS: Record<string, { aliases: string[]; category: string }> = {
   'mcdonalds': {
     aliases: ['mcdonalds', 'mcdonald', 'mcd', '麥當勞', '麦当劳', 'macdonald'],
-    category: 'fast-food',
+    category: 'dining',
   },
   'sushiro': {
     aliases: ['sushiro', '壽司郎', '寿司郎'],
@@ -109,15 +97,15 @@ const MERCHANT_KEYWORDS: Record<string, { aliases: string[]; category: string }>
   },
   'netflix': {
     aliases: ['netflix', 'nf'],
-    category: 'streaming',
+    category: 'entertainment',
   },
   'spotify': {
     aliases: ['spotify'],
-    category: 'streaming',
+    category: 'entertainment',
   },
   'youtube': {
     aliases: ['youtube', 'youtube premium', 'yt'],
-    category: 'streaming',
+    category: 'entertainment',
   },
   'apple': {
     aliases: ['apple', 'apple store', 'app store', 'itunes'],
@@ -141,7 +129,7 @@ const MERCHANT_KEYWORDS: Record<string, { aliases: string[]; category: string }>
   },
   'shell': {
     aliases: ['shell', '蜆殼'],
-    category: 'fuel',
+    category: 'transport',
   },
   'cathay-pacific': {
     aliases: ['cathay pacific', 'cathay', 'cx', '國泰', '國泰航空'],
@@ -363,10 +351,11 @@ function extractPaymentType(normalizedInput: string, merchantId?: string): {
     }
   }
 
-  // Infer from merchant (streaming services are usually recurring)
+  // Infer from merchant (streaming services like Netflix/Spotify are usually recurring)
   if (merchantId) {
     const merchant = MERCHANT_KEYWORDS[merchantId];
-    if (merchant?.category === 'streaming') {
+    // Netflix, Spotify, YouTube are entertainment category but recurring payments
+    if (['netflix', 'spotify', 'youtube'].includes(merchantId)) {
       return { paymentType: 'recurring', confidence: 0.6 };
     }
     if (merchant?.category === 'online-shopping') {
