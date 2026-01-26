@@ -2,8 +2,50 @@
   "common": {
     "appName": "CardGPT",
     "tagline": "Find the best credit card for every purchase",
+    "animatedTagline": "How much are you earning from spending today?",
     "subtitle": "Maximize your rewards with AI-powered card recommendations",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "heroDescription": "Stop leaving money on the table. Our AI instantly finds the best credit card for every purchase, maximizing your rewards every time."
+  },
+  "howItWorks": {
+    "title": "How It Works",
+    "subtitle": "Get personalized card recommendations in 3 simple steps",
+    "step1Title": "Enter Your Transaction",
+    "step1Description": "Type in your purchase amount and merchant. We support natural language like \"$500 at McDonald's\"",
+    "step2Title": "AI Analyzes & Calculates",
+    "step2Description": "Our smart engine instantly identifies the category, merchant, and calculates rewards from 10+ HK credit cards",
+    "step3Title": "Get Best Card Match",
+    "step3Description": "See exactly which card gives you maximum rewards for that specific purchase, with estimated earnings",
+    "ctaText": "Ready to maximize your rewards?",
+    "tryNow": "Try It Now"
+  },
+  "features": {
+    "lightningFast": "Lightning Fast",
+    "lightningFastDesc": "Instant analysis in under 100ms",
+    "hkCards": "10+ HK Cards",
+    "hkCardsDesc": "All major Hong Kong credit cards",
+    "smartMatching": "Smart Matching",
+    "smartMatchingDesc": "AI understands context & categories",
+    "bilingual": "雙語支援",
+    "bilingualDesc": "English & 繁體中文"
+  },
+  "stats": {
+    "creditCards": "Credit Cards",
+    "analysisTime": "Analysis Time",
+    "categories": "Categories",
+    "languages": "Languages"
+  },
+  "footer": {
+    "description": "AI-powered credit card recommendations for Hong Kong. Maximize your rewards on every purchase.",
+    "quickLinks": "Quick Links",
+    "howItWorks": "How It Works",
+    "supportedCards": "Supported Cards",
+    "categories": "Categories",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "about": "About Us",
+    "copyright": "© 2026 CardGPT. Powered by AI. Built for Hong Kong."
   },
   "categories": {
     "cashback": "Cash Back",

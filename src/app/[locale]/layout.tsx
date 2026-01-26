@@ -4,6 +4,7 @@ import { getMessages } from 'next-intl/server';
 import { Geist, Geist_Mono } from "next/font/google";
 import { routing } from '@/i18n/routing';
 import { notFound } from 'next/navigation';
+import { ThemeProvider } from '@/components/ThemeProvider';
 import "../globals.css";
 
 const geistSans = Geist({
@@ -17,8 +18,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CardGPT - Hong Kong Credit Card Rewards Optimizer",
-  description: "Find the best credit card for every transaction. Maximize rewards from your spending in Hong Kong.",
+  title: "CardGPT - AI Credit Card Recommendations for Hong Kong",
+  description: "Maximize your credit card rewards with AI. Instant recommendations for every purchase. Compare 10+ Hong Kong credit cards in seconds.",
+  manifest: "/manifest.json",
+  themeColor: "#10a37f",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CardGPT",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    title: "CardGPT - AI Credit Card Recommendations",
+    description: "Maximize your credit card rewards with AI-powered recommendations for Hong Kong",
+    siteName: "CardGPT",
+  },
 };
 
 export function generateStaticParams() {
@@ -45,12 +68,27 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="CardGPT" />
+        <link rel="apple-touch-icon" href="/icon-192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          {children}
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <NextIntlClientProvider messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

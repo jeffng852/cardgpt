@@ -2,8 +2,50 @@
   "common": {
     "appName": "CardGPT",
     "tagline": "為每次消費搵最啱嘅信用卡",
+    "animatedTagline": "你今日想點賺法？",
     "subtitle": "用AI推薦，賺盡每分獎賞",
-    "getStarted": "開始使用"
+    "getStarted": "開始使用",
+    "heroDescription": "唔好再錯失賺獎賞嘅機會。我哋嘅AI會即時搵出每次消費最啱嘅信用卡，賺盡每分獎賞。"
+  },
+  "howItWorks": {
+    "title": "點樣運作",
+    "subtitle": "三個簡單步驟，即刻獲得度身訂造嘅信用卡推薦",
+    "step1Title": "輸入你嘅交易",
+    "step1Description": "輸入消費金額同商戶。支援自然語言，例如「$500喺麥當勞」",
+    "step2Title": "AI分析同計算",
+    "step2Description": "我哋嘅智能引擎會即時識別類別、商戶，同埋計算超過10張香港信用卡嘅獎賞",
+    "step3Title": "搵最啱嘅卡",
+    "step3Description": "即刻睇到邊張卡可以俾你最多獎賞，同埋預計賺到幾多",
+    "ctaText": "準備好賺盡獎賞未？",
+    "tryNow": "試下啦"
+  },
+  "features": {
+    "lightningFast": "閃電咁快",
+    "lightningFastDesc": "100毫秒內即時分析",
+    "hkCards": "10+張香港卡",
+    "hkCardsDesc": "涵蓋所有主要香港信用卡",
+    "smartMatching": "智能配對",
+    "smartMatchingDesc": "AI理解內容同類別",
+    "bilingual": "雙語支援",
+    "bilingualDesc": "English & 繁體中文"
+  },
+  "stats": {
+    "creditCards": "信用卡",
+    "analysisTime": "分析時間",
+    "categories": "類別",
+    "languages": "語言"
+  },
+  "footer": {
+    "description": "香港AI信用卡推薦平台，賺盡每次消費嘅獎賞。",
+    "quickLinks": "快速連結",
+    "howItWorks": "點樣運作",
+    "supportedCards": "支援信用卡",
+    "categories": "類別",
+    "legal": "法律條款",
+    "privacy": "私隱政策",
+    "terms": "服務條款",
+    "about": "關於我們",
+    "copyright": "© 2026 CardGPT. 由AI驅動，為香港而設。"
   },
   "categories": {
     "cashback": "現金回贈",
