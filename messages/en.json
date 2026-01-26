@@ -47,6 +47,11 @@
     "about": "About Us",
     "copyright": "© 2026 CardGPT. Powered by AI. Built for Hong Kong."
   },
+  "rewardTypes": {
+    "cash": "Cash",
+    "miles": "Miles",
+    "points": "Points"
+  },
   "categories": {
     "cashback": "Cash Back",
     "miles": "Miles",
@@ -69,16 +74,45 @@
     "onlineShopping": "Online Shopping",
     "gasStation": "Gas Station",
     "departmentStore": "Department Store",
-    "travel": "Travel"
+    "travel": "Travel",
+    "mcdonalds": "McDonald's",
+    "sushiro": "Sushiro",
+    "759-store": "759 Store",
+    "circle-k": "Circle K",
+    "wellcome": "Wellcome",
+    "parknshop": "ParknShop",
+    "netflix": "Netflix",
+    "spotify": "Spotify",
+    "youtube": "YouTube",
+    "apple": "Apple",
+    "starbucks": "Starbucks",
+    "pacific-coffee": "Pacific Coffee",
+    "watsons": "Watsons",
+    "mannings": "Mannings",
+    "shell": "Shell",
+    "cathay-pacific": "Cathay Pacific"
   },
   "input": {
     "placeholder": "e.g., $500 dining at McDonald's",
     "submit": "Find Best Card",
     "rewardTypeLabel": "Preferred Reward Type (Optional)",
     "quickTagsLabel": "Popular Merchants",
-    "exampleText": "Try: \"$200 HKD at Wellcome\" or \"1000 USD online shopping\""
+    "exampleText": "Try: \"$200 HKD at Wellcome\" or \"1000 USD online shopping\"",
+    "quickTags": {
+      "mcdonalds": "McDonald's",
+      "wellcome": "Wellcome",
+      "parknshop": "ParknShop",
+      "sushiro": "Sushiro",
+      "shell": "Shell",
+      "cathay": "Cathay Pacific"
+    }
   },
   "results": {
+    "allCards": "All Cards",
+    "cashBack": "Cash Back",
+    "card": "Card",
+    "cards": "Cards",
+    "found": "Found",
     "recommended": "Recommended",
     "estimatedReward": "Estimated Rewards",
     "transactionFee": "Transaction Fee",

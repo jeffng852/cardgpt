@@ -14,6 +14,8 @@ interface TransactionInputProps {
 export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const t = useTranslations('input');
   const tResults = useTranslations('results');
+  const tMerchants = useTranslations('merchants');
+  const tRewardTypes = useTranslations('rewardTypes');
   const [input, setInput] = useState('');
   const [selectedRewardType, setSelectedRewardType] = useState<RewardType | undefined>();
   const [selectedMerchantTag, setSelectedMerchantTag] = useState<string | null>(null);
@@ -22,12 +24,12 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
   // Popular merchant quick-tags
   const quickTags = [
-    { key: 'mcdonalds', label: "McDonald's", icon: '🍔' },
-    { key: 'wellcome', label: 'Wellcome', icon: '🛒' },
-    { key: 'parknshop', label: 'ParknShop', icon: '🛒' },
-    { key: 'sushiro', label: 'Sushiro', icon: '🍣' },
-    { key: 'shell', label: 'Shell', icon: '⛽' },
-    { key: 'cathay', label: 'Cathay Pacific', icon: '✈️' },
+    { key: 'mcdonalds', label: t('quickTags.mcdonalds'), icon: '🍔' },
+    { key: 'wellcome', label: t('quickTags.wellcome'), icon: '🛒' },
+    { key: 'parknshop', label: t('quickTags.parknshop'), icon: '🛒' },
+    { key: 'sushiro', label: t('quickTags.sushiro'), icon: '🍣' },
+    { key: 'shell', label: t('quickTags.shell'), icon: '⛽' },
+    { key: 'cathay', label: t('quickTags.cathay'), icon: '✈️' },
   ];
 
   // Parse input in real-time for feedback
@@ -108,7 +110,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               {type === 'cash' && '💵'}
               {type === 'miles' && '✈️'}
               {type === 'points' && '⭐'}
-              <span className="ml-2 capitalize">{type}</span>
+              <span className="ml-2">{tRewardTypes(type)}</span>
             </button>
           ))}
         </div>
@@ -195,8 +197,8 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                 {parseResult.transaction.merchantId && (
                   <div>
                     <span className="text-text-tertiary">{tResults('detectedMerchant')}: </span>
-                    <span className="text-text-primary font-medium capitalize">
-                      {parseResult.transaction.merchantId}
+                    <span className="text-text-primary font-medium">
+                      {tMerchants(parseResult.transaction.merchantId)}
                     </span>
                   </div>
                 )}

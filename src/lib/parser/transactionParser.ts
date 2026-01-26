@@ -131,6 +131,22 @@ const MERCHANT_KEYWORDS: Record<string, { aliases: string[]; category: string }>
     aliases: ['pacific coffee', 'pacific', '太平洋咖啡'],
     category: 'dining',
   },
+  'watsons': {
+    aliases: ['watsons', 'watson', '屈臣氏'],
+    category: 'retail',
+  },
+  'mannings': {
+    aliases: ['mannings', 'manning', '萬寧'],
+    category: 'retail',
+  },
+  'shell': {
+    aliases: ['shell', '蜆殼'],
+    category: 'fuel',
+  },
+  'cathay-pacific': {
+    aliases: ['cathay pacific', 'cathay', 'cx', '國泰', '國泰航空'],
+    category: 'travel',
+  },
 };
 
 /**

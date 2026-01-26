@@ -47,6 +47,11 @@
     "about": "關於我們",
     "copyright": "© 2026 CardGPT. 由AI驅動，為香港而設。"
   },
+  "rewardTypes": {
+    "cash": "現金",
+    "miles": "里數",
+    "points": "積分"
+  },
   "categories": {
     "cashback": "現金回贈",
     "miles": "里數",
@@ -69,16 +74,45 @@
     "onlineShopping": "網購",
     "gasStation": "油站",
     "departmentStore": "百貨",
-    "travel": "旅遊"
+    "travel": "旅遊",
+    "mcdonalds": "麥當勞",
+    "sushiro": "壽司郎",
+    "759-store": "759阿信屋",
+    "circle-k": "OK便利店",
+    "wellcome": "惠康",
+    "parknshop": "百佳",
+    "netflix": "Netflix",
+    "spotify": "Spotify",
+    "youtube": "YouTube",
+    "apple": "Apple",
+    "starbucks": "星巴克",
+    "pacific-coffee": "太平洋咖啡",
+    "watsons": "屈臣氏",
+    "mannings": "萬寧",
+    "shell": "蜆殼",
+    "cathay-pacific": "國泰航空"
   },
   "input": {
     "placeholder": "例如：$500喺麥當勞食嘢",
     "submit": "搵最抵卡",
     "rewardTypeLabel": "想要嘅獎賞類型（可選）",
     "quickTagsLabel": "熱門商戶",
-    "exampleText": "試下：「$200 HKD喺惠康」或「1000 USD網購」"
+    "exampleText": "試下：「$200 HKD喺惠康」或「1000 USD網購」",
+    "quickTags": {
+      "mcdonalds": "麥當勞",
+      "wellcome": "惠康",
+      "parknshop": "百佳",
+      "sushiro": "壽司郎",
+      "shell": "蜆殼",
+      "cathay": "國泰航空"
+    }
   },
   "results": {
+    "allCards": "全部卡",
+    "cashBack": "現金回贈",
+    "card": "張卡",
+    "cards": "張卡",
+    "found": "找到",
     "recommended": "推薦",
     "estimatedReward": "預計獎賞",
     "transactionFee": "交易費",

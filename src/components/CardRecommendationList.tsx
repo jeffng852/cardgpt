@@ -17,6 +17,7 @@ export default function CardRecommendationList({
   isLoading = false
 }: CardRecommendationListProps) {
   const t = useTranslations('results');
+  const tRewardTypes = useTranslations('rewardTypes');
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [filterRewardType, setFilterRewardType] = useState<'all' | 'cash' | 'miles' | 'points'>('all');
 
@@ -77,7 +78,7 @@ export default function CardRecommendationList({
                 : 'border-transparent text-text-secondary hover:text-text-primary'
             }`}
           >
-            All Cards ({recommendations.length})
+            {t('allCards')} ({recommendations.length})
           </button>
           {availableRewardTypes.has('cash') && (
             <button
@@ -88,7 +89,7 @@ export default function CardRecommendationList({
                   : 'border-transparent text-text-secondary hover:text-text-primary'
               }`}
             >
-              💵 Cash Back ({recommendations.filter(r => r.calculation.rewardUnit === 'cash').length})
+              💵 {t('cashBack')} ({recommendations.filter(r => r.calculation.rewardUnit === 'cash').length})
             </button>
           )}
           {availableRewardTypes.has('miles') && (
@@ -100,7 +101,7 @@ export default function CardRecommendationList({
                   : 'border-transparent text-text-secondary hover:text-text-primary'
               }`}
             >
-              ✈️ Miles ({recommendations.filter(r => r.calculation.rewardUnit === 'miles').length})
+              ✈️ {tRewardTypes('miles')} ({recommendations.filter(r => r.calculation.rewardUnit === 'miles').length})
             </button>
           )}
           {availableRewardTypes.has('points') && (
@@ -112,7 +113,7 @@ export default function CardRecommendationList({
                   : 'border-transparent text-text-secondary hover:text-text-primary'
               }`}
             >
-              ⭐ Points ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
+              ⭐ {tRewardTypes('points')} ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
             </button>
           )}
         </div>
@@ -121,7 +122,7 @@ export default function CardRecommendationList({
       {/* Results Header */}
       <div className="mb-4 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-text-primary">
-          {filteredRecommendations.length} {filteredRecommendations.length === 1 ? 'Card' : 'Cards'} Found
+          {t('found')} {filteredRecommendations.length} {filteredRecommendations.length === 1 ? t('card') : t('cards')}
         </h3>
       </div>
 
@@ -164,7 +165,7 @@ export default function CardRecommendationList({
                 {/* Card Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h4 className="text-lg font-semibold text-text-primary">
+                    <h4 className="text-lg font-semibold text-left text-text-primary">
                       {recommendation.card.name}
                     </h4>
                     {isTopRecommended && (
@@ -173,7 +174,7 @@ export default function CardRecommendationList({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-text-secondary">
+                  <p className="text-sm text-left text-text-secondary">
                     {recommendation.card.issuer}
                   </p>
                 </div>
