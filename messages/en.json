@@ -8,7 +8,18 @@
   "categories": {
     "cashback": "Cash Back",
     "miles": "Miles",
-    "points": "Points"
+    "points": "Points",
+    "dining": "Dining",
+    "fast-food": "Fast Food",
+    "travel": "Travel",
+    "online-shopping": "Online Shopping",
+    "retail": "Retail",
+    "supermarket": "Supermarket",
+    "entertainment": "Entertainment",
+    "streaming": "Streaming",
+    "transport": "Transport",
+    "utilities": "Utilities",
+    "fuel": "Fuel"
   },
   "merchants": {
     "supermarket": "Supermarket",
@@ -32,7 +43,41 @@
     "applyHere": "Apply Here",
     "noResults": "No matching cards found for this transaction",
     "noResultsHint": "Try adjusting the merchant type or amount",
-    "loading": "Analyzing transaction..."
+    "loading": "Analyzing transaction...",
+    "detectedAmount": "Amount",
+    "detectedCurrency": "Currency",
+    "detectedCategory": "Category",
+    "detectedMerchant": "Merchant",
+    "detectedPaymentType": "Payment Type",
+    "baseReward": "Base Reward",
+    "bonusReward": "Bonus Reward",
+    "effectiveRate": "Effective Rate",
+    "annualFee": "Annual Fee",
+    "minSpend": "Minimum Spend",
+    "details": "Details",
+    "hideDetails": "Hide Details",
+    "showDetails": "Show Details",
+    "free": "Free",
+    "appliedRewards": "Applied Rewards",
+    "none": "None"
+  },
+  "paymentTypes": {
+    "online": "Online",
+    "offline": "Offline",
+    "contactless": "Contactless",
+    "recurring": "Recurring"
+  },
+  "currencies": {
+    "HKD": "HKD",
+    "USD": "USD",
+    "EUR": "EUR",
+    "GBP": "GBP",
+    "JPY": "JPY",
+    "CNY": "CNY",
+    "AUD": "AUD",
+    "CAD": "CAD",
+    "SGD": "SGD",
+    "TWD": "TWD"
   },
   "errors": {
     "invalidInput": "Please enter a transaction amount",

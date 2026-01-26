@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import Image from 'next/image';
 import type { CardRecommendation } from '@/types/recommendation';
 import { formatReward, formatEffectiveRate } from '@/lib/engine/calculateReward';
+import { getCardImageUrl, hasCardImage } from '@/lib/cardImages';
 
 interface CardRecommendationListProps {
   recommendations: CardRecommendation[];
@@ -139,14 +141,34 @@ export default function CardRecommendationList({
               }`}
             >
               {/* Card Header */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-start gap-4 mb-4">
+                {/* Card Image */}
+                {hasCardImage(recommendation.card.id) ? (
+                  <div className="flex-shrink-0 w-24 h-16 relative rounded-lg overflow-hidden border border-border">
+                    <Image
+                      src={getCardImageUrl(recommendation.card.id)}
+                      alt={recommendation.card.name}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex-shrink-0 w-24 h-16 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-border flex items-center justify-center">
+                    <svg className="w-8 h-8 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Card Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <h4 className="text-lg font-semibold text-text-primary">
                       {recommendation.card.name}
                     </h4>
                     {isTopRecommended && (
-                      <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full">
+                      <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full whitespace-nowrap">
                         ⭐ {t('recommended')}
                       </span>
                     )}
@@ -155,11 +177,13 @@ export default function CardRecommendationList({
                     {recommendation.card.issuer}
                   </p>
                 </div>
-                <div className="text-right">
+
+                {/* Reward Amount */}
+                <div className="text-right flex-shrink-0">
                   <div className="text-2xl font-bold text-primary">
                     {formatReward(recommendation.calculation)}
                   </div>
-                  <div className="text-xs text-text-secondary">
+                  <div className="text-xs text-text-secondary whitespace-nowrap">
                     {formatEffectiveRate(recommendation.calculation)} back
                   </div>
                 </div>
@@ -178,7 +202,7 @@ export default function CardRecommendationList({
                   <div className="text-sm font-medium text-text-primary">
                     {recommendation.calculation.fees > 0
                       ? `HKD $${recommendation.calculation.fees.toFixed(2)}`
-                      : 'None'}
+                      : t('none')}
                   </div>
                 </div>
               </div>
@@ -188,7 +212,7 @@ export default function CardRecommendationList({
                 onClick={() => toggleExpand(recommendation.card.id)}
                 className="w-full flex items-center justify-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors"
               >
-                {isExpanded ? 'Hide Details' : 'Show Details'}
+                {isExpanded ? t('hideDetails') : t('showDetails')}
                 <svg
                   className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                   fill="none"
@@ -203,17 +227,17 @@ export default function CardRecommendationList({
               {isExpanded && (
                 <div className="mt-4 pt-4 border-t border-border space-y-3">
                   <div>
-                    <div className="text-xs text-text-tertiary mb-1">Annual Fee</div>
+                    <div className="text-xs text-text-tertiary mb-1">{t('annualFee')}</div>
                     <div className="text-sm text-text-primary">
                       {recommendation.card.fees.annualFee > 0
                         ? `HKD $${recommendation.card.fees.annualFee.toFixed(2)}`
-                        : 'Free'}
+                        : t('free')}
                     </div>
                   </div>
 
                   {recommendation.calculation.appliedRules.length > 0 && (
                     <div>
-                      <div className="text-xs text-text-tertiary mb-2">Applied Rewards</div>
+                      <div className="text-xs text-text-tertiary mb-2">{t('appliedRewards')}</div>
                       <div className="space-y-2">
                         {recommendation.calculation.appliedRules.map((ruleId, idx) => {
                           // Find the rule details from the card's rewards

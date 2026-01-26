@@ -34,28 +34,28 @@ export interface ParseResult {
  */
 const CATEGORY_KEYWORDS: Record<string, { en: string[]; zh: string[] }> = {
   dining: {
-    en: ['dining', 'restaurant', 'food', 'eat', 'meal', 'lunch', 'dinner', 'breakfast', 'cafe', 'coffee'],
-    zh: ['餐飲', '飲食', '食飯', '餐廳', '食店', '午餐', '晚餐', '早餐', '咖啡'],
+    en: ['dining', 'restaurant', 'food', 'eat', 'meal', 'lunch', 'dinner', 'breakfast', 'cafe', 'coffee', 'brunch', 'supper', 'tea', 'dine', 'bistro', 'eatery', 'cuisine'],
+    zh: ['餐飲', '飲食', '食飯', '餐廳', '食店', '午餐', '晚餐', '早餐', '咖啡', '茶餐廳', '飯館'],
   },
   'fast-food': {
     en: ['fast food', 'fastfood', 'fast-food', 'burger', 'pizza'],
     zh: ['快餐', '速食'],
   },
   travel: {
-    en: ['travel', 'flight', 'hotel', 'booking', 'airline', 'trip', 'vacation'],
-    zh: ['旅遊', '旅行', '機票', '酒店', '訂房'],
+    en: ['travel', 'flight', 'hotel', 'booking', 'airline', 'trip', 'vacation', 'tourism', 'holiday', 'fly', 'accommodation'],
+    zh: ['旅遊', '旅行', '機票', '酒店', '訂房', '渡假', '假期'],
   },
   'online-shopping': {
     en: ['online shopping', 'online', 'ecommerce', 'internet shopping'],
     zh: ['網購', '網上購物', '線上購物'],
   },
   retail: {
-    en: ['shopping', 'retail', 'store', 'shop', 'buy', 'purchase'],
-    zh: ['購物', '零售', '商店', '買嘢', '買野', '買衫'],
+    en: ['shopping', 'retail', 'store', 'shop', 'buy', 'purchase', 'clothes', 'clothing', 'fashion', 'apparel'],
+    zh: ['購物', '零售', '商店', '買嘢', '買野', '買衫', '買衣服', '買嘢'],
   },
   supermarket: {
-    en: ['supermarket', 'grocery', 'market'],
-    zh: ['超市', '超級市場', '街市'],
+    en: ['supermarket', 'grocery', 'market', 'groceries', 'vegetables', 'fruits', 'produce', 'mart'],
+    zh: ['超市', '超級市場', '街市', '菜市場', '買菜'],
   },
   entertainment: {
     en: ['entertainment', 'movie', 'cinema', 'concert', 'show', 'theatre', 'theater'],
@@ -66,12 +66,16 @@ const CATEGORY_KEYWORDS: Record<string, { en: string[]; zh: string[] }> = {
     zh: ['串流', '訂閱'],
   },
   transport: {
-    en: ['transport', 'taxi', 'uber', 'grab', 'bus', 'mtr', 'train'],
-    zh: ['交通', '的士', '巴士', '港鐵', '火車'],
+    en: ['transport', 'taxi', 'uber', 'grab', 'bus', 'mtr', 'train', 'subway', 'metro', 'ride', 'commute', 'transit'],
+    zh: ['交通', '的士', '巴士', '港鐵', '火車', '搭車', '乘車'],
   },
   utilities: {
-    en: ['utilities', 'electric', 'electricity', 'water', 'gas', 'phone', 'internet', 'bill'],
-    zh: ['公用事業', '電費', '水費', '煤氣', '電話', '上網', '帳單'],
+    en: ['utilities', 'electric', 'electricity', 'water', 'phone', 'internet', 'bill'],
+    zh: ['公用事業', '電費', '水費', '電話', '上網', '帳單'],
+  },
+  fuel: {
+    en: ['fuel', 'gas', 'petrol', 'gasoline', 'station', 'fill up', 'shell', 'caltex', 'esso'],
+    zh: ['燃油', '汽油', '油站', '加油', '入油'],
   },
 };
 
@@ -155,8 +159,8 @@ const PAYMENT_TYPE_KEYWORDS: Record<PaymentType, { en: string[]; zh: string[] }>
  * Currency symbols and codes
  */
 const CURRENCY_PATTERNS: Record<Currency, RegExp[]> = {
-  HKD: [/HKD/i, /HK\$/i, /港[元幣]/],
-  USD: [/USD/i, /US\$/i, /\$(?!.*HK)/i, /美[元金]/],
+  HKD: [/HKD/i, /HK\$/i, /HK\s*\$/i, /港[元幣]/], // HK$ or HKD explicitly
+  USD: [/USD/i, /US\$/i, /US\s*\$/i, /美[元金]/], // USD or US$ explicitly - bare $ defaults to HKD
   EUR: [/EUR/i, /€/, /歐[元羅]/],
   GBP: [/GBP/i, /£/, /英鎊/],
   JPY: [/JPY/i, /¥/, /[日円圓]/],
@@ -265,8 +269,8 @@ function extractCurrency(input: string): { currency: Currency; confidence: numbe
     }
   }
 
-  // Default to HKD with low confidence
-  return { currency: 'HKD', confidence: 0.3 };
+  // Default to HKD (Hong Kong market default)
+  return { currency: 'HKD', confidence: 0.7 };
 }
 
 /**
@@ -297,15 +301,31 @@ function extractCategoryAndMerchant(normalizedInput: string, originalInput: stri
   }
 
   // Then, check for category keywords
+  // Track all possible category matches with scores
+  const categoryMatches: Array<{ category: string; score: number }> = [];
+
   for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
     for (const keyword of [...keywords.en, ...keywords.zh]) {
-      if (normalizedInput.includes(keyword.toLowerCase()) || originalInput.includes(keyword)) {
-        if (!category) {
-          category = cat;
-          categoryConfidence = 0.7;
-        }
+      const keywordLower = keyword.toLowerCase();
+
+      // Check for exact word match (higher score)
+      const wordBoundaryRegex = new RegExp(`\\b${keywordLower}\\b`, 'i');
+      if (wordBoundaryRegex.test(normalizedInput) || wordBoundaryRegex.test(originalInput.toLowerCase())) {
+        categoryMatches.push({ category: cat, score: 0.8 });
+      }
+      // Check for substring match (lower score)
+      else if (normalizedInput.includes(keywordLower) || originalInput.toLowerCase().includes(keywordLower)) {
+        categoryMatches.push({ category: cat, score: 0.6 });
       }
     }
+  }
+
+  // Pick the category with highest score
+  if (categoryMatches.length > 0) {
+    // Sort by score descending
+    categoryMatches.sort((a, b) => b.score - a.score);
+    category = categoryMatches[0].category;
+    categoryConfidence = categoryMatches[0].score;
   }
 
   return { category, merchantId, categoryConfidence, merchantConfidence };

@@ -8,7 +8,18 @@
   "categories": {
     "cashback": "現金回贈",
     "miles": "里數",
-    "points": "積分"
+    "points": "積分",
+    "dining": "餐飲",
+    "fast-food": "快餐",
+    "travel": "旅遊",
+    "online-shopping": "網購",
+    "retail": "零售",
+    "supermarket": "超市",
+    "entertainment": "娛樂",
+    "streaming": "串流",
+    "transport": "交通",
+    "utilities": "公用事業",
+    "fuel": "燃油"
   },
   "merchants": {
     "supermarket": "超市",
@@ -32,7 +43,41 @@
     "applyHere": "立即申請",
     "noResults": "搵唔到適合呢個交易嘅信用卡",
     "noResultsHint": "試下調整商戶類別或金額",
-    "loading": "分析緊交易..."
+    "loading": "分析緊交易...",
+    "detectedAmount": "金額",
+    "detectedCurrency": "貨幣",
+    "detectedCategory": "類別",
+    "detectedMerchant": "商戶",
+    "detectedPaymentType": "付款方式",
+    "baseReward": "基本獎賞",
+    "bonusReward": "額外獎賞",
+    "effectiveRate": "實際回贈率",
+    "annualFee": "年費",
+    "minSpend": "最低消費",
+    "details": "詳情",
+    "hideDetails": "收起詳情",
+    "showDetails": "顯示詳情",
+    "free": "免費",
+    "appliedRewards": "適用獎賞",
+    "none": "無"
+  },
+  "paymentTypes": {
+    "online": "網上",
+    "offline": "實體店",
+    "contactless": "非接觸式",
+    "recurring": "定期付款"
+  },
+  "currencies": {
+    "HKD": "港幣",
+    "USD": "美元",
+    "EUR": "歐元",
+    "GBP": "英鎊",
+    "JPY": "日圓",
+    "CNY": "人民幣",
+    "AUD": "澳元",
+    "CAD": "加元",
+    "SGD": "新加坡元",
+    "TWD": "新台幣"
   },
   "errors": {
     "invalidInput": "請輸入交易金額",

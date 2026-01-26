@@ -13,8 +13,10 @@ interface TransactionInputProps {
 
 export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const t = useTranslations('input');
+  const tResults = useTranslations('results');
   const [input, setInput] = useState('');
   const [selectedRewardType, setSelectedRewardType] = useState<RewardType | undefined>();
+  const [selectedMerchantTag, setSelectedMerchantTag] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
 
@@ -44,10 +46,26 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     }
   };
 
-  // Insert quick-tag into input
-  const handleQuickTag = (tag: string) => {
-    const newInput = input ? `${input} ${tag}` : tag;
-    handleInputChange(newInput);
+  // Select merchant tag (single-select only)
+  const handleQuickTag = (tagLabel: string) => {
+    if (selectedMerchantTag === tagLabel) {
+      // Deselect if clicking the same tag
+      setSelectedMerchantTag(null);
+      // Remove tag from input
+      const inputWithoutTag = input.replace(new RegExp(`\\s*${tagLabel}\\s*`, 'g'), '').trim();
+      handleInputChange(inputWithoutTag);
+    } else {
+      // Select new tag and replace previous selection
+      setSelectedMerchantTag(tagLabel);
+      // Remove previous tag if exists
+      let newInput = input;
+      if (selectedMerchantTag) {
+        newInput = newInput.replace(new RegExp(`\\s*${selectedMerchantTag}\\s*`, 'g'), '').trim();
+      }
+      // Add new tag
+      newInput = newInput ? `${newInput} ${tagLabel}` : tagLabel;
+      handleInputChange(newInput);
+    }
   };
 
   // Submit handler
@@ -107,7 +125,11 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               key={tag.key}
               type="button"
               onClick={() => handleQuickTag(tag.label)}
-              className="px-3 py-2 rounded-lg bg-input-bg border border-border text-sm text-text-primary hover:border-primary/50 hover:bg-primary/5 transition-all"
+              className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+                selectedMerchantTag === tag.label
+                  ? 'bg-primary/10 border-primary text-primary'
+                  : 'bg-input-bg border-border text-text-primary hover:border-primary/50 hover:bg-primary/5'
+              }`}
             >
               <span className="mr-1">{tag.icon}</span>
               {tag.label}
@@ -153,18 +175,18 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                 <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="font-medium">Detected:</span>
+                <span className="font-medium">{tResults('detectedAmount')}:</span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <span className="text-text-tertiary">Amount: </span>
+                  <span className="text-text-tertiary">{tResults('detectedAmount')}: </span>
                   <span className="text-text-primary font-medium">
                     {parseResult.transaction.currency} ${parseResult.transaction.amount}
                   </span>
                 </div>
                 {parseResult.transaction.category && (
                   <div>
-                    <span className="text-text-tertiary">Category: </span>
+                    <span className="text-text-tertiary">{tResults('detectedCategory')}: </span>
                     <span className="text-text-primary font-medium capitalize">
                       {parseResult.transaction.category}
                     </span>
@@ -172,22 +194,12 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                 )}
                 {parseResult.transaction.merchantId && (
                   <div>
-                    <span className="text-text-tertiary">Merchant: </span>
+                    <span className="text-text-tertiary">{tResults('detectedMerchant')}: </span>
                     <span className="text-text-primary font-medium capitalize">
                       {parseResult.transaction.merchantId}
                     </span>
                   </div>
                 )}
-                <div>
-                  <span className="text-text-tertiary">Confidence: </span>
-                  <span className={`font-medium ${
-                    parseResult.confidence.overall >= 0.7 ? 'text-primary' :
-                    parseResult.confidence.overall >= 0.5 ? 'text-yellow-600' :
-                    'text-red-600'
-                  }`}>
-                    {(parseResult.confidence.overall * 100).toFixed(0)}%
-                  </span>
-                </div>
               </div>
             </div>
           )}

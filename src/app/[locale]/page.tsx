@@ -18,6 +18,8 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState<CardRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log('recommendations', recommendations);
+
   const handleSubmit = async (result: ParseResult, selectedRewardType?: RewardType) => {
     setIsLoading(true);
     setShowResults(true);
