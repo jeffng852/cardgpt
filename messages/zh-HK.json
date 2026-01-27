@@ -35,6 +35,31 @@
     "categories": "類別",
     "languages": "語言"
   },
+  "installPWA": {
+    "title": "將 CardGPT 加入主畫面",
+    "subtitle": "即時存取，好似手機 App 咁方便",
+    "modalTitle": "安裝指南",
+    "ios": {
+      "step1Title": "用 Safari 開啟",
+      "step1Desc": "確保你係用 Safari 瀏覽器睇緊呢個網頁。撳畫面底部嘅分享按鈕。",
+      "shareButton": "分享按鈕",
+      "step2Title": "加入主畫面",
+      "step2Desc": "喺分享選單向下捲動，撳「加入主畫面」。",
+      "addToHome": "加入主畫面",
+      "step3Title": "完成！",
+      "step3Desc": "撳右上角嘅「加入」。CardGPT 會出現喺你嘅主畫面，就好似手機 App 咁。"
+    },
+    "android": {
+      "step1Title": "用 Chrome 開啟",
+      "step1Desc": "確保你係用 Chrome 瀏覽器睇緊呢個網頁。撳右上角嘅選單按鈕（三個點）。",
+      "menuButton": "選單 (⋮)",
+      "step2Title": "安裝應用程式",
+      "step2Desc": "喺選單入面撳「安裝應用程式」或「加入主畫面」。",
+      "installApp": "安裝應用程式",
+      "step3Title": "完成！",
+      "step3Desc": "撳「安裝」確認。CardGPT 會出現喺你嘅主畫面，就好似手機 App 咁。"
+    }
+  },
   "footer": {
     "description": "為香港人建立既AI信用卡推薦平台",
     "quickLinks": "快速連結",

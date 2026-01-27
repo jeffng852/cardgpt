@@ -9,6 +9,7 @@ import TransactionInput from '@/components/TransactionInput';
 import CardRecommendationList from '@/components/CardRecommendationList';
 import FloatingCards from '@/components/FloatingCards';
 import HowItWorks from '@/components/HowItWorks';
+import InstallPWA from '@/components/InstallPWA';
 import { Link } from '@/i18n/routing';
 import { Logo } from '@/components/Logo';
 import type { ParseResult } from '@/lib/parser/transactionParser';
@@ -21,7 +22,6 @@ type RewardType = 'cash' | 'miles' | 'points';
 export default function Home() {
   const t = useTranslations('common');
   const tFeatures = useTranslations('features');
-  const tStats = useTranslations('stats');
   const tFooter = useTranslations('footer');
   const [showResults, setShowResults] = useState(false);
   const [recommendations, setRecommendations] = useState<CardRecommendation[]>([]);
@@ -173,29 +173,8 @@ export default function Home() {
         {/* How It Works Section */}
         <HowItWorks />
 
-        {/* Social Proof / Stats Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-background">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              <div>
-                <div className="text-4xl md:text-5xl font-bold text-primary mb-2">10+</div>
-                <div className="text-foreground-muted text-sm">{tStats('creditCards')}</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-5xl font-bold text-[#9333ea] mb-2">100ms</div>
-                <div className="text-foreground-muted text-sm">{tStats('analysisTime')}</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-5xl font-bold text-[#f59e0b] mb-2">14</div>
-                <div className="text-foreground-muted text-sm">{tStats('categories')}</div>
-              </div>
-              <div>
-                <div className="text-4xl md:text-5xl font-bold text-[#3b82f6] mb-2">2</div>
-                <div className="text-foreground-muted text-sm">{tStats('languages')}</div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Install PWA Section */}
+        <InstallPWA />
       </main>
 
       {/* Footer */}
