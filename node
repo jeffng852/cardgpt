@@ -1,0 +1,21 @@
+🏥 Running health check...
+
+📄 Checking critical files:
+  ✅ src/app/[locale]/page.tsx
+  ✅ src/app/[locale]/layout.tsx
+  ✅ src/middleware.ts
+  ✅ src/i18n/routing.ts
+  ✅ package.json
+  ✅ tsconfig.json
+
+📁 Checking critical directories:
+  ✅ src/app
+  ✅ src/components
+  ✅ src/lib
+  ✅ src/data
+
+📦 Checking dependencies:
+  ✅ node_modules exists
+
+✅ Health check PASSED - all systems go!
+
