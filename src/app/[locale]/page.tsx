@@ -10,6 +10,7 @@ import CardRecommendationList from '@/components/CardRecommendationList';
 import FloatingCards from '@/components/FloatingCards';
 import HowItWorks from '@/components/HowItWorks';
 import { Link } from '@/i18n/routing';
+import { Logo } from '@/components/Logo';
 import type { ParseResult } from '@/lib/parser/transactionParser';
 import type { CardRecommendation } from '@/types/recommendation';
 import { recommendCards } from '@/lib/engine';
@@ -67,9 +68,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-hover rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
-                C
-              </div>
+              <Logo size={40} />
               <h1 className="text-xl font-bold text-foreground">
                 {t('appName')}
               </h1>
@@ -206,9 +205,7 @@ export default function Home() {
             {/* Brand Section */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary-hover rounded-xl flex items-center justify-center text-white font-bold shadow-lg">
-                  C
-                </div>
+                <Logo size={40} />
                 <span className="text-lg font-bold text-foreground">CardGPT</span>
               </div>
               <p className="text-sm text-foreground-muted leading-relaxed">
