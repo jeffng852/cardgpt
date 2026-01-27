@@ -9,6 +9,7 @@ import TransactionInput from '@/components/TransactionInput';
 import CardRecommendationList from '@/components/CardRecommendationList';
 import FloatingCards from '@/components/FloatingCards';
 import HowItWorks from '@/components/HowItWorks';
+import { Link } from '@/i18n/routing';
 import type { ParseResult } from '@/lib/parser/transactionParser';
 import type { CardRecommendation } from '@/types/recommendation';
 import { recommendCards } from '@/lib/engine';
@@ -235,12 +236,12 @@ export default function Home() {
             <div>
               <h4 className="font-semibold text-foreground mb-4">{tFooter('legal')}</h4>
               <div className="space-y-2">
-                <a href="#" className="block text-sm text-foreground-muted hover:text-primary transition-colors">
+                <Link href="/privacy" className="block text-sm text-foreground-muted hover:text-primary transition-colors">
                   {tFooter('privacy')}
-                </a>
-                <a href="#" className="block text-sm text-foreground-muted hover:text-primary transition-colors">
+                </Link>
+                <Link href="/terms" className="block text-sm text-foreground-muted hover:text-primary transition-colors">
                   {tFooter('terms')}
-                </a>
+                </Link>
                 <a href="#" className="block text-sm text-foreground-muted hover:text-primary transition-colors">
                   {tFooter('about')}
                 </a>

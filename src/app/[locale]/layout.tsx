@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Geist, Geist_Mono } from "next/font/google";
@@ -17,17 +17,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: "#10a37f",
+};
+
 export const metadata: Metadata = {
   title: "CardGPT - AI Credit Card Recommendations for Hong Kong",
-  description: "Maximize your credit card rewards with AI. Instant recommendations for every purchase. Compare 10+ Hong Kong credit cards in seconds.",
+  description: "AI-powered card recommendations for Hong Kongers. Maximize your rewards on every purchase.",
   manifest: "/manifest.json",
-  themeColor: "#10a37f",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "CardGPT - AI Credit Card Recommendations",
-    description: "Maximize your credit card rewards with AI-powered recommendations for Hong Kong",
+    description: "AI-powered card recommendations for Hong Kongers. Maximize your rewards on every purchase.",
     siteName: "CardGPT",
   },
 };
