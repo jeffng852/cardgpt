@@ -260,16 +260,18 @@ export default function CardRecommendationList({
                     </div>
                   )}
 
-                  <div className="pt-3">
-                    <a
-                      href={recommendation.card.applyUrl || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block w-full px-6 py-3 bg-primary text-white text-center rounded-xl font-medium hover:bg-primary-hover transition-colors"
-                    >
-                      {t('applyHere')}
-                    </a>
-                  </div>
+                  {recommendation.card.applyUrl && (
+                    <div className="pt-3">
+                      <a
+                        href={recommendation.card.applyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full px-6 py-3 bg-primary text-white text-center rounded-xl font-medium hover:bg-primary-hover transition-colors"
+                      >
+                        {t('applyHere')}
+                      </a>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

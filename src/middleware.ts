@@ -54,8 +54,15 @@ function getLocaleFromRequest(request: NextRequest): string | undefined {
 const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // Skip middleware for admin routes (they don't use i18n)
+  if (pathname.startsWith('/admin')) {
+    return;
+  }
+
   // Only apply locale detection on root path (first visit)
-  if (request.nextUrl.pathname === '/') {
+  if (pathname === '/') {
     const detectedLocale = getLocaleFromRequest(request);
     if (detectedLocale) {
       const url = request.nextUrl.clone();

@@ -10,9 +10,35 @@ import type { Transaction } from '@/types/transaction';
 import type { RewardCalculation } from '@/types/recommendation';
 
 /**
+ * Check if a reward rule is currently valid based on temporal fields
+ * Returns false if the rule has expired or hasn't started yet
+ */
+function isRuleTemporallyValid(rule: RewardRule, transactionDate?: Date): boolean {
+  const checkDate = transactionDate || new Date();
+  const today = checkDate.toISOString().split('T')[0]; // YYYY-MM-DD format
+
+  // Check if rule has started
+  if (rule.validFrom && rule.validFrom > today) {
+    return false; // Rule hasn't started yet
+  }
+
+  // Check if rule has expired
+  if (rule.validUntil && rule.validUntil < today) {
+    return false; // Rule has expired
+  }
+
+  return true;
+}
+
+/**
  * Check if a reward rule matches a transaction
  */
 function matchesRule(rule: RewardRule, transaction: Transaction): boolean {
+  // Phase 1: Check temporal validity first (most efficient filter)
+  if (!isRuleTemporallyValid(rule, transaction.date)) {
+    return false;
+  }
+
   // NEW SCHEMA: Check categories and specific merchants
   if (rule.categories || rule.specificMerchants) {
     let matched = false;

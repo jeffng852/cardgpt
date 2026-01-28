@@ -120,6 +120,47 @@ export interface RewardRule {
 
   /** Fallback rate after monthly cap is reached */
   fallbackRate?: number;
+
+  // ===== Phase 1: Temporal Validity Fields =====
+
+  /**
+   * Start date when this rule becomes active (ISO date string: YYYY-MM-DD)
+   * If omitted, rule is active from the beginning of time
+   */
+  validFrom?: string;
+
+  /**
+   * End date when this rule expires (ISO date string: YYYY-MM-DD)
+   * If omitted, rule has no expiration (ongoing)
+   */
+  validUntil?: string;
+
+  /**
+   * Whether this is a time-limited promotional offer
+   * true = promotional (may expire, show warning to users)
+   * false = base/permanent reward structure
+   */
+  isPromotional: boolean;
+
+  // ===== Phase 1: Source Tracking Fields =====
+
+  /**
+   * URL where this reward information was sourced from
+   * For traceability and verification
+   */
+  sourceUrl?: string;
+
+  /**
+   * ISO date when the source was last verified (YYYY-MM-DD)
+   * Helps identify potentially stale data
+   */
+  sourceLastVerified?: string;
+
+  /**
+   * Free-text notes for edge cases, special conditions, or caveats
+   * that don't fit into structured fields
+   */
+  notes?: string;
 }
 
 /**
@@ -175,8 +216,8 @@ export interface CreditCard {
   /** Image URL for card visual */
   imageUrl?: string;
 
-  /** Application URL */
-  applyUrl: string;
+  /** Application URL (optional - only shown when referral link available) */
+  applyUrl?: string;
 
   /** Reward rules for this card (ordered by priority) */
   rewards: RewardRule[];
@@ -201,4 +242,15 @@ export interface CreditCard {
 
   /** Terms and conditions URL */
   termsUrl?: string;
+
+  /**
+   * Raw T&C content extracted from source document
+   * Stored for reference and potential user display
+   */
+  termsContent?: string;
+
+  /**
+   * Date when T&C content was extracted (ISO date string)
+   */
+  termsExtractedAt?: string;
 }

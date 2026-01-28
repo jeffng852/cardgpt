@@ -22,6 +22,7 @@
           "rewardUnit": "cash",
           "priority": "base",
           "isCumulative": false,
+          "isPromotional": false,
           "description": "1% rebate on all eligible spending",
           "excludedMerchants": [
             "fps-transfer",
@@ -74,7 +75,8 @@
           ],
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "local-dining-bonus",
@@ -94,7 +96,8 @@
           ],
           "categories": [
             "dining"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "local-hotel-bonus",
@@ -113,7 +116,8 @@
           ],
           "categories": [
             "travel"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -172,7 +176,8 @@
             "kkbox",
             "moov",
             "spotify"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "tier1-other",
@@ -194,7 +199,8 @@
           ],
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "tier2-designated",
@@ -228,7 +234,8 @@
             "kkbox",
             "moov",
             "spotify"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "tier2-other",
@@ -250,7 +257,8 @@
           ],
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -289,7 +297,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "foreign-cashback",
@@ -303,7 +312,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -339,7 +349,8 @@
           "categories": [
             "cathay-pacific",
             "hk-express"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "dining-hotels-overseas",
@@ -351,7 +362,8 @@
           "categories": [
             "dining",
             "travel"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "overseas-spending",
@@ -365,7 +377,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "cathay-partner-restaurants",
@@ -376,7 +389,8 @@
           "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
           "categories": [
             "cathay-partner-restaurant"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "other-hkd",
@@ -390,7 +404,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -423,7 +438,8 @@
           "categories": [
             "cathay-pacific",
             "hk-express"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "overseas-spending",
@@ -437,7 +453,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "dining-hotels",
@@ -449,7 +466,8 @@
           "categories": [
             "dining",
             "travel"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "cathay-partner-restaurants",
@@ -460,7 +478,8 @@
           "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
           "categories": [
             "cathay-partner-restaurant"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "other-hkd",
@@ -474,7 +493,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -507,7 +527,8 @@
           "categories": [
             "cathay-pacific",
             "hk-express"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "overseas-spending",
@@ -521,7 +542,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "dining-hotels",
@@ -533,7 +555,8 @@
           "categories": [
             "dining",
             "travel"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "cathay-partner-restaurants",
@@ -544,7 +567,8 @@
           "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
           "categories": [
             "cathay-partner-restaurant"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "other-hkd",
@@ -558,7 +582,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -594,7 +619,8 @@
             "cross-border-transport",
             "travel-service",
             "taxi-app"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "overseas-promotional",
@@ -609,7 +635,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": true
         },
         {
           "id": "general-spending",
@@ -624,7 +651,8 @@
           ],
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -644,12 +672,12 @@
         "designated-merchants"
       ],
       "isActive": true,
-      "lastUpdated": "2026-01-20T00:00:00.000Z",
+      "lastUpdated": "2026-01-28T08:38:35.893Z",
       "rewards": [
         {
           "id": "designated-merchants-high",
           "rewardRate": 0.08,
-          "rewardUnit": "cash",
+          "rewardUnit": "points",
           "priority": "premium",
           "isCumulative": false,
           "description": "8% RewardCash at designated merchants (first HK$1,250/month)",
@@ -667,12 +695,13 @@
           "specificMerchants": [
             "sushiro",
             "decathlon"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "online-purchases-high",
           "rewardRate": 0.04,
-          "rewardUnit": "cash",
+          "rewardUnit": "points",
           "priority": "bonus",
           "isCumulative": false,
           "description": "4% RewardCash on online spending (first HK$10,000/month)",
@@ -683,18 +712,20 @@
           "fallbackRate": 0.004,
           "categories": [
             "online"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "base-rewardcash",
           "rewardRate": 0.004,
-          "rewardUnit": "cash",
+          "rewardUnit": "points",
           "priority": "base",
           "isCumulative": false,
           "description": "0.4% RewardCash on all other spending",
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -729,7 +760,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": true
         },
         {
           "id": "overseas-base",
@@ -743,7 +775,8 @@
           },
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "local-spending",
@@ -754,7 +787,8 @@
           "description": "HK$6 = 1 mile on local spending",
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -785,7 +819,8 @@
           "description": "4X yuu points at designated merchants (equivalent to 2% rebate)",
           "categories": [
             "yuu-partner"
-          ]
+          ],
+          "isPromotional": false
         },
         {
           "id": "base-points",
@@ -796,7 +831,8 @@
           "description": "1 yuu point per HK$1 (equivalent to 0.5% rebate, 200 points = HK$1)",
           "categories": [
             "all"
-          ]
+          ],
+          "isPromotional": false
         }
       ],
       "fees": {
@@ -804,7 +840,7 @@
       }
     }
   ],
-  "lastUpdated": "2026-01-20T12:00:00.000Z",
+  "lastUpdated": "2026-01-28T08:38:35.893Z",
   "version": "1.0.0",
   "metadata": {
     "totalCards": 10,
