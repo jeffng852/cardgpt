@@ -485,6 +485,25 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
                 </div>
               </div>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Min. Annual Income (HKD)
+              </label>
+              <input
+                type="number"
+                value={card.minIncomeRequirement || ''}
+                onChange={(e) =>
+                  updateCard({
+                    minIncomeRequirement: e.target.value ? parseFloat(e.target.value) : undefined,
+                  })
+                }
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., 150000"
+              />
+              <p className="text-xs text-foreground-muted mt-1">
+                Minimum annual income required for card application
+              </p>
+            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -626,6 +645,25 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
                 }
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Redemption Fee (HKD)
+              </label>
+              <input
+                type="number"
+                value={card.fees?.redemptionFee || ''}
+                onChange={(e) =>
+                  updateFees({
+                    redemptionFee: e.target.value ? parseFloat(e.target.value) : undefined,
+                  })
+                }
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., 50"
+              />
+              <p className="text-xs text-foreground-muted mt-1">
+                Fee for converting points/miles to cash or vouchers
+              </p>
             </div>
           </div>
         </section>
@@ -911,6 +949,22 @@ function RuleEditor({
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Action Required (optional)
+            </label>
+            <input
+              type="text"
+              value={rule.actionRequired || ''}
+              onChange={(e) => update({ actionRequired: e.target.value || undefined })}
+              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+              placeholder="e.g., Register online, Activate in app"
+            />
+            <p className="text-xs text-foreground-muted mt-1">
+              Action user must take to activate this reward
+            </p>
           </div>
 
           <div>

@@ -701,6 +701,23 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                 Promotional (time-limited offer, will show warning to users)
               </span>
             </label>
+
+            {/* Action Required */}
+            <div className="pt-2">
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Action Required
+              </label>
+              <input
+                type="text"
+                value={rule.actionRequired || ''}
+                onChange={(e) => updateRule({ actionRequired: e.target.value || undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., Register online, Activate in app"
+              />
+              <p className="text-xs text-foreground-muted mt-1">
+                Action user must take to activate this promotional reward
+              </p>
+            </div>
           </div>
         </section>
 
