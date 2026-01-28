@@ -2,8 +2,51 @@
  * Recommendation engine types
  */
 
-import type { CreditCard, RewardUnit } from './card';
+import type { CreditCard, RewardUnit, RulePriority } from './card';
 import type { Transaction } from './transaction';
+
+/**
+ * How a rule contributed to the total reward
+ * - 'base': Base rate applied
+ * - 'stacked': Cumulative bonus added to base
+ * - 'replaced': Non-cumulative bonus that replaced the base rate
+ */
+export type ContributionType = 'base' | 'stacked' | 'replaced';
+
+/**
+ * Detailed breakdown of how a single rule contributed to the reward
+ */
+export interface RuleContribution {
+  /** Rule ID for reference */
+  ruleId: string;
+
+  /** The rate this rule contributed (as decimal) */
+  rate: number;
+
+  /** The reward amount from this rule */
+  amount: number;
+
+  /** Rule description for display */
+  description: string;
+
+  /** Rule priority level */
+  priority: RulePriority;
+
+  /** Whether this is a promotional/time-limited offer */
+  isPromotional: boolean;
+
+  /** Expiry date if promotional (ISO date string) */
+  validUntil?: string;
+
+  /** Monthly spending cap for this rule */
+  monthlySpendingCap?: number;
+
+  /** Action required to activate (e.g., "Register online") */
+  actionRequired?: string;
+
+  /** How this rule contributed to the total */
+  contributionType: ContributionType;
+}
 
 /**
  * Calculated reward for a specific card and transaction
@@ -23,6 +66,9 @@ export interface RewardCalculation {
 
   /** IDs of reward rules that were applied */
   appliedRules: string[];
+
+  /** Detailed breakdown of each rule's contribution */
+  ruleBreakdown: RuleContribution[];
 
   /** Transaction fees for this transaction */
   fees: number;

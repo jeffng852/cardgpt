@@ -161,6 +161,12 @@ export interface RewardRule {
    * that don't fit into structured fields
    */
   notes?: string;
+
+  /**
+   * Action required to activate this reward (e.g., "Register online", "Activate in app")
+   * Used for promotional offers that require user action
+   */
+  actionRequired?: string;
 }
 
 /**
@@ -178,6 +184,9 @@ export interface FeeStructure {
 
   /** Late payment fee */
   latePaymentFee?: number;
+
+  /** Fee for redeeming rewards (e.g., converting points to cash) in HKD */
+  redemptionFee?: number;
 }
 
 /**
@@ -253,4 +262,9 @@ export interface CreditCard {
    * Date when T&C content was extracted (ISO date string)
    */
   termsExtractedAt?: string;
+
+  /**
+   * Minimum annual income required for card application (in HKD)
+   */
+  minIncomeRequirement?: number;
 }

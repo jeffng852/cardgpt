@@ -7,7 +7,7 @@
 
 import type { CreditCard, RewardRule } from '@/types/card';
 import type { Transaction } from '@/types/transaction';
-import type { RewardCalculation } from '@/types/recommendation';
+import type { RewardCalculation, RuleContribution, ContributionType } from '@/types/recommendation';
 
 /**
  * Check if a reward rule is currently valid based on temporal fields
@@ -195,6 +195,7 @@ export function calculateReward(
       rewardUnit: 'cash',
       effectiveRate: 0,
       appliedRules: [],
+      ruleBreakdown: [],
       fees: calculateFees(card, transaction),
       cappedOut: false
     };
@@ -207,32 +208,75 @@ export function calculateReward(
 
   let totalRate = 0;
   const appliedRules: string[] = [];
+  const ruleBreakdown: RuleContribution[] = [];
+  let baseWasReplaced = false;
+
+  // Helper to create a RuleContribution
+  const createContribution = (
+    rule: RewardRule,
+    contributionType: ContributionType
+  ): RuleContribution => ({
+    ruleId: rule.id,
+    rate: rule.rewardRate,
+    amount: transaction.amount * rule.rewardRate,
+    description: rule.description,
+    priority: rule.priority,
+    isPromotional: rule.isPromotional,
+    validUntil: rule.validUntil,
+    monthlySpendingCap: rule.monthlySpendingCap,
+    actionRequired: rule.actionRequired,
+    contributionType,
+  });
 
   // 1. Apply base rate (only one base rule should match)
   const baseRule = baseRules[0];
   if (baseRule) {
     totalRate = baseRule.rewardRate;
     appliedRules.push(baseRule.id);
+    ruleBreakdown.push(createContribution(baseRule, 'base'));
   }
 
   // 2. Apply bonus rules (cumulative or max)
   for (const bonus of bonusRules) {
     if (bonus.isCumulative) {
+      // Stacked: adds to base rate
       totalRate += bonus.rewardRate;
+      appliedRules.push(bonus.id);
+      ruleBreakdown.push(createContribution(bonus, 'stacked'));
     } else {
-      totalRate = Math.max(totalRate, bonus.rewardRate);
+      // Non-cumulative: replaces if higher
+      if (bonus.rewardRate > totalRate) {
+        totalRate = bonus.rewardRate;
+        baseWasReplaced = true;
+        appliedRules.push(bonus.id);
+        ruleBreakdown.push(createContribution(bonus, 'replaced'));
+      }
     }
-    appliedRules.push(bonus.id);
   }
 
   // 3. Apply premium rules (highest rate wins)
   if (premiumRules.length > 0) {
     const highestPremium = Math.max(...premiumRules.map(r => r.rewardRate));
-    totalRate = Math.max(totalRate, highestPremium);
-    const appliedPremium = premiumRules.find(r => r.rewardRate === highestPremium);
-    if (appliedPremium) {
-      appliedRules.push(appliedPremium.id);
+    if (highestPremium > totalRate) {
+      totalRate = highestPremium;
+      baseWasReplaced = true;
+      const appliedPremium = premiumRules.find(r => r.rewardRate === highestPremium);
+      if (appliedPremium) {
+        appliedRules.push(appliedPremium.id);
+        ruleBreakdown.push(createContribution(appliedPremium, 'replaced'));
+      }
     }
+  }
+
+  // If base was replaced by a non-cumulative rule, mark base contribution accordingly
+  if (baseWasReplaced && ruleBreakdown.length > 0 && ruleBreakdown[0].contributionType === 'base') {
+    // Keep only the rules that actually contributed to the final rate
+    // Filter out base rule if it was replaced
+    const finalBreakdown = ruleBreakdown.filter(
+      r => r.contributionType !== 'base' || !baseWasReplaced
+    );
+    ruleBreakdown.length = 0;
+    ruleBreakdown.push(...finalBreakdown);
   }
 
   // 4. Handle monthly spending caps
@@ -266,6 +310,7 @@ export function calculateReward(
     rewardUnit,
     effectiveRate,
     appliedRules,
+    ruleBreakdown,
     fees,
     cappedOut
   };

@@ -160,7 +160,25 @@
     "showDetails": "顯示詳情",
     "free": "免費",
     "appliedRewards": "適用獎賞",
-    "none": "無"
+    "none": "無",
+    "tags": {
+      "base": "基本",
+      "limitedOffer": "限時優惠",
+      "merchantOffer": "額外獎賞"
+    },
+    "breakdown": {
+      "title": "獎賞明細",
+      "cap": "上限",
+      "month": "月",
+      "total": "總計",
+      "offerExpires": "優惠到期日",
+      "actionRequired": "需要操作",
+      "fees": "費用",
+      "fxFee": "外幣交易費",
+      "redemptionFee": "兌換手續費",
+      "minIncome": "最低年薪要求",
+      "perYear": "每年"
+    }
   },
   "paymentTypes": {
     "online": "網上",

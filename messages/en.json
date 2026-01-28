@@ -160,7 +160,25 @@
     "showDetails": "Show Details",
     "free": "Free",
     "appliedRewards": "Applied Rewards",
-    "none": "None"
+    "none": "None",
+    "tags": {
+      "base": "Base",
+      "limitedOffer": "Limited Offer",
+      "merchantOffer": "Bonus"
+    },
+    "breakdown": {
+      "title": "Reward Breakdown",
+      "cap": "Cap",
+      "month": "month",
+      "total": "Total",
+      "offerExpires": "Offer expires",
+      "actionRequired": "Action required",
+      "fees": "Fees",
+      "fxFee": "FX Fee",
+      "redemptionFee": "Redemption Fee",
+      "minIncome": "Min. Income",
+      "perYear": "per year"
+    }
   },
   "paymentTypes": {
     "online": "Online",
