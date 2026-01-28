@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Externalize pdf-parse for server-side usage (it uses native Node.js APIs)
+  serverExternalPackages: ['pdf-parse'],
 };
 
 export default withNextIntl(nextConfig);

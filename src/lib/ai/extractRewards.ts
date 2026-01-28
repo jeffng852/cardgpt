@@ -365,8 +365,9 @@ export async function extractTextFromUrl(url: string): Promise<string> {
     // Handle PDF files
     if (contentType.includes('application/pdf') || url.toLowerCase().endsWith('.pdf')) {
       try {
-        // Dynamic import to handle cases where pdf-parse isn't installed
-        const pdfParse = (await import('pdf-parse')).default;
+        // Use require for Node.js compatibility in Next.js server context
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const pdfParse = require('pdf-parse');
         const buffer = await response.arrayBuffer();
         const data = await pdfParse(Buffer.from(buffer));
         console.log('[extractTextFromUrl] PDF parsed, extracted', data.text.length, 'characters');
