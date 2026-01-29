@@ -131,12 +131,8 @@ export function validateRewardRule(rule: Partial<RewardRule>): string[] {
     errors.push('Reward unit must be cash, miles, or points');
   }
 
-  if (!rule.priority || !['base', 'bonus', 'premium'].includes(rule.priority)) {
-    errors.push('Priority must be base, bonus, or premium');
-  }
-
-  if (typeof rule.isCumulative !== 'boolean') {
-    errors.push('isCumulative must be a boolean');
+  if (!rule.priority || !['base', 'bonus', 'specific'].includes(rule.priority)) {
+    errors.push('Priority must be base, bonus, or specific');
   }
 
   if (typeof rule.isPromotional !== 'boolean') {

@@ -45,7 +45,10 @@ For each reward rule, extract:
 1. description - A clear, human-readable description of the reward
 2. rewardRate - The reward rate as a decimal (e.g., 0.04 for 4%)
 3. rewardUnit - One of: "cash", "miles", "points"
-4. priority - One of: "base", "bonus", "premium" (base is default/minimum, bonus is enhanced, premium is highest tier)
+4. priority - One of: "base", "bonus", "specific"
+   - "base": Foundation rate that applies to all eligible transactions
+   - "bonus": Additional reward that stacks on top of base rate (cumulative)
+   - "specific": Rate for specific merchants that REPLACES the base rate entirely (mutually exclusive)
 5. categories - Array of applicable categories from: "dining", "travel", "online-shopping", "retail", "supermarket", "entertainment", "transport", "utilities", "insurance", "education", "medical", "government". Use ["all"] if it applies to all spending.
 6. specificMerchants - Array of specific merchant names if mentioned (e.g., ["mcdonalds", "sushiro"])
 7. monthlySpendingCap - Maximum monthly spending that qualifies for this rate (if mentioned)
@@ -53,11 +56,10 @@ For each reward rule, extract:
 9. validFrom - Start date in YYYY-MM-DD format (if promotional/limited time)
 10. validUntil - End date in YYYY-MM-DD format (if promotional/limited time)
 11. isPromotional - true if this is a time-limited promotion, false for permanent rewards
-12. isCumulative - true if this reward adds to base rewards, false if it replaces
-13. conditions.paymentType - One of: "online", "offline", "contactless", "recurring" (if specified)
-14. conditions.currency - "HKD", "foreign", or specific currency code (if specified)
-15. conditions.minAmount - Minimum transaction amount (if specified)
-16. notes - IMPORTANT: Copy the EXACT original text/sentence from the document that describes this reward rate calculation. This is for verification purposes. Include the verbatim quote that shows where you got the rate from.
+12. conditions.paymentType - One of: "online", "offline", "contactless", "recurring" (if specified)
+13. conditions.currency - "HKD", "foreign", or specific currency code (if specified)
+14. conditions.minAmount - Minimum transaction amount (if specified)
+15. notes - IMPORTANT: Copy the EXACT original text/sentence from the document that describes this reward rate calculation. This is for verification purposes. Include the verbatim quote that shows where you got the rate from.
 
 Also extract:
 - cardName: The name of the credit card
@@ -72,7 +74,7 @@ Respond ONLY with valid JSON in this exact format:
       "description": "string",
       "rewardRate": number,
       "rewardUnit": "cash" | "miles" | "points",
-      "priority": "base" | "bonus" | "premium",
+      "priority": "base" | "bonus" | "specific",
       "categories": ["string"],
       "specificMerchants": ["string"] | null,
       "monthlySpendingCap": number | null,
@@ -80,7 +82,6 @@ Respond ONLY with valid JSON in this exact format:
       "validFrom": "YYYY-MM-DD" | null,
       "validUntil": "YYYY-MM-DD" | null,
       "isPromotional": boolean,
-      "isCumulative": boolean,
       "conditions": {
         "paymentType": "string" | null,
         "currency": "string" | null,
@@ -243,7 +244,6 @@ function parseAIResponse(content: string): ExtractionResult {
       validFrom: typeof rule.validFrom === 'string' ? rule.validFrom : undefined,
       validUntil: typeof rule.validUntil === 'string' ? rule.validUntil : undefined,
       isPromotional: Boolean(rule.isPromotional),
-      isCumulative: Boolean(rule.isCumulative),
       conditions: rule.conditions ? {
         paymentType: (rule.conditions as Record<string, unknown>).paymentType as string | undefined,
         currency: (rule.conditions as Record<string, unknown>).currency as string | undefined,
@@ -280,7 +280,7 @@ function validateRewardUnit(unit: unknown): RewardUnit {
 }
 
 function validatePriority(priority: unknown): RulePriority {
-  if (priority === 'base' || priority === 'bonus' || priority === 'premium') {
+  if (priority === 'base' || priority === 'bonus' || priority === 'specific') {
     return priority;
   }
   return 'base';
@@ -304,7 +304,6 @@ function getMockExtraction(text: string): ExtractionResult {
           priority: 'base',
           categories: ['all'],
           isPromotional: false,
-          isCumulative: false,
         });
       }
     });
@@ -338,7 +337,6 @@ function getMockExtraction(text: string): ExtractionResult {
       priority: 'base',
       categories: ['all'],
       isPromotional: false,
-      isCumulative: false,
     }],
     confidence: {
       cardName: cardName ? 'low' : 'low',

@@ -206,7 +206,7 @@
           "id": "tier2-designated",
           "rewardRate": 0.05,
           "rewardUnit": "cash",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "5% cashback at designated merchants (Tier 2: HK$15,000+/month)",
           "conditions": {
@@ -241,7 +241,7 @@
           "id": "tier2-other",
           "rewardRate": 0.012,
           "rewardUnit": "cash",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "1.2% cashback on other spending (Tier 2: HK$15,000+/month)",
           "conditions": {
@@ -384,7 +384,7 @@
           "id": "cathay-partner-restaurants",
           "rewardRate": 0.5,
           "rewardUnit": "miles",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
           "categories": [
@@ -473,7 +473,7 @@
           "id": "cathay-partner-restaurants",
           "rewardRate": 0.5,
           "rewardUnit": "miles",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
           "categories": [
@@ -562,7 +562,7 @@
           "id": "cathay-partner-restaurants",
           "rewardRate": 0.5,
           "rewardUnit": "miles",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "HK$4 = 2 Asia Miles at Cathay partner restaurants",
           "categories": [
@@ -678,7 +678,7 @@
           "id": "designated-merchants-high",
           "rewardRate": 0.08,
           "rewardUnit": "points",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "8% RewardCash at designated merchants (first HK$1,250/month)",
           "monthlySpendingCap": 1250,
@@ -751,7 +751,7 @@
           "id": "overseas-promotional",
           "rewardRate": 0.5,
           "rewardUnit": "miles",
-          "priority": "premium",
+          "priority": "specific",
           "isCumulative": false,
           "description": "HK$2 = 1 mile on overseas spending (2026 promotion, min HK$20,000)",
           "conditions": {

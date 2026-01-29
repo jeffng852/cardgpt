@@ -57,11 +57,12 @@ export interface RewardCondition {
 }
 
 /**
- * Priority determines which rule applies when multiple rules match
- * Higher priority = applied first
- * Rules with same priority are cumulative (rates add up)
+ * Priority determines how a rule contributes to the total reward
+ * - base: Foundation rate, applied first
+ * - bonus: Stacks on top of base rate (cumulative)
+ * - specific: Replaces base rate entirely (mutually exclusive, e.g., specific merchant rates)
  */
-export type RulePriority = 'base' | 'bonus' | 'premium';
+export type RulePriority = 'base' | 'bonus' | 'specific';
 
 /**
  * A reward rule defines how rewards are calculated
@@ -97,11 +98,14 @@ export interface RewardRule {
   /** Unit of rewards earned */
   rewardUnit: RewardUnit;
 
-  /** Rule priority for conflict resolution */
+  /** Rule priority - determines how this rule contributes to total reward */
   priority: RulePriority;
 
-  /** Whether this rule is cumulative with base rate */
-  isCumulative: boolean;
+  /**
+   * @deprecated Use priority instead: 'bonus' = cumulative, 'specific' = not cumulative
+   * Kept for backward compatibility during migration
+   */
+  isCumulative?: boolean;
 
   /** Optional conditions that must be met */
   conditions?: RewardCondition;

@@ -473,7 +473,7 @@ export default function UploadExtractor() {
                         >
                           <option value="base">Base</option>
                           <option value="bonus">Bonus</option>
-                          <option value="premium">Premium</option>
+                          <option value="specific">Specific</option>
                         </select>
                       </div>
                       <div>
@@ -500,15 +500,6 @@ export default function UploadExtractor() {
                           className="rounded border-border"
                         />
                         <span className="text-foreground-muted">Promotional</span>
-                      </label>
-                      <label className="flex items-center gap-1 text-xs">
-                        <input
-                          type="checkbox"
-                          checked={rule.isCumulative || false}
-                          onChange={(e) => updateRule(index, { isCumulative: e.target.checked })}
-                          className="rounded border-border"
-                        />
-                        <span className="text-foreground-muted">Cumulative</span>
                       </label>
                     </div>
 

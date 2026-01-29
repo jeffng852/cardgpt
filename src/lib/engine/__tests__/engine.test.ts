@@ -17,21 +17,21 @@ const mockCitiCashBack: CreditCard = {
   rewards: [
     {
       id: 'base-rebate',
-      merchantTypes: ['all'],
+      categories: ['all'],
       rewardRate: 0.01,
       rewardUnit: 'cash',
       priority: 'base',
-      isCumulative: false,
+      isPromotional: false,
       description: '1% on all spending',
       excludedMerchants: ['cash-advance', 'casino']
     },
     {
       id: 'local-dining-bonus',
-      merchantTypes: ['restaurant', 'dining'],
+      categories: ['restaurant', 'dining'],
       rewardRate: 0.01,
       rewardUnit: 'cash',
       priority: 'bonus',
-      isCumulative: true,
+      isPromotional: false,
       description: 'Additional 1% on HKD dining',
       conditions: {
         currency: 'HKD'
@@ -133,11 +133,11 @@ describe('recommendCards', () => {
       rewards: [
         {
           id: 'basic-rate',
-          merchantTypes: ['all'],
+          categories: ['all'],
           rewardRate: 0.005, // 0.5%
           rewardUnit: 'cash',
           priority: 'base',
-          isCumulative: false,
+          isPromotional: false,
           description: '0.5% on all spending'
         }
       ],

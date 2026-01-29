@@ -370,7 +370,6 @@ function RulePreview({
           label="Categories"
           value={(ruleData.categories as string[])?.join(', ') || 'all'}
         />
-        <FieldRow label="Cumulative" value={ruleData.isCumulative ? 'Yes' : 'No'} />
         <FieldRow label="Promotional" value={ruleData.isPromotional ? 'Yes' : 'No'} />
         {ruleData.validFrom && <FieldRow label="Valid From" value={ruleData.validFrom} />}
         {ruleData.validUntil && <FieldRow label="Valid Until" value={ruleData.validUntil} />}

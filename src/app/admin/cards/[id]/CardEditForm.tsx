@@ -30,7 +30,6 @@ const emptyRule: Partial<RewardRule> = {
   rewardRate: 0,
   rewardUnit: 'cash',
   priority: 'base',
-  isCumulative: false,
   isPromotional: false,
   description: '',
   categories: ['all'],
@@ -39,7 +38,7 @@ const emptyRule: Partial<RewardRule> = {
 // Generate a unique rule ID based on card ID, priority, category, and index
 function generateRuleId(cardId: string, priority: string, categories: string[], existingRuleCount: number): string {
   const cardSlug = cardId || 'card';
-  const priorityCode = priority === 'premium' ? 'prm' : priority === 'bonus' ? 'bns' : 'bas';
+  const priorityCode = priority === 'specific' ? 'spc' : priority === 'bonus' ? 'bns' : 'bas';
   const categoryCode = categories.length > 0 && categories[0] !== 'all'
     ? categories[0].substring(0, 3).toLowerCase()
     : 'all';
@@ -704,7 +703,7 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
                     <span className="font-medium text-foreground">{rule.description}</span>
                     <span
                       className={`px-2 py-0.5 text-xs rounded ${
-                        rule.priority === 'premium'
+                        rule.priority === 'specific'
                           ? 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400'
                           : rule.priority === 'bonus'
                           ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
@@ -721,7 +720,6 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
                   </div>
                   <p className="text-sm text-foreground-muted mt-1">
                     {(rule.rewardRate * 100).toFixed(2)}% {rule.rewardUnit}
-                    {rule.isCumulative && ' (cumulative)'}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -863,21 +861,17 @@ function RuleEditor({
                 onChange={(e) => update({ priority: e.target.value as RewardRule['priority'] })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
               >
-                <option value="base">Base (lowest)</option>
-                <option value="bonus">Bonus</option>
-                <option value="premium">Premium (highest)</option>
+                <option value="base">Base (foundation rate)</option>
+                <option value="bonus">Bonus (stacks on base)</option>
+                <option value="specific">Specific (replaces base)</option>
               </select>
+              <p className="text-xs text-foreground-muted mt-1">
+                {rule.priority === 'base' && 'Foundation rate applied first'}
+                {rule.priority === 'bonus' && 'Stacks cumulatively on top of base'}
+                {rule.priority === 'specific' && 'Replaces base for specific merchants'}
+              </p>
             </div>
-            <div className="flex flex-col justify-end gap-2">
-              <label className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={rule.isCumulative ?? false}
-                  onChange={(e) => update({ isCumulative: e.target.checked })}
-                  className="rounded border-border"
-                />
-                <span className="text-sm text-foreground">Cumulative (adds to base)</span>
-              </label>
+            <div className="flex flex-col justify-end">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"

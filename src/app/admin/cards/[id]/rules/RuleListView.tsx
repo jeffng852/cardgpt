@@ -336,7 +336,6 @@ export default function RuleListView({ cardId }: RuleListViewProps) {
                     </div>
                     <div className="col-span-1 flex gap-1">
                       {rule.isPromotional && <PromoBadge />}
-                      {rule.isCumulative && <CumulativeBadge />}
                     </div>
                     <div className="col-span-2 flex justify-end gap-1">
                       <button
@@ -411,7 +410,7 @@ function PriorityBadge({ priority }: { priority: string }) {
   const styles: Record<string, string> = {
     base: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
     bonus: 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400',
-    premium: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
+    specific: 'bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400',
   };
 
   return (
@@ -429,10 +428,3 @@ function PromoBadge() {
   );
 }
 
-function CumulativeBadge() {
-  return (
-    <span className="px-1.5 py-0.5 text-xs bg-cyan-100 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400 rounded" title="Cumulative">
-      C
-    </span>
-  );
-}
