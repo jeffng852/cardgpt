@@ -1,6 +1,6 @@
 /**
  * AI-assisted reward rule extraction from documents
- * Supports multiple AI providers (OpenAI, Anthropic) with fallback
+ * Supports multiple AI providers: OpenRouter (preferred), OpenAI, Anthropic
  */
 
 import { readFileSync, existsSync } from 'fs';
@@ -101,18 +101,20 @@ Document text to analyze:
 `;
 
 export async function extractRewardsFromText(text: string): Promise<ExtractionResult> {
-  // Try OpenAI first, then Anthropic, then return mock data for development
+  // Try OpenRouter first (no geo-restrictions), then OpenAI, then Anthropic
   // Check both process.env and .env.local file directly (fallback for Next.js issues)
+  const openrouterKey = process.env.OPENROUTER_API_KEY || loadApiKeyFromFile('OPENROUTER_API_KEY');
   const openaiKey = process.env.OPENAI_API_KEY || loadApiKeyFromFile('OPENAI_API_KEY');
   const anthropicKey = process.env.ANTHROPIC_API_KEY || loadApiKeyFromFile('ANTHROPIC_API_KEY');
 
   // Debug: log which keys are configured (not the actual values)
+  console.log('[extractRewards] OpenRouter key configured:', !!openrouterKey && openrouterKey.length > 0);
   console.log('[extractRewards] OpenAI key configured:', !!openaiKey && openaiKey.length > 0);
   console.log('[extractRewards] Anthropic key configured:', !!anthropicKey && anthropicKey.length > 0);
-  // Debug: log key prefix and length to diagnose issues (safe - doesn't expose full key)
-  if (anthropicKey) {
-    console.log('[extractRewards] Anthropic key prefix:', anthropicKey.substring(0, 10) + '...');
-    console.log('[extractRewards] Anthropic key length:', anthropicKey.length);
+
+  if (openrouterKey && openrouterKey.length > 0) {
+    console.log('[extractRewards] Using OpenRouter');
+    return extractWithOpenRouter(text, openrouterKey);
   }
 
   if (openaiKey && openaiKey.length > 0) {
@@ -128,6 +130,56 @@ export async function extractRewardsFromText(text: string): Promise<ExtractionRe
   // Development fallback - return mock extraction
   console.warn('[extractRewards] No AI API key configured. Using mock extraction for development.');
   return getMockExtraction(text);
+}
+
+async function extractWithOpenRouter(text: string, apiKey: string): Promise<ExtractionResult> {
+  try {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': process.env.NEXT_PUBLIC_BASE_URL || 'https://cardgpt.app',
+      },
+      body: JSON.stringify({
+        model: 'anthropic/claude-3.5-haiku',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert at extracting structured data from credit card terms and conditions. Always respond with valid JSON only.',
+          },
+          {
+            role: 'user',
+            content: EXTRACTION_PROMPT + text.slice(0, 15000),
+          },
+        ],
+        temperature: 0.1,
+        max_tokens: 4000,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`OpenRouter API error: ${error}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+
+    if (!content) {
+      throw new Error('No response from OpenRouter');
+    }
+
+    console.log('[extractRewards] OpenRouter response received');
+    return parseAIResponse(content);
+  } catch (error) {
+    console.error('OpenRouter extraction failed:', error);
+    return {
+      rules: [],
+      confidence: {},
+      error: `OpenRouter extraction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    };
+  }
 }
 
 async function extractWithOpenAI(text: string, apiKey: string): Promise<ExtractionResult> {

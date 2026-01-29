@@ -281,16 +281,77 @@ Activity: `;
 
 /**
  * Parse a user activity description to determine the merchant category
- * Uses Claude to determine MCC, then maps to our category system
+ * Uses AI to determine MCC, then maps to our category system
+ * Supports: OpenRouter (preferred), Anthropic, OpenAI
  */
 export async function parseActivity(
   activity: string
 ): Promise<ActivityParseResult> {
+  const openrouterKey =
+    process.env.OPENROUTER_API_KEY || loadApiKeyFromFile('OPENROUTER_API_KEY');
   const anthropicKey =
     process.env.ANTHROPIC_API_KEY || loadApiKeyFromFile('ANTHROPIC_API_KEY');
+  const openaiKey =
+    process.env.OPENAI_API_KEY || loadApiKeyFromFile('OPENAI_API_KEY');
 
-  if (!anthropicKey) {
-    console.error('[parseActivity] No Anthropic API key configured');
+  // Determine which API to use (OpenRouter first - no geo-restrictions)
+  let apiUrl: string;
+  let headers: Record<string, string>;
+  let body: object;
+  let extractContent: (data: unknown) => string | undefined;
+
+  if (openrouterKey) {
+    console.log('[parseActivity] Using OpenRouter');
+    apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${openrouterKey}`,
+      'HTTP-Referer': process.env.NEXT_PUBLIC_BASE_URL || 'https://cardgpt.app',
+    };
+    body = {
+      model: 'anthropic/claude-3.5-haiku',
+      max_tokens: 150,
+      messages: [{ role: 'user', content: ACTIVITY_PARSE_PROMPT + activity }],
+    };
+    extractContent = (data: unknown) => {
+      const d = data as { choices?: { message?: { content?: string } }[] };
+      return d.choices?.[0]?.message?.content;
+    };
+  } else if (openaiKey) {
+    console.log('[parseActivity] Using OpenAI');
+    apiUrl = 'https://api.openai.com/v1/chat/completions';
+    headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${openaiKey}`,
+    };
+    body = {
+      model: 'gpt-4o-mini',
+      max_tokens: 150,
+      messages: [{ role: 'user', content: ACTIVITY_PARSE_PROMPT + activity }],
+    };
+    extractContent = (data: unknown) => {
+      const d = data as { choices?: { message?: { content?: string } }[] };
+      return d.choices?.[0]?.message?.content;
+    };
+  } else if (anthropicKey) {
+    console.log('[parseActivity] Using Anthropic');
+    apiUrl = 'https://api.anthropic.com/v1/messages';
+    headers = {
+      'Content-Type': 'application/json',
+      'x-api-key': anthropicKey,
+      'anthropic-version': '2023-06-01',
+    };
+    body = {
+      model: 'claude-3-5-haiku-latest',
+      max_tokens: 150,
+      messages: [{ role: 'user', content: ACTIVITY_PARSE_PROMPT + activity }],
+    };
+    extractContent = (data: unknown) => {
+      const d = data as { content?: { text?: string }[] };
+      return d.content?.[0]?.text;
+    };
+  } else {
+    console.error('[parseActivity] No AI API key configured');
     return {
       category: 'retail',
       confidence: 0,
@@ -300,28 +361,15 @@ export async function parseActivity(
   }
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch(apiUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': anthropicKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-haiku-latest',
-        max_tokens: 150,
-        messages: [
-          {
-            role: 'user',
-            content: ACTIVITY_PARSE_PROMPT + activity,
-          },
-        ],
-      }),
+      headers,
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[parseActivity] Anthropic API error:', errorText);
+      console.error('[parseActivity] API error:', errorText);
       return {
         category: 'retail',
         confidence: 0,
@@ -330,7 +378,7 @@ export async function parseActivity(
     }
 
     const data = await response.json();
-    const content = data.content?.[0]?.text;
+    const content = extractContent(data);
 
     if (!content) {
       console.error('[parseActivity] No content in response');
