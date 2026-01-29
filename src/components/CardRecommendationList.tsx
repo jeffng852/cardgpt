@@ -193,23 +193,23 @@ export default function CardRecommendationList({
               {/* Preview Layer - Clickable to expand */}
               <button
                 onClick={() => toggleExpand(card.id)}
-                className="w-full p-5 text-left group"
+                className="w-full p-4 sm:p-5 text-left group"
               >
-                <div className="flex items-start gap-4">
-                  {/* Card Image */}
+                <div className="flex items-start gap-3 sm:gap-4">
+                  {/* Card Image - Smaller on mobile */}
                   {hasCardImage(card.id) ? (
-                    <div className="flex-shrink-0 w-20 h-14 relative rounded-xl overflow-hidden ring-1 ring-border shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                    <div className="flex-shrink-0 w-14 h-9 sm:w-20 sm:h-14 relative rounded-lg sm:rounded-xl overflow-hidden ring-1 ring-border shadow-sm group-hover:shadow-md transition-shadow duration-200">
                       <Image
                         src={getCardImageUrl(card.id)}
                         alt={card.name}
                         fill
                         className="object-cover"
-                        sizes="80px"
+                        sizes="(max-width: 640px) 56px, 80px"
                       />
                     </div>
                   ) : (
-                    <div className="flex-shrink-0 w-20 h-14 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-border flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-200">
-                      <svg className="w-6 h-6 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex-shrink-0 w-14 h-9 sm:w-20 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-border flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                      <svg className="w-4 h-4 sm:w-6 sm:h-6 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
                     </div>
@@ -217,26 +217,26 @@ export default function CardRecommendationList({
 
                   {/* Card Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <h4 className="text-base font-semibold text-text-primary truncate group-hover:text-primary transition-colors duration-200">
+                    <div className="flex items-start sm:items-center gap-2 mb-0.5 flex-wrap">
+                      <h4 className="text-sm sm:text-base font-semibold text-text-primary group-hover:text-primary transition-colors duration-200 line-clamp-2 sm:truncate">
                         {card.name}
                       </h4>
                       {isTopRecommended && (
-                        <span className="px-2 py-0.5 bg-gradient-to-r from-primary/20 to-primary/10 text-primary text-xs font-semibold rounded-full whitespace-nowrap">
+                        <span className="px-2 py-0.5 bg-gradient-to-r from-primary/20 to-primary/10 text-primary text-[10px] sm:text-xs font-semibold rounded-full whitespace-nowrap">
                           {t('recommended')}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-text-secondary mb-2">
+                    <p className="text-xs sm:text-sm text-text-secondary mb-2">
                       {card.issuer}
                     </p>
 
                     {/* Rule Tags */}
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex flex-wrap gap-1 sm:gap-1.5">
                       {ruleBreakdown.map((contribution, idx) => (
                         <span
                           key={idx}
-                          className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-transform duration-200 hover:scale-105 ${getTagStyle(contribution)}`}
+                          className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-transform duration-200 hover:scale-105 ${getTagStyle(contribution)}`}
                         >
                           {getTagLabel(contribution)} {formatRate(contribution.rate)}
                         </span>
@@ -245,17 +245,17 @@ export default function CardRecommendationList({
                   </div>
 
                   {/* Reward Amount */}
-                  <div className="text-right flex-shrink-0 flex items-center gap-3">
-                    <div className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                  <div className="text-right flex-shrink-0 flex items-center gap-2 sm:gap-3">
+                    <div className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                       {formatReward(calculation)}
                     </div>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isExpanded
                         ? 'bg-primary/10 rotate-180'
                         : 'bg-transparent group-hover:bg-primary/5'
                     }`}>
                       <svg
-                        className="w-5 h-5 text-primary transition-transform duration-300"
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-primary transition-transform duration-300"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -271,12 +271,12 @@ export default function CardRecommendationList({
               <div className={`transition-all duration-300 ease-out overflow-hidden ${
                 isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
               }`}>
-                <div className="px-5 pb-6 pt-4 border-t border-border/50">
+                <div className="px-4 sm:px-5 pb-5 sm:pb-6 pt-3 sm:pt-4 border-t border-border/50">
 
                   {/* Reward Breakdown with Checkmarks + Total */}
                   {ruleBreakdown.length > 0 && (
-                    <div className="mb-5">
-                      <h5 className="text-xs font-semibold text-text-tertiary uppercase tracking-wide mb-3">
+                    <div className="mb-4 sm:mb-5">
+                      <h5 className="text-[10px] sm:text-xs font-semibold text-text-tertiary uppercase tracking-wide mb-2 sm:mb-3">
                         {t('breakdown.title')}
                       </h5>
 
@@ -284,13 +284,13 @@ export default function CardRecommendationList({
                         {ruleBreakdown.map((contribution, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center gap-3 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 group/rule hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors duration-200"
+                            className="flex items-start sm:items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50/50 dark:bg-slate-800/30 group/rule hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors duration-200"
                             style={{
                               animationDelay: `${idx * 80}ms`,
                             }}
                           >
                             {/* Animated Checkmark */}
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
+                            <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
                               isExpanded
                                 ? 'bg-emerald-100 dark:bg-emerald-900/40 scale-100'
                                 : 'bg-slate-100 dark:bg-slate-800 scale-75'
@@ -298,7 +298,7 @@ export default function CardRecommendationList({
                             style={{ transitionDelay: `${idx * 100 + 200}ms` }}
                             >
                               <svg
-                                className={`w-3.5 h-3.5 transition-all duration-300 ${
+                                className={`w-3 h-3 sm:w-3.5 sm:h-3.5 transition-all duration-300 ${
                                   isExpanded
                                     ? 'text-emerald-600 dark:text-emerald-400 opacity-100'
                                     : 'text-slate-400 opacity-0'
@@ -312,30 +312,30 @@ export default function CardRecommendationList({
                               </svg>
                             </div>
 
-                            {/* Rule Info */}
+                            {/* Rule Info - Stacked on mobile */}
                             <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2">
-                                <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${getTagStyle(contribution)}`}>
+                              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                                <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded ${getTagStyle(contribution)}`}>
                                   {getTagLabel(contribution)}
                                 </span>
-                                <span className="text-sm text-text-secondary truncate">
+                                <span className="text-xs sm:text-sm text-text-secondary line-clamp-2 sm:truncate">
                                   {contribution.description}
                                 </span>
                               </div>
                               {/* Cap info inline */}
                               {contribution.monthlySpendingCap && (
-                                <div className="mt-1 text-[10px] text-text-tertiary">
+                                <div className="mt-0.5 sm:mt-1 text-[9px] sm:text-[10px] text-text-tertiary">
                                   {t('breakdown.cap')}: ${contribution.monthlySpendingCap.toLocaleString()}/{t('breakdown.month')}
                                 </div>
                               )}
                             </div>
 
-                            {/* Rate & Amount */}
-                            <div className="flex items-center gap-3 flex-shrink-0">
-                              <span className="text-xs font-medium text-text-tertiary tabular-nums">
+                            {/* Rate & Amount - Vertical on mobile */}
+                            <div className="flex flex-col sm:flex-row items-end sm:items-center gap-0.5 sm:gap-3 flex-shrink-0">
+                              <span className="text-[10px] sm:text-xs font-medium text-text-tertiary tabular-nums">
                                 {formatRate(contribution.rate)}
                               </span>
-                              <span className="text-sm font-bold text-primary tabular-nums">
+                              <span className="text-xs sm:text-sm font-bold text-primary tabular-nums">
                                 {formatAmount(contribution.amount, calculation.rewardUnit)}
                               </span>
                             </div>
@@ -343,13 +343,13 @@ export default function CardRecommendationList({
                         ))}
 
                         {/* Total Row - Integrated */}
-                        <div className="flex items-center justify-between p-3 mt-1 rounded-xl bg-gradient-to-r from-primary/5 to-emerald-500/5 dark:from-primary/10 dark:to-emerald-500/10 border border-dashed border-primary/20">
-                          <span className="text-sm font-semibold text-text-primary">{t('breakdown.total')}</span>
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm font-semibold text-text-primary tabular-nums">
+                        <div className="flex items-center justify-between p-2.5 sm:p-3 mt-1 rounded-lg sm:rounded-xl bg-gradient-to-r from-primary/5 to-emerald-500/5 dark:from-primary/10 dark:to-emerald-500/10 border border-dashed border-primary/20">
+                          <span className="text-xs sm:text-sm font-semibold text-text-primary">{t('breakdown.total')}</span>
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <span className="text-xs sm:text-sm font-semibold text-text-primary tabular-nums">
                               {formatRate(calculation.effectiveRate)}
                             </span>
-                            <span className="text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent tabular-nums">
+                            <span className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent tabular-nums">
                               {formatReward(calculation)}
                             </span>
                           </div>
@@ -360,18 +360,18 @@ export default function CardRecommendationList({
 
                   {/* Alerts Section - Expiry & Action Required (Compact) */}
                   {ruleBreakdown.some(c => c.validUntil || c.actionRequired) && (
-                    <div className="mb-5 flex flex-wrap gap-2">
+                    <div className="mb-4 sm:mb-5 flex flex-wrap gap-1.5 sm:gap-2">
                       {ruleBreakdown
                         .filter(c => c.validUntil)
                         .map((c, idx) => (
                           <div
                             key={`expiry-${idx}`}
-                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
+                            className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-xs font-medium">{t('breakdown.offerExpires')}: {c.validUntil}</span>
+                            <span className="text-[10px] sm:text-xs font-medium">{t('breakdown.offerExpires')}: {c.validUntil}</span>
                           </div>
                         ))}
                       {ruleBreakdown
@@ -379,21 +379,21 @@ export default function CardRecommendationList({
                         .map((c, idx) => (
                           <div
                             key={`action-${idx}`}
-                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300"
+                            className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300"
                           >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-xs font-medium">{c.actionRequired}</span>
+                            <span className="text-[10px] sm:text-xs font-medium line-clamp-1">{c.actionRequired}</span>
                           </div>
                         ))}
                     </div>
                   )}
 
-                  {/* PRIORITY 4: Fees Section - Compact Inline */}
-                  <div className="mb-5 flex items-center gap-4 text-xs text-text-tertiary">
+                  {/* Fees Section - Stacked on mobile */}
+                  <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
                     <span className="font-medium">{t('breakdown.fees')}:</span>
-                    <div className="flex items-center gap-3 flex-wrap">
+                    <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-wrap">
                       <span>
                         {t('annualFee')}: {' '}
                         <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
@@ -402,7 +402,7 @@ export default function CardRecommendationList({
                       </span>
                       {card.fees.foreignTransactionFeeRate && (
                         <>
-                          <span className="text-border">•</span>
+                          <span className="hidden sm:inline text-border">•</span>
                           <span>
                             {t('breakdown.fxFee')}: {' '}
                             <span className="text-text-secondary">{(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%</span>
@@ -411,7 +411,7 @@ export default function CardRecommendationList({
                       )}
                       {card.fees.redemptionFee && (
                         <>
-                          <span className="text-border">•</span>
+                          <span className="hidden sm:inline text-border">•</span>
                           <span>
                             {t('breakdown.redemptionFee')}: {' '}
                             <span className="text-text-secondary">${card.fees.redemptionFee}</span>
@@ -423,7 +423,7 @@ export default function CardRecommendationList({
 
                   {/* Min Income Requirement - Compact */}
                   {card.minIncomeRequirement && (
-                    <div className="mb-5 text-xs text-text-tertiary">
+                    <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
                       <span className="font-medium">{t('breakdown.minIncome')}:</span>{' '}
                       <span className="text-text-secondary">HKD ${card.minIncomeRequirement.toLocaleString()} {t('breakdown.perYear')}</span>
                     </div>
@@ -435,11 +435,11 @@ export default function CardRecommendationList({
                       href={card.applyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group/btn relative block w-full px-6 py-3.5 bg-gradient-to-r from-primary to-primary/90 text-white text-center rounded-xl font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 overflow-hidden"
+                      className="group/btn relative block w-full px-4 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-primary to-primary/90 text-white text-center rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 overflow-hidden"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
                         {t('applyHere')}
-                        <svg className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-200 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                       </span>
