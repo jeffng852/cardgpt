@@ -69,13 +69,13 @@ export default function CardRecommendationList({
   // Helper function to get tag style based on rule type
   const getTagStyle = (contribution: RuleContribution) => {
     if (contribution.priority === 'base') {
-      return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400';
+      return 'bg-slate-100 text-slate-600 dark:bg-slate-800/60 dark:text-slate-300';
     }
     if (contribution.isPromotional) {
-      return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400';
+      return 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-700/50';
     }
     // Bonus or merchant-specific offer
-    return 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400';
+    return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-700/50';
   };
 
   // Helper function to get tag label
@@ -87,6 +87,17 @@ export default function CardRecommendationList({
       return t('tags.limitedOffer');
     }
     return t('tags.merchantOffer');
+  };
+
+  // Get color for progress bar based on rule type
+  const getBarColor = (contribution: RuleContribution) => {
+    if (contribution.priority === 'base') {
+      return 'bg-slate-400 dark:bg-slate-500';
+    }
+    if (contribution.isPromotional) {
+      return 'bg-gradient-to-r from-amber-400 to-orange-400';
+    }
+    return 'bg-gradient-to-r from-emerald-400 to-teal-400';
   };
 
   // Format rate as percentage
@@ -107,7 +118,7 @@ export default function CardRecommendationList({
         <div className="mb-6 flex gap-2 border-b border-border">
           <button
             onClick={() => setFilterRewardType('all')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
               filterRewardType === 'all'
                 ? 'border-primary text-primary'
                 : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -118,7 +129,7 @@ export default function CardRecommendationList({
           {availableRewardTypes.has('cash') && (
             <button
               onClick={() => setFilterRewardType('cash')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
                 filterRewardType === 'cash'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -130,7 +141,7 @@ export default function CardRecommendationList({
           {availableRewardTypes.has('miles') && (
             <button
               onClick={() => setFilterRewardType('miles')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
                 filterRewardType === 'miles'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -142,7 +153,7 @@ export default function CardRecommendationList({
           {availableRewardTypes.has('points') && (
             <button
               onClick={() => setFilterRewardType('points')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
                 filterRewardType === 'points'
                   ? 'border-primary text-primary'
                   : 'border-transparent text-text-secondary hover:text-text-primary'
@@ -168,25 +179,26 @@ export default function CardRecommendationList({
           const isTopRecommended = index === 0;
           const { calculation, card } = recommendation;
           const ruleBreakdown = calculation.ruleBreakdown || [];
+          const totalAmount = ruleBreakdown.reduce((sum, c) => sum + c.amount, 0) || calculation.rewardAmount;
 
           return (
             <div
               key={card.id}
-              className={`bg-surface border-2 rounded-2xl transition-all ${
+              className={`bg-surface rounded-2xl transition-all duration-300 ease-out overflow-hidden ${
                 isTopRecommended
-                  ? 'border-primary shadow-md'
-                  : 'border-border hover:border-primary/50 hover:shadow-sm'
+                  ? 'ring-2 ring-primary shadow-lg shadow-primary/10'
+                  : 'ring-1 ring-border hover:ring-primary/40 hover:shadow-md'
               }`}
             >
               {/* Preview Layer - Clickable to expand */}
               <button
                 onClick={() => toggleExpand(card.id)}
-                className="w-full p-5 text-left"
+                className="w-full p-5 text-left group"
               >
                 <div className="flex items-start gap-4">
                   {/* Card Image */}
                   {hasCardImage(card.id) ? (
-                    <div className="flex-shrink-0 w-20 h-14 relative rounded-lg overflow-hidden border border-border">
+                    <div className="flex-shrink-0 w-20 h-14 relative rounded-xl overflow-hidden ring-1 ring-border shadow-sm group-hover:shadow-md transition-shadow duration-200">
                       <Image
                         src={getCardImageUrl(card.id)}
                         alt={card.name}
@@ -196,8 +208,8 @@ export default function CardRecommendationList({
                       />
                     </div>
                   ) : (
-                    <div className="flex-shrink-0 w-20 h-14 rounded-lg bg-gradient-to-br from-primary/20 to-primary/5 border border-border flex items-center justify-center">
-                      <svg className="w-6 h-6 text-primary/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex-shrink-0 w-20 h-14 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent ring-1 ring-border flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow duration-200">
+                      <svg className="w-6 h-6 text-primary/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
                     </div>
@@ -206,11 +218,11 @@ export default function CardRecommendationList({
                   {/* Card Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                      <h4 className="text-base font-semibold text-text-primary truncate">
+                      <h4 className="text-base font-semibold text-text-primary truncate group-hover:text-primary transition-colors duration-200">
                         {card.name}
                       </h4>
                       {isTopRecommended && (
-                        <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-full whitespace-nowrap">
+                        <span className="px-2 py-0.5 bg-gradient-to-r from-primary/20 to-primary/10 text-primary text-xs font-semibold rounded-full whitespace-nowrap">
                           {t('recommended')}
                         </span>
                       )}
@@ -224,7 +236,7 @@ export default function CardRecommendationList({
                       {ruleBreakdown.map((contribution, idx) => (
                         <span
                           key={idx}
-                          className={`px-2 py-0.5 text-xs font-medium rounded ${getTagStyle(contribution)}`}
+                          className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-transform duration-200 hover:scale-105 ${getTagStyle(contribution)}`}
                         >
                           {getTagLabel(contribution)} {formatRate(contribution.rate)}
                         </span>
@@ -233,158 +245,209 @@ export default function CardRecommendationList({
                   </div>
 
                   {/* Reward Amount */}
-                  <div className="text-right flex-shrink-0 flex items-center gap-2">
-                    <div className="text-xl font-bold text-primary">
+                  <div className="text-right flex-shrink-0 flex items-center gap-3">
+                    <div className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                       {formatReward(calculation)}
                     </div>
-                    <svg
-                      className={`w-5 h-5 text-text-tertiary transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                      isExpanded
+                        ? 'bg-primary/10 rotate-180'
+                        : 'bg-transparent group-hover:bg-primary/5'
+                    }`}>
+                      <svg
+                        className="w-5 h-5 text-primary transition-transform duration-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </button>
 
-              {/* Details Layer - Expandable */}
-              {isExpanded && (
-                <div className="px-5 pb-5 border-t border-border">
-                  {/* Reward Breakdown */}
+              {/* Details Layer - Expandable with animation */}
+              <div className={`transition-all duration-300 ease-out overflow-hidden ${
+                isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+              }`}>
+                <div className="px-5 pb-6 pt-4 border-t border-border/50">
+
+                  {/* Reward Breakdown with Checkmarks + Total */}
                   {ruleBreakdown.length > 0 && (
-                    <div className="pt-4">
-                      <h5 className="text-sm font-medium text-text-primary mb-3">
+                    <div className="mb-5">
+                      <h5 className="text-xs font-semibold text-text-tertiary uppercase tracking-wide mb-3">
                         {t('breakdown.title')}
                       </h5>
-                      <div className="bg-input-bg rounded-xl p-4 space-y-2">
+
+                      <div className="space-y-2">
                         {ruleBreakdown.map((contribution, idx) => (
-                          <div key={idx} className="flex items-center justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <span className={`w-2 h-2 rounded-full ${
-                                contribution.priority === 'base'
-                                  ? 'bg-gray-400'
-                                  : contribution.isPromotional
-                                    ? 'bg-yellow-500'
-                                    : 'bg-blue-500'
-                              }`} />
-                              <span className="text-text-secondary">{contribution.description}</span>
+                          <div
+                            key={idx}
+                            className="flex items-center gap-3 p-3 rounded-xl bg-slate-50/50 dark:bg-slate-800/30 group/rule hover:bg-slate-100/50 dark:hover:bg-slate-800/50 transition-colors duration-200"
+                            style={{
+                              animationDelay: `${idx * 80}ms`,
+                            }}
+                          >
+                            {/* Animated Checkmark */}
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-500 ${
+                              isExpanded
+                                ? 'bg-emerald-100 dark:bg-emerald-900/40 scale-100'
+                                : 'bg-slate-100 dark:bg-slate-800 scale-75'
+                            }`}
+                            style={{ transitionDelay: `${idx * 100 + 200}ms` }}
+                            >
+                              <svg
+                                className={`w-3.5 h-3.5 transition-all duration-300 ${
+                                  isExpanded
+                                    ? 'text-emerald-600 dark:text-emerald-400 opacity-100'
+                                    : 'text-slate-400 opacity-0'
+                                }`}
+                                style={{ transitionDelay: `${idx * 100 + 300}ms` }}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                              </svg>
                             </div>
-                            <div className="flex items-center gap-4 text-text-primary font-medium">
-                              <span>{formatRate(contribution.rate)}</span>
-                              <span className="text-primary">{formatAmount(contribution.amount, calculation.rewardUnit)}</span>
+
+                            {/* Rule Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${getTagStyle(contribution)}`}>
+                                  {getTagLabel(contribution)}
+                                </span>
+                                <span className="text-sm text-text-secondary truncate">
+                                  {contribution.description}
+                                </span>
+                              </div>
+                              {/* Cap info inline */}
+                              {contribution.monthlySpendingCap && (
+                                <div className="mt-1 text-[10px] text-text-tertiary">
+                                  {t('breakdown.cap')}: ${contribution.monthlySpendingCap.toLocaleString()}/{t('breakdown.month')}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Rate & Amount */}
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                              <span className="text-xs font-medium text-text-tertiary tabular-nums">
+                                {formatRate(contribution.rate)}
+                              </span>
+                              <span className="text-sm font-bold text-primary tabular-nums">
+                                {formatAmount(contribution.amount, calculation.rewardUnit)}
+                              </span>
                             </div>
                           </div>
                         ))}
 
-                        {/* Show cap info if any rule has it */}
-                        {ruleBreakdown.some(c => c.monthlySpendingCap) && (
-                          <div className="pt-2 mt-2 border-t border-border/50 text-xs text-text-tertiary">
-                            {ruleBreakdown
-                              .filter(c => c.monthlySpendingCap)
-                              .map((c, idx) => (
-                                <span key={idx}>
-                                  {t('breakdown.cap')}: ${c.monthlySpendingCap?.toLocaleString()}/{t('breakdown.month')}
-                                </span>
-                              ))}
-                          </div>
-                        )}
-
-                        {/* Total */}
-                        <div className="flex items-center justify-between text-sm pt-2 mt-2 border-t border-border/50 font-medium">
-                          <span className="text-text-primary">{t('breakdown.total')}</span>
-                          <div className="flex items-center gap-4">
-                            <span className="text-text-primary">{formatRate(calculation.effectiveRate)}</span>
-                            <span className="text-primary font-bold">{formatReward(calculation)}</span>
+                        {/* Total Row - Integrated */}
+                        <div className="flex items-center justify-between p-3 mt-1 rounded-xl bg-gradient-to-r from-primary/5 to-emerald-500/5 dark:from-primary/10 dark:to-emerald-500/10 border border-dashed border-primary/20">
+                          <span className="text-sm font-semibold text-text-primary">{t('breakdown.total')}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-semibold text-text-primary tabular-nums">
+                              {formatRate(calculation.effectiveRate)}
+                            </span>
+                            <span className="text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent tabular-nums">
+                              {formatReward(calculation)}
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Offer Expiry & Action Required */}
+                  {/* Alerts Section - Expiry & Action Required (Compact) */}
                   {ruleBreakdown.some(c => c.validUntil || c.actionRequired) && (
-                    <div className="pt-4 space-y-2">
+                    <div className="mb-5 flex flex-wrap gap-2">
                       {ruleBreakdown
                         .filter(c => c.validUntil)
                         .map((c, idx) => (
-                          <div key={`expiry-${idx}`} className="flex items-center gap-2 text-sm text-yellow-600 dark:text-yellow-400">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div
+                            key={`expiry-${idx}`}
+                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>{t('breakdown.offerExpires')}: {c.validUntil}</span>
+                            <span className="text-xs font-medium">{t('breakdown.offerExpires')}: {c.validUntil}</span>
                           </div>
                         ))}
                       {ruleBreakdown
                         .filter(c => c.actionRequired)
                         .map((c, idx) => (
-                          <div key={`action-${idx}`} className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div
+                            key={`action-${idx}`}
+                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span>{t('breakdown.actionRequired')}: {c.actionRequired}</span>
+                            <span className="text-xs font-medium">{c.actionRequired}</span>
                           </div>
                         ))}
                     </div>
                   )}
 
-                  {/* Fees Section */}
-                  <div className="pt-4">
-                    <h5 className="text-sm font-medium text-text-primary mb-3">
-                      {t('breakdown.fees')}
-                    </h5>
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      <div className="bg-input-bg rounded-lg p-3">
-                        <div className="text-xs text-text-tertiary mb-1">{t('annualFee')}</div>
-                        <div className="text-sm font-medium text-text-primary">
-                          {card.fees.annualFee > 0
-                            ? `$${card.fees.annualFee.toLocaleString()}`
-                            : t('free')}
-                        </div>
-                      </div>
-                      <div className="bg-input-bg rounded-lg p-3">
-                        <div className="text-xs text-text-tertiary mb-1">{t('breakdown.fxFee')}</div>
-                        <div className="text-sm font-medium text-text-primary">
-                          {card.fees.foreignTransactionFeeRate
-                            ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(2)}%`
-                            : '-'}
-                        </div>
-                      </div>
-                      <div className="bg-input-bg rounded-lg p-3">
-                        <div className="text-xs text-text-tertiary mb-1">{t('breakdown.redemptionFee')}</div>
-                        <div className="text-sm font-medium text-text-primary">
-                          {card.fees.redemptionFee
-                            ? `$${card.fees.redemptionFee}`
-                            : '-'}
-                        </div>
-                      </div>
+                  {/* PRIORITY 4: Fees Section - Compact Inline */}
+                  <div className="mb-5 flex items-center gap-4 text-xs text-text-tertiary">
+                    <span className="font-medium">{t('breakdown.fees')}:</span>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span>
+                        {t('annualFee')}: {' '}
+                        <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
+                          {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
+                        </span>
+                      </span>
+                      {card.fees.foreignTransactionFeeRate && (
+                        <>
+                          <span className="text-border">•</span>
+                          <span>
+                            {t('breakdown.fxFee')}: {' '}
+                            <span className="text-text-secondary">{(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%</span>
+                          </span>
+                        </>
+                      )}
+                      {card.fees.redemptionFee && (
+                        <>
+                          <span className="text-border">•</span>
+                          <span>
+                            {t('breakdown.redemptionFee')}: {' '}
+                            <span className="text-text-secondary">${card.fees.redemptionFee}</span>
+                          </span>
+                        </>
+                      )}
                     </div>
                   </div>
 
-                  {/* Min Income Requirement */}
+                  {/* Min Income Requirement - Compact */}
                   {card.minIncomeRequirement && (
-                    <div className="pt-4 text-sm text-text-secondary">
+                    <div className="mb-5 text-xs text-text-tertiary">
                       <span className="font-medium">{t('breakdown.minIncome')}:</span>{' '}
-                      HKD ${card.minIncomeRequirement.toLocaleString()} {t('breakdown.perYear')}
+                      <span className="text-text-secondary">HKD ${card.minIncomeRequirement.toLocaleString()} {t('breakdown.perYear')}</span>
                     </div>
                   )}
 
                   {/* Apply Button */}
                   {card.applyUrl && (
-                    <div className="pt-4">
-                      <a
-                        href={card.applyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block w-full px-6 py-3 bg-primary text-white text-center rounded-xl font-medium hover:bg-primary-hover transition-colors"
-                      >
+                    <a
+                      href={card.applyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/btn relative block w-full px-6 py-3.5 bg-gradient-to-r from-primary to-primary/90 text-white text-center rounded-xl font-semibold shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
                         {t('applyHere')}
-                      </a>
-                    </div>
+                        <svg className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
+                      <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-500" />
+                    </a>
                   )}
                 </div>
-              )}
+              </div>
             </div>
           );
         })}
