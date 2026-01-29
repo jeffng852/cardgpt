@@ -294,6 +294,12 @@ export async function parseActivity(
   const openaiKey =
     process.env.OPENAI_API_KEY || loadApiKeyFromFile('OPENAI_API_KEY');
 
+  // Debug logging
+  console.log('[parseActivity] Checking API keys...');
+  console.log('[parseActivity] OpenRouter configured:', !!openrouterKey);
+  console.log('[parseActivity] OpenAI configured:', !!openaiKey);
+  console.log('[parseActivity] Anthropic configured:', !!anthropicKey);
+
   // Determine which API to use (OpenRouter first - no geo-restrictions)
   let apiUrl: string;
   let headers: Record<string, string>;
