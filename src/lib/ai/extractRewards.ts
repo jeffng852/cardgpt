@@ -109,6 +109,11 @@ export async function extractRewardsFromText(text: string): Promise<ExtractionRe
   // Debug: log which keys are configured (not the actual values)
   console.log('[extractRewards] OpenAI key configured:', !!openaiKey && openaiKey.length > 0);
   console.log('[extractRewards] Anthropic key configured:', !!anthropicKey && anthropicKey.length > 0);
+  // Debug: log key prefix and length to diagnose issues (safe - doesn't expose full key)
+  if (anthropicKey) {
+    console.log('[extractRewards] Anthropic key prefix:', anthropicKey.substring(0, 10) + '...');
+    console.log('[extractRewards] Anthropic key length:', anthropicKey.length);
+  }
 
   if (openaiKey && openaiKey.length > 0) {
     console.log('[extractRewards] Using OpenAI');
