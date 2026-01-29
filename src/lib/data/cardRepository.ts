@@ -2,13 +2,18 @@
  * Card Repository - Data access layer for credit card operations
  *
  * Design:
- * - Read operations: Direct JSON import (fast, cached by Next.js)
- * - Write operations: Via API routes that update the JSON file
- * - Production updates: Commit changes to Git, Vercel auto-deploys
+ * - Sync functions: Use static JSON import (fast, for build-time)
+ * - Async functions: Check blob storage in production, fallback to static
+ * - Write operations: Via cardWriter module
  */
 
 import type { CreditCard, RewardRule } from '@/types/card';
 import cardsData from '@/data/cards.json';
+import {
+  isProductionEnvironment,
+  isBlobConfigured,
+  readCardsFromBlob,
+} from './blobStorage';
 
 /**
  * Card database structure (matches cards.json schema)
@@ -33,15 +38,19 @@ export interface WriteResult {
   card?: CreditCard;
 }
 
+// ============================================================================
+// SYNC FUNCTIONS (use static import, fast for build-time rendering)
+// ============================================================================
+
 /**
- * Get the full database
+ * Get the full database (static import)
  */
 export function getDatabase(): CardDatabase {
   return cardsData as CardDatabase;
 }
 
 /**
- * Get all cards (including inactive for admin)
+ * Get all cards including inactive (static import)
  */
 export function getAllCards(): CreditCard[] {
   const db = getDatabase();
@@ -49,18 +58,68 @@ export function getAllCards(): CreditCard[] {
 }
 
 /**
- * Get only active cards (for public-facing features)
+ * Get only active cards (static import)
  */
 export function getActiveCards(): CreditCard[] {
   return getAllCards().filter(card => card.isActive);
 }
 
 /**
- * Get card by ID
+ * Get card by ID (static import)
  */
 export function getCardById(id: string): CreditCard | undefined {
   return getAllCards().find(card => card.id === id);
 }
+
+// ============================================================================
+// ASYNC FUNCTIONS (check blob storage in production for fresh data)
+// ============================================================================
+
+/**
+ * Get the full database async (checks blob in production)
+ */
+export async function getDatabaseAsync(): Promise<CardDatabase> {
+  // In production with blob configured, try blob first
+  if (isProductionEnvironment() && isBlobConfigured()) {
+    const blobData = await readCardsFromBlob();
+    if (blobData) {
+      return blobData;
+    }
+    // Fall through to static import if blob fails
+    console.warn('Blob read failed, falling back to static import');
+  }
+
+  // Use static import
+  return cardsData as CardDatabase;
+}
+
+/**
+ * Get all cards including inactive (async, checks blob)
+ */
+export async function getAllCardsAsync(): Promise<CreditCard[]> {
+  const db = await getDatabaseAsync();
+  return db.cards;
+}
+
+/**
+ * Get only active cards (async, checks blob)
+ */
+export async function getActiveCardsAsync(): Promise<CreditCard[]> {
+  const allCards = await getAllCardsAsync();
+  return allCards.filter(card => card.isActive);
+}
+
+/**
+ * Get card by ID (async, checks blob)
+ */
+export async function getCardByIdAsync(id: string): Promise<CreditCard | undefined> {
+  const allCards = await getAllCardsAsync();
+  return allCards.find(card => card.id === id);
+}
+
+// ============================================================================
+// VALIDATION FUNCTIONS
+// ============================================================================
 
 /**
  * Validate a credit card object
@@ -160,6 +219,10 @@ export function validateRewardRule(rule: Partial<RewardRule>): string[] {
   return errors;
 }
 
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
 /**
  * Generate a URL-safe ID from card name
  */
@@ -184,10 +247,18 @@ export function generateRuleId(description: string): string {
 }
 
 /**
- * Check if a card ID already exists
+ * Check if a card ID already exists (sync, static import)
  */
 export function cardIdExists(id: string): boolean {
   return getAllCards().some(card => card.id === id);
+}
+
+/**
+ * Check if a card ID already exists (async, checks blob)
+ */
+export async function cardIdExistsAsync(id: string): Promise<boolean> {
+  const allCards = await getAllCardsAsync();
+  return allCards.some(card => card.id === id);
 }
 
 /**
@@ -214,10 +285,11 @@ function isValidDateString(dateStr: string): boolean {
 }
 
 /**
- * Get database statistics
+ * Get database statistics (async, checks blob)
  */
-export function getDatabaseStats() {
-  const cards = getAllCards();
+export async function getDatabaseStats() {
+  const db = await getDatabaseAsync();
+  const cards = db.cards;
   const activeCards = cards.filter(c => c.isActive);
 
   const issuers = new Set(cards.map(c => c.issuer));
@@ -242,7 +314,7 @@ export function getDatabaseStats() {
     rewardTypes: Array.from(rewardTypes),
     totalRewardRules: totalRules,
     promotionalRules,
-    lastUpdated: getDatabase().lastUpdated,
-    version: getDatabase().version,
+    lastUpdated: db.lastUpdated,
+    version: db.version,
   };
 }

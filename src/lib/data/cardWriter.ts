@@ -6,17 +6,21 @@
  * - Server components
  *
  * Write Flow:
- * 1. Read current cards.json
- * 2. Validate the changes
- * 3. Write updated data back to cards.json
- * 4. For production: Commit to Git → Vercel auto-deploys
+ * - Development: Direct file system writes to cards.json
+ * - Production: Vercel Blob storage (filesystem is read-only)
  */
 
 import fs from 'fs/promises';
 import path from 'path';
 import type { CreditCard } from '@/types/card';
-import { validateCard, cardIdExists, getDatabase } from './cardRepository';
+import { validateCard } from './cardRepository';
 import type { CardDatabase } from './cardRepository';
+import {
+  isProductionEnvironment,
+  isBlobConfigured,
+  readCardsFromBlob,
+  writeCardsToBlob,
+} from './blobStorage';
 
 const CARDS_FILE_PATH = path.join(process.cwd(), 'src/data/cards.json');
 
@@ -31,17 +35,28 @@ export interface WriteResult<T = CreditCard> {
 }
 
 /**
- * Read the cards.json file directly (bypassing import cache)
+ * Read the cards database (from blob in production, file in development)
  */
-async function readCardsFile(): Promise<CardDatabase> {
+async function readCardsData(): Promise<CardDatabase> {
+  // In production with blob configured, try blob first
+  if (isProductionEnvironment() && isBlobConfigured()) {
+    const blobData = await readCardsFromBlob();
+    if (blobData) {
+      return blobData;
+    }
+    // Fall through to file read if blob fails
+    console.warn('Blob read failed, falling back to local file');
+  }
+
+  // Read from local file
   const content = await fs.readFile(CARDS_FILE_PATH, 'utf-8');
   return JSON.parse(content) as CardDatabase;
 }
 
 /**
- * Write the cards.json file
+ * Write the cards database (to blob in production, file in development)
  */
-async function writeCardsFile(database: CardDatabase): Promise<void> {
+async function writeCardsData(database: CardDatabase): Promise<void> {
   // Update lastUpdated timestamp
   database.lastUpdated = new Date().toISOString();
 
@@ -50,8 +65,26 @@ async function writeCardsFile(database: CardDatabase): Promise<void> {
     database.metadata.totalCards = database.cards.length;
   }
 
+  // In production with blob configured, write to blob
+  if (isProductionEnvironment() && isBlobConfigured()) {
+    const success = await writeCardsToBlob(database);
+    if (!success) {
+      throw new Error('Failed to write cards to blob storage');
+    }
+    return;
+  }
+
+  // Write to local file (development)
   const content = JSON.stringify(database, null, 2) + '\n';
   await fs.writeFile(CARDS_FILE_PATH, content, 'utf-8');
+}
+
+/**
+ * Check if a card ID exists in the database
+ */
+async function cardIdExistsInDb(id: string): Promise<boolean> {
+  const database = await readCardsData();
+  return database.cards.some(card => card.id === id);
 }
 
 /**
@@ -66,18 +99,18 @@ export async function createCard(card: CreditCard): Promise<WriteResult> {
     }
 
     // Check for duplicate ID
-    if (cardIdExists(card.id)) {
+    if (await cardIdExistsInDb(card.id)) {
       return { success: false, error: `Card with ID "${card.id}" already exists` };
     }
 
     // Read current data
-    const database = await readCardsFile();
+    const database = await readCardsData();
 
     // Add the new card
     database.cards.push(card);
 
     // Write back
-    await writeCardsFile(database);
+    await writeCardsData(database);
 
     return { success: true, data: card };
   } catch (error) {
@@ -98,7 +131,7 @@ export async function updateCard(
 ): Promise<WriteResult> {
   try {
     // Read current data
-    const database = await readCardsFile();
+    const database = await readCardsData();
 
     // Find the card
     const cardIndex = database.cards.findIndex(c => c.id === id);
@@ -125,7 +158,7 @@ export async function updateCard(
     database.cards[cardIndex] = updatedCard;
 
     // Write back
-    await writeCardsFile(database);
+    await writeCardsData(database);
 
     return { success: true, data: updatedCard };
   } catch (error) {
@@ -151,7 +184,7 @@ export async function deactivateCard(id: string): Promise<WriteResult> {
 export async function deleteCard(id: string): Promise<WriteResult<null>> {
   try {
     // Read current data
-    const database = await readCardsFile();
+    const database = await readCardsData();
 
     // Find the card
     const cardIndex = database.cards.findIndex(c => c.id === id);
@@ -163,7 +196,7 @@ export async function deleteCard(id: string): Promise<WriteResult<null>> {
     database.cards.splice(cardIndex, 1);
 
     // Write back
-    await writeCardsFile(database);
+    await writeCardsData(database);
 
     return { success: true, data: null };
   } catch (error) {
@@ -183,7 +216,7 @@ export async function bulkUpdateCards(
 ): Promise<WriteResult<CreditCard[]>> {
   try {
     // Read current data
-    const database = await readCardsFile();
+    const database = await readCardsData();
     const updatedCards: CreditCard[] = [];
     const errors: string[] = [];
 
@@ -217,7 +250,7 @@ export async function bulkUpdateCards(
     }
 
     // Write back
-    await writeCardsFile(database);
+    await writeCardsData(database);
 
     return {
       success: true,
@@ -238,7 +271,7 @@ export async function bulkUpdateCards(
  */
 export async function reorderCards(cardIds: string[]): Promise<WriteResult<null>> {
   try {
-    const database = await readCardsFile();
+    const database = await readCardsData();
 
     // Create a map of existing cards
     const cardMap = new Map(database.cards.map(c => [c.id, c]));
@@ -259,7 +292,7 @@ export async function reorderCards(cardIds: string[]): Promise<WriteResult<null>
     }
 
     database.cards = reorderedCards;
-    await writeCardsFile(database);
+    await writeCardsData(database);
 
     return { success: true, data: null };
   } catch (error) {
