@@ -18,6 +18,11 @@ interface ExtractionResult {
   sourceUrl?: string;
 }
 
+// Extended rule type with source tracking
+interface RuleWithSource extends Partial<RewardRule> {
+  _source?: string; // Track which URL/source this rule came from
+}
+
 const CONFIDENCE_COLORS = {
   high: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
   medium: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
@@ -38,8 +43,12 @@ export default function UploadExtractor() {
   // Editable extraction results
   const [editedCardName, setEditedCardName] = useState('');
   const [editedIssuer, setEditedIssuer] = useState('');
-  const [editedRules, setEditedRules] = useState<Partial<RewardRule>[]>([]);
+  const [editedRules, setEditedRules] = useState<RuleWithSource[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<string>('new');
+
+  // Track all sources used for extraction
+  const [extractedSources, setExtractedSources] = useState<string[]>([]);
+  const [isAddingSource, setIsAddingSource] = useState(false);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -120,12 +129,14 @@ export default function UploadExtractor() {
     }
   };
 
-  const extractFromUrl = async () => {
+  const extractFromUrl = async (isAdditional = false) => {
     if (!url) return;
 
     setIsExtracting(true);
     setError('');
-    setResult(null);
+    if (!isAdditional) {
+      setResult(null);
+    }
 
     try {
       const response = await fetch('/api/admin/extract', {
@@ -140,7 +151,7 @@ export default function UploadExtractor() {
         throw new Error(data.error || 'Extraction failed');
       }
 
-      handleExtractionResult(data);
+      handleExtractionResult(data, isAdditional);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to extract from URL');
     } finally {
@@ -148,19 +159,54 @@ export default function UploadExtractor() {
     }
   };
 
-  const handleExtractionResult = (data: ExtractionResult) => {
-    setResult(data);
-    setEditedCardName(data.cardName || '');
-    setEditedIssuer(data.issuer || '');
-    setEditedRules(data.rules || []);
+  const handleExtractionResult = (data: ExtractionResult, isAdditionalSource = false) => {
+    const sourceName = data.sourceUrl || data.source || 'Unknown source';
+
+    // Add source tracking to each rule
+    const rulesWithSource: RuleWithSource[] = (data.rules || []).map((rule, idx) => ({
+      ...rule,
+      id: rule.id || `extracted-${Date.now()}-${idx}`,
+      _source: sourceName,
+    }));
+
+    if (isAdditionalSource) {
+      // Append to existing rules
+      setEditedRules(prev => [...prev, ...rulesWithSource]);
+      setExtractedSources(prev => [...prev, sourceName]);
+      setIsAddingSource(false);
+      // Keep result to show UI, but clear URL for next input
+      setUrl('');
+      setSelectedFile(null);
+    } else {
+      // First extraction - reset everything
+      setResult(data);
+      setEditedCardName(data.cardName || '');
+      setEditedIssuer(data.issuer || '');
+      setEditedRules(rulesWithSource);
+      setExtractedSources([sourceName]);
+    }
   };
 
-  const handleExtract = () => {
+  const handleExtract = (isAdditional = false) => {
     if (activeTab === 'pdf') {
       extractFromPdf();
     } else {
-      extractFromUrl();
+      extractFromUrl(isAdditional);
     }
+  };
+
+  const handleAddAnotherSource = () => {
+    setIsAddingSource(true);
+    setUrl('');
+    setSelectedFile(null);
+    setError('');
+  };
+
+  const handleCancelAddSource = () => {
+    setIsAddingSource(false);
+    setUrl('');
+    setSelectedFile(null);
+    setError('');
   };
 
   const updateRule = (index: number, updates: Partial<RewardRule>) => {
@@ -179,10 +225,11 @@ export default function UploadExtractor() {
     const cardData = {
       name: editedCardName,
       issuer: editedIssuer,
-      rewards: editedRules,
+      rewards: editedRules, // Includes _source field for each rule
       termsUrl: result?.sourceUrl,
       termsContent: result?.sourceText,
       termsExtractedAt: new Date().toISOString(),
+      sources: extractedSources, // Pass all sources used
     };
 
     // Store in sessionStorage for the new card form to pick up
@@ -318,7 +365,7 @@ export default function UploadExtractor() {
             {/* Extract Button */}
             <div className="mt-6">
               <button
-                onClick={handleExtract}
+                onClick={() => handleExtract(false)}
                 disabled={isExtracting || (activeTab === 'pdf' ? !selectedFile : !url)}
                 className="w-full px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -338,6 +385,65 @@ export default function UploadExtractor() {
         {/* Extraction Results */}
         {result && (
           <>
+            {/* Sources Summary */}
+            <section className="bg-background-secondary rounded-xl border border-border p-4 mb-6">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-sm font-medium text-foreground">Sources ({extractedSources.length})</h3>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {extractedSources.map((source, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 rounded"
+                        title={source}
+                      >
+                        {source.length > 40 ? source.substring(0, 40) + '...' : source}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {!isAddingSource && (
+                  <button
+                    onClick={handleAddAnotherSource}
+                    className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    + Add Source
+                  </button>
+                )}
+              </div>
+
+              {/* Add Another Source Form */}
+              {isAddingSource && (
+                <div className="mt-4 pt-4 border-t border-border">
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      placeholder="Enter another URL (e.g., MoneyHero product page)"
+                      className="flex-1 px-4 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                    />
+                    <button
+                      onClick={() => handleExtract(true)}
+                      disabled={isExtracting || !url}
+                      className="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                    >
+                      {isExtracting ? 'Extracting...' : 'Extract'}
+                    </button>
+                    <button
+                      onClick={handleCancelAddSource}
+                      className="px-3 py-2 text-sm text-foreground-muted border border-border rounded-lg hover:bg-background"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  <p className="text-xs text-foreground-muted mt-2">
+                    Add additional sources like MoneyHero, bank product pages, or other T&C documents to extract more rules.
+                  </p>
+                </div>
+              )}
+            </section>
+
             {/* Card Info */}
             <section className="bg-background-secondary rounded-xl border border-border p-6 mb-6">
               <div className="flex justify-between items-center mb-4">
@@ -345,11 +451,14 @@ export default function UploadExtractor() {
                 <button
                   onClick={() => {
                     setResult(null);
+                    setExtractedSources([]);
+                    setEditedRules([]);
+                    setIsAddingSource(false);
                     setError('');
                   }}
                   className="text-sm text-foreground-muted hover:text-foreground"
                 >
-                  ← Extract Another
+                  ← Start Over
                 </button>
               </div>
 
@@ -421,6 +530,15 @@ export default function UploadExtractor() {
                           className="w-full px-3 py-1 text-sm rounded border border-border bg-background text-foreground font-medium"
                           placeholder="Rule description"
                         />
+                        {/* Source indicator */}
+                        {rule._source && extractedSources.length > 1 && (
+                          <span
+                            className="inline-block mt-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 rounded"
+                            title={rule._source}
+                          >
+                            📄 {rule._source.length > 30 ? rule._source.substring(0, 30) + '...' : rule._source}
+                          </span>
+                        )}
                       </div>
                       <button
                         onClick={() => removeRule(index)}

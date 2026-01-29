@@ -1,13 +1,24 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Logo } from '@/components/Logo';
 import type { CreditCard, RewardRule, FeeStructure, RewardPrograms, RewardProgramInfo } from '@/types/card';
 
 interface CardEditFormProps {
   cardId: string;
+}
+
+// Interface for extracted data from UploadExtractor
+interface ExtractedCardData {
+  name?: string;
+  issuer?: string;
+  rewards?: Array<Partial<RewardRule> & { _source?: string }>;
+  termsUrl?: string;
+  termsContent?: string;
+  termsExtractedAt?: string;
+  sources?: string[];
 }
 
 const emptyCard: Partial<CreditCard> = {
@@ -48,7 +59,9 @@ function generateRuleId(cardId: string, priority: string, categories: string[], 
 
 export default function CardEditForm({ cardId }: CardEditFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const isNew = cardId === 'new';
+  const fromExtraction = searchParams.get('fromExtraction') === 'true';
 
   const [card, setCard] = useState<Partial<CreditCard>>(emptyCard);
   const [isLoading, setIsLoading] = useState(!isNew);
@@ -70,6 +83,65 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
   const [isExtracting, setIsExtracting] = useState(false);
   const [extractError, setExtractError] = useState('');
   const [extractSuccess, setExtractSuccess] = useState('');
+
+  // Track sources from multi-source extraction
+  const [extractedSources, setExtractedSources] = useState<string[]>([]);
+
+  // Load extracted data from sessionStorage if coming from UploadExtractor
+  useEffect(() => {
+    if (isNew && fromExtraction) {
+      try {
+        const storedData = sessionStorage.getItem('extractedCardData');
+        if (storedData) {
+          const extractedData: ExtractedCardData = JSON.parse(storedData);
+
+          // Pre-populate card with extracted data
+          const cardUpdates: Partial<CreditCard> = {
+            ...emptyCard,
+            name: extractedData.name || '',
+            issuer: extractedData.issuer || '',
+            termsUrl: extractedData.termsUrl,
+            termsContent: extractedData.termsContent,
+            termsExtractedAt: extractedData.termsExtractedAt,
+          };
+
+          // Process extracted rules - remove _source field and generate proper IDs
+          if (extractedData.rewards && extractedData.rewards.length > 0) {
+            const sources = new Set<string>();
+            const processedRules: RewardRule[] = extractedData.rewards.map((rule, index) => {
+              // Track sources
+              if (rule._source) {
+                sources.add(rule._source);
+              }
+              // Remove _source and create proper RewardRule
+              const { _source, ...ruleData } = rule;
+              return {
+                ...ruleData,
+                id: generateRuleId(
+                  cardUpdates.id || 'card',
+                  ruleData.priority || 'base',
+                  (ruleData.categories as string[]) || ['all'],
+                  index
+                ),
+                // Store source URL in the rule's sourceUrl field
+                sourceUrl: _source || ruleData.sourceUrl,
+              } as RewardRule;
+            });
+            cardUpdates.rewards = processedRules;
+            setExtractedSources(Array.from(sources));
+          }
+
+          setCard(cardUpdates);
+          setSuccess(`Loaded ${cardUpdates.rewards?.length || 0} rules from ${extractedSources.length || 1} source(s). Review and save to create the card.`);
+
+          // Clear sessionStorage after loading
+          sessionStorage.removeItem('extractedCardData');
+        }
+      } catch (err) {
+        console.error('Failed to load extracted data:', err);
+      }
+    }
+  }, [isNew, fromExtraction]);
 
   useEffect(() => {
     if (!isNew) {
@@ -379,6 +451,32 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
           <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
             <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
           </div>
+        )}
+
+        {/* Extraction Sources (shown when coming from multi-source extraction) */}
+        {extractedSources.length > 0 && (
+          <section className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6">
+            <h3 className="text-sm font-medium text-blue-700 dark:text-blue-400 mb-2">
+              Data extracted from {extractedSources.length} source(s):
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {extractedSources.map((source, idx) => (
+                <a
+                  key={idx}
+                  href={source}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-700 dark:bg-blue-800/50 dark:text-blue-300 rounded hover:underline"
+                  title={source}
+                >
+                  🔗 {source.length > 50 ? source.substring(0, 50) + '...' : source}
+                </a>
+              ))}
+            </div>
+            <p className="text-xs text-blue-600 dark:text-blue-400 mt-2">
+              Review the extracted rules below and make any necessary corrections before saving.
+            </p>
+          </section>
         )}
 
         {/* Basic Info */}
@@ -858,6 +956,15 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
                   </div>
                   <p className="text-sm text-foreground-muted mt-1">
                     {(rule.rewardRate * 100).toFixed(2)}% {rule.rewardUnit}
+                    {/* Show source URL if from multi-source extraction */}
+                    {rule.sourceUrl && extractedSources.length > 1 && (
+                      <span
+                        className="ml-2 text-xs text-blue-500"
+                        title={rule.sourceUrl}
+                      >
+                        • from {rule.sourceUrl.length > 30 ? rule.sourceUrl.substring(0, 30) + '...' : rule.sourceUrl}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex gap-2">
