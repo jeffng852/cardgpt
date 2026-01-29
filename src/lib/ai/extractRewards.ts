@@ -142,7 +142,7 @@ async function extractWithOpenRouter(text: string, apiKey: string): Promise<Extr
         'HTTP-Referer': process.env.NEXT_PUBLIC_BASE_URL || 'https://cardgpt.app',
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3.5-haiku',
+        model: 'google/gemini-2.0-flash-001',
         messages: [
           {
             role: 'system',

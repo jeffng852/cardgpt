@@ -315,7 +315,7 @@ export async function parseActivity(
       'HTTP-Referer': process.env.NEXT_PUBLIC_BASE_URL || 'https://cardgpt.app',
     };
     body = {
-      model: 'anthropic/claude-3.5-haiku',
+      model: 'google/gemini-2.0-flash-001',
       max_tokens: 150,
       messages: [{ role: 'user', content: ACTIVITY_PARSE_PROMPT + activity }],
     };
