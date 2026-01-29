@@ -64,5 +64,19 @@
     "yearlyLimit": 6000,
     "unit": "cash",
     "redemptionThreshold": 200
+  },
+
+  "_rewardPrograms_comment": "Optional: Specify reward program names for miles/points cards",
+  "rewardPrograms": {
+    "miles": {
+      "name": "Asia Miles",
+      "shortName": "AM",
+      "operator": "Cathay Pacific"
+    },
+    "points": {
+      "name": "Yuu Points",
+      "shortName": "Yuu",
+      "operator": "Dairy Farm"
+    }
   }
 }

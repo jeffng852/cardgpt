@@ -194,6 +194,33 @@ export interface FeeStructure {
 }
 
 /**
+ * Reward program information
+ * Used to display specific loyalty program names instead of generic "miles" or "points"
+ */
+export interface RewardProgramInfo {
+  /** Full program name (e.g., "Asia Miles", "Yuu Points") */
+  name: string;
+
+  /** Short name for compact UI (e.g., "AM", "Yuu") */
+  shortName?: string;
+
+  /** Program operator (e.g., "Cathay Pacific", "Dairy Farm") */
+  operator?: string;
+}
+
+/**
+ * Reward programs mapping for a card
+ * Maps reward unit types to their specific program details
+ */
+export interface RewardPrograms {
+  /** Miles program details (e.g., Asia Miles, KrisFlyer) */
+  miles?: RewardProgramInfo;
+
+  /** Points program details (e.g., Yuu, MoneyBack) */
+  points?: RewardProgramInfo;
+}
+
+/**
  * Reward cap limits
  */
 export interface RewardCap {
@@ -271,4 +298,10 @@ export interface CreditCard {
    * Minimum annual income required for card application (in HKD)
    */
   minIncomeRequirement?: number;
+
+  /**
+   * Reward program details for miles/points programs
+   * Used to display specific program names (e.g., "Asia Miles" instead of "miles")
+   */
+  rewardPrograms?: RewardPrograms;
 }

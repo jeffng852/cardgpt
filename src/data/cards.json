@@ -808,7 +808,7 @@
         "cashback"
       ],
       "isActive": true,
-      "lastUpdated": "2026-01-20T00:00:00.000Z",
+      "lastUpdated": "2026-01-29T07:39:59.018Z",
       "rewards": [
         {
           "id": "designated-merchants-4x",
@@ -837,10 +837,17 @@
       ],
       "fees": {
         "annualFee": 0
+      },
+      "rewardPrograms": {
+        "points": {
+          "name": "yuu points",
+          "shortName": "yuu",
+          "operator": "Jardines"
+        }
       }
     }
   ],
-  "lastUpdated": "2026-01-28T08:38:35.893Z",
+  "lastUpdated": "2026-01-29T07:39:59.018Z",
   "version": "1.0.0",
   "metadata": {
     "totalCards": 10,

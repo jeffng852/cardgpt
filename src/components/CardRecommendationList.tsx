@@ -5,7 +5,8 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import type { CardRecommendation } from '@/types/recommendation';
 import type { RuleContribution } from '@/types/recommendation';
-import { formatReward } from '@/lib/engine/calculateReward';
+import { formatReward, getRewardUnitName } from '@/lib/engine/calculateReward';
+import type { CreditCard } from '@/types/card';
 import { getCardImageUrl, hasCardImage } from '@/lib/cardImages';
 
 interface CardRecommendationListProps {
@@ -103,12 +104,13 @@ export default function CardRecommendationList({
   // Format rate as percentage
   const formatRate = (rate: number) => `${(rate * 100).toFixed(1)}%`;
 
-  // Format amount based on reward unit
-  const formatAmount = (amount: number, unit: string) => {
+  // Format amount based on reward unit, using program name when available
+  const formatAmount = (amount: number, unit: string, card?: CreditCard) => {
     if (unit === 'cash') {
       return `$${amount.toFixed(2)}`;
     }
-    return `${Math.round(amount)} ${unit}`;
+    const unitName = getRewardUnitName(unit, card);
+    return `${Math.round(amount)} ${unitName}`;
   };
 
   return (
@@ -247,7 +249,7 @@ export default function CardRecommendationList({
                   {/* Reward Amount */}
                   <div className="text-right flex-shrink-0 flex items-center gap-2 sm:gap-3">
                     <div className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                      {formatReward(calculation)}
+                      {formatReward(calculation, card)}
                     </div>
                     <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isExpanded
@@ -336,7 +338,7 @@ export default function CardRecommendationList({
                                 {formatRate(contribution.rate)}
                               </span>
                               <span className="text-xs sm:text-sm font-bold text-primary tabular-nums">
-                                {formatAmount(contribution.amount, calculation.rewardUnit)}
+                                {formatAmount(contribution.amount, calculation.rewardUnit, card)}
                               </span>
                             </div>
                           </div>
@@ -350,7 +352,7 @@ export default function CardRecommendationList({
                               {formatRate(calculation.effectiveRate)}
                             </span>
                             <span className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent tabular-nums">
-                              {formatReward(calculation)}
+                              {formatReward(calculation, card)}
                             </span>
                           </div>
                         </div>

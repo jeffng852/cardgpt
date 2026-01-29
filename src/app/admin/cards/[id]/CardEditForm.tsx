@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Logo } from '@/components/Logo';
-import type { CreditCard, RewardRule, FeeStructure } from '@/types/card';
+import type { CreditCard, RewardRule, FeeStructure, RewardPrograms, RewardProgramInfo } from '@/types/card';
 
 interface CardEditFormProps {
   cardId: string;
@@ -146,6 +146,32 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
       ...prev,
       fees: { ...prev.fees!, ...updates },
     }));
+  };
+
+  const updateRewardPrograms = (type: 'miles' | 'points', updates: Partial<RewardProgramInfo> | null) => {
+    setCard((prev) => {
+      const currentPrograms = prev.rewardPrograms || {};
+      if (updates === null) {
+        // Remove the program
+        const { [type]: _, ...rest } = currentPrograms;
+        return {
+          ...prev,
+          rewardPrograms: Object.keys(rest).length > 0 ? rest : undefined,
+        };
+      }
+      return {
+        ...prev,
+        rewardPrograms: {
+          ...currentPrograms,
+          [type]: { ...currentPrograms[type], ...updates },
+        },
+      };
+    });
+  };
+
+  // Check if card has rules of a specific reward type
+  const hasRewardType = (type: 'miles' | 'points') => {
+    return card.rewards?.some((rule) => rule.rewardUnit === type) || false;
   };
 
   // Reward rule management
@@ -663,6 +689,118 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
               <p className="text-xs text-foreground-muted mt-1">
                 Fee for converting points/miles to cash or vouchers
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Reward Programs */}
+        <section className="bg-background-secondary rounded-xl border border-border p-6 mb-6">
+          <h2 className="text-lg font-semibold text-foreground mb-2">Reward Programs</h2>
+          <p className="text-sm text-foreground-muted mb-4">
+            Specify the loyalty program names for miles and points rewards. This helps users understand which program they&apos;re earning in.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Miles Program */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-foreground">Miles Program</h3>
+                {!hasRewardType('miles') && (
+                  <span className="text-xs text-foreground-muted">(No miles rules)</span>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs text-foreground-muted mb-1">Program Name</label>
+                <input
+                  type="text"
+                  value={card.rewardPrograms?.miles?.name || ''}
+                  onChange={(e) => updateRewardPrograms('miles', { name: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                  placeholder="e.g., Asia Miles"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-foreground-muted mb-1">Short Name</label>
+                  <input
+                    type="text"
+                    value={card.rewardPrograms?.miles?.shortName || ''}
+                    onChange={(e) => updateRewardPrograms('miles', { shortName: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                    placeholder="e.g., AM"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-foreground-muted mb-1">Operator</label>
+                  <input
+                    type="text"
+                    value={card.rewardPrograms?.miles?.operator || ''}
+                    onChange={(e) => updateRewardPrograms('miles', { operator: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                    placeholder="e.g., Cathay Pacific"
+                  />
+                </div>
+              </div>
+              {card.rewardPrograms?.miles?.name && (
+                <button
+                  type="button"
+                  onClick={() => updateRewardPrograms('miles', null)}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Clear miles program
+                </button>
+              )}
+            </div>
+
+            {/* Points Program */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-foreground">Points Program</h3>
+                {!hasRewardType('points') && (
+                  <span className="text-xs text-foreground-muted">(No points rules)</span>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs text-foreground-muted mb-1">Program Name</label>
+                <input
+                  type="text"
+                  value={card.rewardPrograms?.points?.name || ''}
+                  onChange={(e) => updateRewardPrograms('points', { name: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                  placeholder="e.g., Yuu Points"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-foreground-muted mb-1">Short Name</label>
+                  <input
+                    type="text"
+                    value={card.rewardPrograms?.points?.shortName || ''}
+                    onChange={(e) => updateRewardPrograms('points', { shortName: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                    placeholder="e.g., Yuu"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-foreground-muted mb-1">Operator</label>
+                  <input
+                    type="text"
+                    value={card.rewardPrograms?.points?.operator || ''}
+                    onChange={(e) => updateRewardPrograms('points', { operator: e.target.value })}
+                    className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground text-sm"
+                    placeholder="e.g., Dairy Farm"
+                  />
+                </div>
+              </div>
+              {card.rewardPrograms?.points?.name && (
+                <button
+                  type="button"
+                  onClick={() => updateRewardPrograms('points', null)}
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Clear points program
+                </button>
+              )}
             </div>
           </div>
         </section>

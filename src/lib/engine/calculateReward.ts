@@ -314,18 +314,48 @@ export function calculateNetValue(calculation: RewardCalculation): number {
 }
 
 /**
- * Format reward amount for display
+ * Get the display name for a reward unit, using program name if available
+ * @param rewardUnit - The reward unit type (cash, miles, points)
+ * @param card - Optional card to get program-specific name
+ * @param useShortName - If true, use shortName when available (for compact UI)
  */
-export function formatReward(calculation: RewardCalculation): string {
+export function getRewardUnitName(
+  rewardUnit: string,
+  card?: CreditCard,
+  useShortName: boolean = false
+): string {
+  if (rewardUnit === 'cash') {
+    return ''; // Cash uses $ prefix, no suffix needed
+  }
+
+  // Check if card has a specific program name for this unit
+  if (card?.rewardPrograms) {
+    const program = card.rewardPrograms[rewardUnit as 'miles' | 'points'];
+    if (program) {
+      return useShortName && program.shortName ? program.shortName : program.name;
+    }
+  }
+
+  // Fallback to generic names
+  return rewardUnit;
+}
+
+/**
+ * Format reward amount for display
+ * @param calculation - The reward calculation
+ * @param card - Optional card to get program-specific names
+ */
+export function formatReward(calculation: RewardCalculation, card?: CreditCard): string {
   const { rewardAmount, rewardUnit } = calculation;
 
   switch (rewardUnit) {
     case 'cash':
       return `$${rewardAmount.toFixed(2)}`;
     case 'miles':
-      return `${Math.round(rewardAmount)} miles`;
-    case 'points':
-      return `${Math.round(rewardAmount)} points`;
+    case 'points': {
+      const programName = getRewardUnitName(rewardUnit, card);
+      return `${Math.round(rewardAmount)} ${programName}`;
+    }
     default:
       return `${rewardAmount.toFixed(2)} ${rewardUnit}`;
   }
