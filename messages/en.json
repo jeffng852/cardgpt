@@ -115,11 +115,14 @@
     "cathay-pacific": "Cathay Pacific"
   },
   "input": {
-    "placeholder": "e.g., $500 dining at McDonald's",
+    "placeholder": "e.g., Buy Pokemon Cards 5000 or Wedding deposit 8000",
     "submit": "Find The Right Card",
     "rewardTypeLabel": "Preferred Reward Type (Optional)",
     "quickTagsLabel": "Popular Merchants",
-    "exampleText": "Try: \"$200 HKD at Wellcome\" or \"1000 USD online shopping\"",
+    "exampleText": "Try: \"Gas refill 500\" or \"Wedding venue deposit 8000\"",
+    "analyzing": "Analyzing...",
+    "aiAnalyzing": "AI is analyzing your activity...",
+    "rateLimitMessage": "Please wait {seconds} seconds before trying again.",
     "quickTags": {
       "mcdonalds": "McDonald's",
       "wellcome": "Wellcome",

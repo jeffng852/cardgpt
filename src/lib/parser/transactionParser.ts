@@ -237,23 +237,32 @@ export function parseTransaction(input: string): ParseResult {
 
 /**
  * Extract amount from input using regex patterns
+ * Supports:
+ * - $500, $1,000.50 (with $ symbol)
+ * - 500 dollars, 1000元 (with currency word)
+ * - 500 (plain integers - assumes HKD)
+ * - Numbers at start, middle, or end of input
  */
 function extractAmount(input: string): { amount: number | null; confidence: number } {
-  // Pattern 1: $XXX or XXX (with optional commas and decimals)
-  const patterns = [
-    /\$\s*([0-9,]+(?:\.[0-9]{1,2})?)/,  // $500, $1,000.50
-    /([0-9,]+(?:\.[0-9]{1,2})?)\s*(?:dollars?|hkd|usd|eur|gbp|元|蚊)/i,  // 500 dollars, 1000元
-    /^([0-9,]+(?:\.[0-9]{1,2})?)\s/,    // 500 at the start
-    /\s([0-9,]+(?:\.[0-9]{1,2})?)\s/,   // 500 in the middle
+  // Pattern priority (higher patterns = higher confidence)
+  const patterns: Array<{ regex: RegExp; confidence: number }> = [
+    // Explicit currency markers (highest confidence)
+    { regex: /\$\s*([0-9,]+(?:\.[0-9]{1,2})?)/, confidence: 0.95 },  // $500, $1,000.50
+    { regex: /([0-9,]+(?:\.[0-9]{1,2})?)\s*(?:dollars?|hkd|usd|eur|gbp|元|蚊)/i, confidence: 0.95 },  // 500 dollars, 1000元
+    // Plain numbers (assume HKD)
+    { regex: /^([0-9,]+(?:\.[0-9]{1,2})?)\s/, confidence: 0.85 },    // 500 at the start
+    { regex: /\s([0-9,]+(?:\.[0-9]{1,2})?)\s/, confidence: 0.85 },   // 500 in the middle
+    { regex: /\s([0-9,]+(?:\.[0-9]{1,2})?)$/, confidence: 0.85 },    // 500 at the end
+    { regex: /^([0-9,]+(?:\.[0-9]{1,2})?)$/, confidence: 0.85 },     // Just a number (e.g., "5000")
   ];
 
-  for (const pattern of patterns) {
-    const match = input.match(pattern);
+  for (const { regex, confidence } of patterns) {
+    const match = input.match(regex);
     if (match) {
       const amountStr = match[1].replace(/,/g, '');
       const amount = parseFloat(amountStr);
       if (!isNaN(amount) && amount > 0) {
-        return { amount, confidence: 0.9 };
+        return { amount, confidence };
       }
     }
   }

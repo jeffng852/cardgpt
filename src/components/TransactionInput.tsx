@@ -11,6 +11,14 @@ interface TransactionInputProps {
   onSubmit: (result: ParseResult, rewardType?: RewardType) => void;
 }
 
+interface AIParseState {
+  isLoading: boolean;
+  error?: string;
+  rateLimitSeconds?: number;
+  detectedCategory?: string;
+  reasoning?: string;
+}
+
 export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const t = useTranslations('input');
   const tResults = useTranslations('results');
@@ -23,7 +31,10 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [aiState, setAIState] = useState<AIParseState>({ isLoading: false });
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const MAX_INPUT_LENGTH = 80;
 
   // Popular merchant quick-tags
   const quickTags = [
@@ -37,6 +48,10 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
   // Parse input in real-time for feedback with debounce and artificial delay
   const handleInputChange = (value: string) => {
+    // Enforce max length
+    if (value.length > MAX_INPUT_LENGTH) {
+      value = value.slice(0, MAX_INPUT_LENGTH);
+    }
     setInput(value);
 
     // Clear existing timer
@@ -99,6 +114,37 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     }
   };
 
+  // Call AI to parse activity when no category detected
+  const parseActivityWithAI = async (activity: string): Promise<{ category?: string; error?: string; rateLimitSeconds?: number }> => {
+    try {
+      const response = await fetch('/api/parse-activity', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ activity }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 429) {
+        // Rate limited
+        return { error: data.message, rateLimitSeconds: data.retryAfterSeconds };
+      }
+
+      if (!response.ok) {
+        return { error: data.message || 'Failed to analyze activity' };
+      }
+
+      if (data.error) {
+        return { error: data.error };
+      }
+
+      return { category: data.category };
+    } catch (error) {
+      console.error('[AI Parse] Error:', error);
+      return { error: 'Network error. Please try again.' };
+    }
+  };
+
   // Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,12 +152,51 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     if (!input.trim()) return;
 
     setIsProcessing(true);
+    setAIState({ isLoading: false });
 
     try {
-      const result = parseTransaction(input);
+      let result = parseTransaction(input);
+
+      // If no category detected and we have an amount, try AI parsing
+      if (!result.transaction.category && result.confidence.amount > 0) {
+        setAIState({ isLoading: true });
+
+        const aiResult = await parseActivityWithAI(input);
+
+        if (aiResult.error) {
+          setAIState({
+            isLoading: false,
+            error: aiResult.error,
+            rateLimitSeconds: aiResult.rateLimitSeconds,
+          });
+          setIsProcessing(false);
+          return;
+        }
+
+        if (aiResult.category) {
+          // Update the result with AI-detected category
+          result = {
+            ...result,
+            transaction: {
+              ...result.transaction,
+              category: aiResult.category,
+            },
+            confidence: {
+              ...result.confidence,
+              category: 0.7, // AI-detected category has medium-high confidence
+            },
+          };
+          setAIState({
+            isLoading: false,
+            detectedCategory: aiResult.category,
+          });
+        }
+      }
+
       await onSubmit(result, selectedRewardType);
     } catch (error) {
       console.error('Parse error:', error);
+      setAIState({ isLoading: false, error: 'Something went wrong. Please try again.' });
     } finally {
       setIsProcessing(false);
     }
@@ -194,9 +279,20 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               value={input}
               onChange={(e) => handleInputChange(e.target.value)}
               placeholder={t('placeholder')}
+              maxLength={MAX_INPUT_LENGTH}
               className="flex-1 bg-transparent text-lg text-text-primary placeholder:text-text-tertiary focus:outline-none"
               autoFocus
             />
+            {/* Character count indicator */}
+            {input.length > 0 && (
+              <span className={`text-xs tabular-nums flex-shrink-0 ${
+                input.length >= MAX_INPUT_LENGTH
+                  ? 'text-amber-500'
+                  : 'text-text-tertiary'
+              }`}>
+                {input.length}/{MAX_INPUT_LENGTH}
+              </span>
+            )}
           </div>
 
           {/* Real-time Feedback with Shimmer Effect */}
@@ -295,19 +391,38 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
             </div>
           )}
 
+          {/* AI Error Message */}
+          {aiState.error && (
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="flex items-start gap-2">
+                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="flex-1">
+                  <p className="text-sm text-red-700 dark:text-red-300">{aiState.error}</p>
+                  {aiState.rateLimitSeconds && (
+                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
+                      {t('rateLimitMessage', { seconds: aiState.rateLimitSeconds })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={!input.trim() || isProcessing}
+            disabled={!input.trim() || isProcessing || aiState.isLoading}
             className="w-full px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            {isProcessing ? (
+            {isProcessing || aiState.isLoading ? (
               <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Analyzing...
+                {aiState.isLoading ? t('aiAnalyzing') : t('analyzing')}
               </span>
             ) : (
               t('submit')

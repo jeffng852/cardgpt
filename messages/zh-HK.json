@@ -115,11 +115,14 @@
     "cathay-pacific": "國泰航空"
   },
   "input": {
-    "placeholder": "例如：$500喺麥當勞食嘢",
+    "placeholder": "例如：買Pokemon卡 5000 或 婚禮場地訂金 8000",
     "submit": "搵最適合你既卡",
     "rewardTypeLabel": "想要嘅獎賞類型（可選）",
     "quickTagsLabel": "熱門商戶",
-    "exampleText": "試下：「$200 HKD喺惠康」或「1000 USD網購」",
+    "exampleText": "試下：「入油 500」或「婚禮場地訂金 8000」",
+    "analyzing": "分析緊...",
+    "aiAnalyzing": "AI正在分析你嘅消費...",
+    "rateLimitMessage": "請等待 {seconds} 秒後再試。",
     "quickTags": {
       "mcdonalds": "麥當勞",
       "wellcome": "惠康",
