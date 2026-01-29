@@ -845,12 +845,111 @@
           "operator": "Jardines"
         }
       }
+    },
+    {
+      "id": "sim-card",
+      "name": "sim Credit Card",
+      "issuer": "United Asia Finance Limited",
+      "applyUrl": "",
+      "imageUrl": "",
+      "network": "Mastercard",
+      "rewards": [
+        {
+          "id": "card-spc-onl-01",
+          "description": "Cashback on Eligible Online Retail Transactions (single transaction ≥ HKD500)",
+          "rewardRate": 0.08,
+          "rewardUnit": "cash",
+          "priority": "specific",
+          "categories": [
+            "online-shopping"
+          ],
+          "fallbackRate": 0.004,
+          "isPromotional": false,
+          "conditions": {
+            "paymentType": null,
+            "currency": null,
+            "minAmount": 500
+          },
+          "notes": "Eligible Online Retail Transactions with a single net transaction amount of HKD500 or above within the same calendar month"
+        },
+        {
+          "id": "card-spc-tra-02",
+          "description": "Cashback on Eligible Local Transportation Transactions",
+          "rewardRate": 0.08,
+          "rewardUnit": "cash",
+          "priority": "specific",
+          "categories": [
+            "transport"
+          ],
+          "specificMerchants": [
+            "Citybus",
+            "Cityflyer",
+            "KMB",
+            "LWB",
+            "MTR",
+            "Tram",
+            "Star Ferry"
+          ],
+          "fallbackRate": 0.004,
+          "isPromotional": false,
+          "conditions": {
+            "paymentType": null,
+            "currency": "HKD"
+          },
+          "notes": "Eligible Local Transportation Transactions include posted retail transactions at designated local transportation"
+        },
+        {
+          "id": "card-spc-ret-03",
+          "description": "Cashback on Eligible Retail Transactions at Designated Local Merchants",
+          "rewardRate": 0.03,
+          "rewardUnit": "cash",
+          "priority": "specific",
+          "categories": [
+            "retail"
+          ],
+          "specificMerchants": [
+            "Adidas",
+            "@cosme STORE",
+            "matsukiyo HK",
+            "PUMA",
+            "Fila",
+            "Tokyo Lifestyle"
+          ],
+          "fallbackRate": 0.004,
+          "isPromotional": false,
+          "conditions": {
+            "paymentType": null,
+            "currency": null
+          },
+          "notes": "Eligible Retail Transactions at Designated Local Merchants include posted retail transactions at physical stores"
+        },
+        {
+          "id": "card-bas-all-04",
+          "description": "Base Cashback on Other Eligible Retail Transactions",
+          "rewardRate": 0.004,
+          "rewardUnit": "cash",
+          "priority": "base",
+          "categories": [
+            "all"
+          ],
+          "isPromotional": false,
+          "notes": "Other Eligible Retail Transactions include all eligible retail transactions not classified in other categories"
+        }
+      ],
+      "fees": {
+        "annualFee": 0
+      },
+      "isActive": true,
+      "lastUpdated": "2026-01-29T08:31:11.373Z",
+      "termsContent": "\n\n \n \n \n \n \n \n \nTerms and Conditions of “sim Credit Card CashBack Promotion” \n \n1. Terms  and  conditions  of the “sim  Credit  Card CashBack Promotion”  (“CashBack Promotion”)  are  supplementary  to  the \nCardholder Agreement, which applies to or govern the use of any Cards issued to a Cardholder by United Asia Finance Limited \n(“Card Issuer”). The CashBack Promotion constitutes a “Program” as provided under Clause 23 “Spending Reward Program” of \nthe Cardholder Agreement. Terms defined in the Cardholder Agreement shall, unless otherwise stated, have the same meaning \nwhen used herein.  \n \n2. The CashBack Promotion is  only  available  to  cardholders  (including  Principal  Cardholders  and  Supplementary  Cardholders) \n(“Eligible Cardholders”) of the sim Credit Card (“Eligible Card”) issued by the Card Issuer. \n \n3. The CashBack Promotion is valid from 1 November 2025 to 31 January 2026, both dates inclusive (“Promotion Period”). \n \n4. Subject to these terms and conditions, an Eligible Cardholder can receive cash rebates (“CashBack”) for the following types of \neligible retail transactions made with an Eligible Card under the CashBack Promotion in the manner described below: \n \nMonthly Cumulative \nSpending Requirement(s) \nTypes of Eligible Retail Transactions Rebate under \nCashBack \nPromotion\n1\n \nTotal Monthly \nCashBack Cap for each \nEligible Card\n2\n \nUpon accumulating a \nspending of HKD1,000 on \nNon-Online Eligible Retail \nTransactions (as defined in \nClause 5) within a calendar \nmonth, Eligible Cardholders \ncan enjoy CashBack on \ndesignated type of Eligible \nRetails Transactions \n(subject to relevant \nspending condition):  \nEligible Online Retail Transactions with \na single net transaction amount of HKD500 \nor above within the same calendar month \n(as defined Clause 5) \n8% \nHKD200 \nEligible Local Transportation \nTransactions  \n(as defined in Clause 6) \n8% \nEligible Retail Transactions at \nDesignated Local Merchants \n(as defined in Clause 7) \n3% \n- \nOther Eligible Retail Transactions  \n(as defined in Clause 8) \n0.4% \n1\nThe rebate percentages set out above are inclusive of the basic rebate percentage of 0.4% applicable to an Eligible Card. \n2\nCashBack rewardable under the CashBack Promotion is subject also to a cap of HKD600 for each Eligible Card during the entire \nPromotion Period. \n \nSubject  to  Clause 9 below, Eligible  Online  Retail  Transactions,  Eligible  Retail  Transactions  at  Designated  Local  Merchants, \nEligible Local Transportation Transactions, Other Eligible Retail Transactions and Non-Online Eligible Retail Transactions shall \ncollectively be referred to as “Eligible Retail Transactions” in these terms and conditions. \n \n5. “Eligible Online Retail Transactions” include online retail transactions posted in Hong Kong dollars or foreign currencies during \nthe Promotion Period. “Non-Online Eligible Retail Transactions” means Eligible Retail Transactions that are not Eligible Online \nRetail Transactions. Regardless of the currencies of the transactions or the locations at which the transactions are cleared, settled \nor processed, the currencies of the transactions and the transaction amounts converted into Hong Kong dollars as shown on the \nrelevant monthly statement shall be conclusive and binding on the Eligible Cardholders. \n \n6. “Eligible Local Transportation Transactions” include posted retail transactions at designated local transportation listed in the \ntable under Clause 6.1 (“Designated Local Transportation”) in the Hong Kong during the Promotion Period. For the avoidance \nof doubt, online transactions related to Designated Local Transportation will be regarded as Eligible Online Retail Transactions.  \n \n6.1   The Designated Local Transportation as of the date of these terms and conditions are set out in the table below: \n \nDesignated Local Transportation  \n(Updated on 1 November 2025) \nCitybus and Cityflyer KMB LWB \nMTR^ Tram Star Ferry  \n \n^Only applicable to transactions made for paying MTR fares through tapping at gates (excluding transactions conducted at Airport \nExpress stations, Light Rail and MTR Bus). Transactions made at the Customer Service Centres in MTR stations or via MTR \nMobile for purchasing Multi Rides Tickets or any other product are not eligible transactions for the reward under the CaskBack \nPromotion. \n\n \n \n \n6.2 If any of the Designated Local Transportation ceases operations in the Hong Kong during the Promotion Period, the offer \nunder the CashBack Promotion for that specific Designated Local Transportation shall terminate immediately without further notice. \nThe Card Issuer reserves the right to amend the list of Designated Local Transportation at any time without prior notice. \n \n7. Eligible  Retail  Transactions  at  Designated  Local  Merchants” include posted retail transactions at physical stores  of  the \ndesignated local merchants listed in the table under Clause 7.1 (“Designated Local Merchants”) within the Hong Kong Special \nAdministrative Region (“Hong Kong”) during the Promotion Period. For the avoidance of doubt, transactions at the Designated \nLocal Merchants’ online stores will be regarded as Eligible Online Retail Transactions. \n7.1 The Designated Local Merchants as of the date of these terms and conditions are set out in the table below:  \n \nDesignated Local Merchants \n(Updated on 1 November 2025) \nAdidas @cosme STORE matsukiyo HK \nPUMA Fila Tokyo Lifestyle \n \n7.2 If any of the Designated Local Merchants ceases operations in the Hong Kong during the Promotion Period, any CashBack \noffer  for  that  particular  Designated  Local  Merchant  shall  terminate  immediately  without  further  notice.  The  Card  Issuer \nreserves the right to amend the list of Designated Local Merchants at any time without prior notice. \n \n8. “Other Eligible Retail Transactions” include all eligible retail transactions, whether local or overseas, that are posted during the \nPromotion Period and are not classified as Eligible Online Retail Transactions, Eligible Retail Transactions at Designated Local \nMerchants or Eligible Local Transportation Transactions. For the purpose of this Clause, retail transactions made overseas refer \nto retail transactions made outside Hong Kong that are posted in any currency other than Hong Kong dollars. Regardless of the \ncurrencies in which the transactions are conducted or the locations at which the transactions are cleared, settled or processed, \nthe transaction amounts converted into Hong Kong dollars, as shown on the relevant monthly statement, shall be conclusive and \nbinding on the Eligible Cardholders. \n \n9. “Eligible Retail Transactions” shall not include cash advance transactions, payments of any Fees and Charges of a Card (e.g. \nannual fees, interest or finance charges, late charges, over-the-limit handling charges, cash advance handling fees and other \ncharges), payment to the Inland Revenue Department and/or any other relevant authorities, tolls, road and bridge fees, online bill \npayment or utilities bill or all payments to and/or transactions with any insurance company (including but not limited to insurance \npremium payment), all donation and/or payment to any charitable or social service organizations, purchase of any cash coupon \nor  cash  voucher,  payments  for  any  unit  trusts  or  mutual  funds,  casino  transactions (including  but  not  limited  to  gambling \ntransactions), any money or electronic money transfer (including but not limited to transfers via person to person (P2P) payment \nservices or mobile device, application, electronic funds transfer platform), reload/ transfer/ payment transactions made via or in \nrelation to electronic wallets (including but not limited to Alipay, WeChat Pay, PayMe), reload of stored value accounts, Octopus \ntop-up transactions by any means (including but not limited to Automatic Add Value Service (AAVS), online or through mobile), \ncash  withdrawal,  loan  on  Card,  instalment  amount,  unposted  transactions,  cancelled  transactions,  returned  transactions, \ncounterfeit transactions or any other unauthorized transactions. The Card Issuer’s records with respect to the Eligible Cardholder \non the amount of Eligible Retail Transactions accumulated from time to time are conclusive and binding on the Eligible Cardholder. \nAll  Eligible  Retail  Transactions  shall  be  determined  based  on  the  merchant  codes  assigned  by  the  related  card  associations \nworldwide and the Card Issuer, which may be varied from time to time without prior notice. If there is any dispute regarding any \nEligible Retail Transactions, the decision of the Card Issuer shall be final and conclusive. \n \n10. The maximum amount of CashBack that may be awarded to each card account of an Eligible Card (“Eligible Card Account”) \nunder the CashBack Promotion is HKD200 per calendar month and HKD600 in total for the entire Promotion Period. \n \n11. Eligible Retail Transactions shall be determined solely at the discretion of the Card Issuer. The Card Issuer has no obligation to \nclarify which transactions are eligible for the CashBack Promotion prior to the transactions being made. \n \n12. For the avoidance of doubt, the use of mobile payment services (if applicable) in connection with an Eligible Card shall be subject \nto relevant terms and conditions governing those services. For details, please visit sim Credit Card website. \n \n13. The Card Issuer will determine the eligibility of all rewards based on the transaction records of an Eligible Card held by the Card \nIssuer. In case of any discrepancy, the Card Issuer’s records shall be final and conclusive. \n \n14. CashBack will be calculated based on the total amount of spending related to the Eligible Retail Transactions for the calendar \nmonth, posted on the last day of each month. CashBack for each calendar month will be automatically credited to the Eligible \nCard Account in following calendar month after each calculation. CashBack will be rounded down to 2 decimal places. \n \n15. CashBack  awarded for any supplementary cardholders  (if  applicable)  will  be  attributed  to  their principal cardholders.  For  the \navoidance of doubt, Eligible Retail Transactions conducted with the principal card and all supplementary cards (if any) under the \nsame Eligible Card Account will be collectively counted in calculating the CashBack. \n \n\n \n \n16. The  Eligible  Card  Account  must  be  valid  and  in  good  standing  to  enjoy  the  benefits of the  CashBack Promotion during  the \nPromotion Period. If the Eligible Card Account is closed, any CashBack (whether credited to the Eligible Card Account or not) will \nbe forfeited. \n \n17. If any Eligible Retail Transactions for which  CashBack  has  been  awarded  are  subsequently  cancelled,  reversed,  refunded  or \nfound fraudulent or abused, the Card Issuer reserves the absolute right to debit the equivalent amount of CashBack awarded \nfrom the Eligible Card Account, forfeit the relevant Eligible Cardholder's eligibility to participate in the CashBack Promotion, and/or \nsuspend the relevant Eligible Card Account for investigation without prior notice. \n \n18. Eligible Cardholders must retain the original sales slips of all posted transactions. The Card Issuer reserves the right to request \nEligible Cardholders to provide the relevant original sales slips for verification. All sales slips submitted to the Card Issuer will not \nbe returned. \n \n19. The Card Issuer makes no representations or guarantees in respect of such products, services and/or information provided by \nthe  Designated  Local  Merchants or  Designated  Local  Transportation  Transactions.  Any  disputes  related  to  these  products, \nservices and/or information shall be resolved between the Eligible Cardholders and the relevant merchants respectively. \n \n20. CashBack (i) is not transferable, exchangeable or refundable, (ii) is not redeemable or exchangeable for and cannot be withdrawn \nas cash and (iii) cannot be applied against any single transaction or part thereof on any credit card statement. \n \n21. If an Eligible Cardholder is eligible for benefits under any other promotional activities of the Card Issuer during the Promotion \nPeriod, the Card Issuer may at its sole and absolute discretion, decide to provide the Eligible Cardholder with the promotional \nbenefits under only one of the promotions. \n \n22. The Card Issuer reserves the right to terminate the CashBack Promotion and/or amend the terms and conditions herein at any \ntime without prior notice. In case of any dispute, the decision of the Card Issuer shall be final and conclusive. \n \n23. These terms and conditions are governed by and will be construed in accordance with the laws of the Hong Kong. \n \n24. In case of discrepancy between the English and Chinese versions, the English version shall prevail. \n \n \nEffective Date: 1 November 2025 ",
+      "termsExtractedAt": "2026-01-29T08:27:06.399Z",
+      "termsUrl": "https://cdn.thesim.com/88_sim_Credit_Card_Terms_and_Conditions_of_Cash_Back_Promotion_EN_Nov25_Jan26_a029889bac.pdf?updated_at=2025-10-31T07:41:40.365Z"
     }
   ],
-  "lastUpdated": "2026-01-29T07:39:59.018Z",
+  "lastUpdated": "2026-01-29T08:31:11.377Z",
   "version": "1.0.0",
   "metadata": {
-    "totalCards": 10,
+    "totalCards": 11,
     "dataSource": "Manual curation from official bank websites and T&Cs",
     "nextReviewDate": "2026-02-20",
     "notes": "All 10 cards researched and modeled with enhanced schema supporting overlapping rewards, tiered spending, monthly caps, and complex conditions."

@@ -12,6 +12,7 @@
     "add-card-images": "./scripts/add-card-images.sh"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.71.2",
     "@vercel/blob": "2.0.1",
     "next": "16.1.4",
     "next-intl": "^4.7.0",

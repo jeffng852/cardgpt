@@ -180,41 +180,33 @@ async function extractWithOpenAI(text: string, apiKey: string): Promise<Extracti
 
 async function extractWithAnthropic(text: string, apiKey: string): Promise<ExtractionResult> {
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-haiku-latest',
-        max_tokens: 4000,
-        messages: [
-          {
-            role: 'user',
-            content: EXTRACTION_PROMPT + text.slice(0, 15000),
-          },
-        ],
-      }),
+    // Use official Anthropic SDK for better compatibility with serverless environments
+    const Anthropic = (await import('@anthropic-ai/sdk')).default;
+    const client = new Anthropic({ apiKey });
+
+    console.log('[extractRewards] Calling Anthropic API via SDK...');
+
+    const message = await client.messages.create({
+      model: 'claude-3-5-haiku-latest',
+      max_tokens: 4000,
+      messages: [
+        {
+          role: 'user',
+          content: EXTRACTION_PROMPT + text.slice(0, 15000),
+        },
+      ],
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Anthropic API error: ${error}`);
-    }
+    console.log('[extractRewards] Anthropic SDK response received');
+    const content = message.content?.[0];
 
-    const data = await response.json();
-    console.log('[extractRewards] Anthropic raw response:', JSON.stringify(data, null, 2));
-    const content = data.content?.[0]?.text;
-
-    if (!content) {
-      console.error('[extractRewards] No content in response. Full response:', data);
+    if (!content || content.type !== 'text') {
+      console.error('[extractRewards] No text content in response. Full response:', message);
       throw new Error('No response from Anthropic');
     }
 
-    console.log('[extractRewards] Anthropic content:', content.substring(0, 500) + '...');
-    return parseAIResponse(content);
+    console.log('[extractRewards] Anthropic content:', content.text.substring(0, 500) + '...');
+    return parseAIResponse(content.text);
   } catch (error) {
     console.error('Anthropic extraction failed:', error);
     return {

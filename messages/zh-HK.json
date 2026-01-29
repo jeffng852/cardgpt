@@ -2,7 +2,11 @@
   "common": {
     "appName": "CardGPT",
     "tagline": "為每次消費搵最啱嘅信用卡",
-    "animatedTagline": "你今日想點賺法？",
+    "animatedTaglines": [
+      "你今日想點賺法？",
+      "即將有大額使費？",
+      "唔想再煩申請邊張卡？"
+    ],
     "subtitle": "用AI推薦，賺盡每分獎賞",
     "getStarted": "開始使用",
     "heroDescription": "唔好再錯失賺獎賞嘅機會。CardGPT 會用最客觀既計算方法即時搵出每次消費最啱嘅信用卡，等你賺盡每分獎賞。"

@@ -1,49 +1,71 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 
 interface TypingAnimationProps {
-  text: string;
+  /** Single text or array of texts to cycle through */
+  texts: string | string[];
   className?: string;
+  /** Interval between animations in ms (default: 30000 = 30s for 2x per minute) */
+  intervalMs?: number;
 }
 
-export default function TypingAnimation({ text, className = '' }: TypingAnimationProps) {
+export default function TypingAnimation({
+  texts,
+  className = '',
+  intervalMs = 10000 // 10 seconds = 6 times per minute
+}: TypingAnimationProps) {
+  // Normalize to array
+  const textArray = Array.isArray(texts) ? texts : [texts];
+
   const [displayText, setDisplayText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
+  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const restartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startTypingAnimation = useCallback(() => {
+  const startTypingAnimation = useCallback((textToType: string) => {
+    // Clear any existing typing interval
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+    }
+
     setDisplayText('');
-    setIsTyping(true);
+    let charIndex = 0;
 
-    let currentIndex = 0;
-    const typingInterval = setInterval(() => {
-      if (currentIndex <= text.length) {
-        setDisplayText(text.slice(0, currentIndex));
-        currentIndex++;
+    typingIntervalRef.current = setInterval(() => {
+      if (charIndex <= textToType.length) {
+        setDisplayText(textToType.slice(0, charIndex));
+        charIndex++;
       } else {
-        clearInterval(typingInterval);
-        setIsTyping(false);
+        if (typingIntervalRef.current) {
+          clearInterval(typingIntervalRef.current);
+        }
       }
-    }, 100); // 100ms per character for smooth typing
+    }, 80); // 80ms per character for smooth typing
+  }, []);
 
-    return () => clearInterval(typingInterval);
-  }, [text]);
-
+  // Handle text cycling and animation
   useEffect(() => {
-    // Start animation on mount
-    const cleanup = startTypingAnimation();
+    const currentText = textArray[currentIndex];
 
-    // Restart animation every 1 minute (60000ms)
-    const restartInterval = setInterval(() => {
-      startTypingAnimation();
-    }, 60000);
+    // Start typing the current text
+    startTypingAnimation(currentText);
+
+    // Schedule next text after interval
+    restartTimeoutRef.current = setTimeout(() => {
+      setCurrentIndex((prev) => (prev + 1) % textArray.length);
+    }, intervalMs);
 
     return () => {
-      cleanup();
-      clearInterval(restartInterval);
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
+      }
+      if (restartTimeoutRef.current) {
+        clearTimeout(restartTimeoutRef.current);
+      }
     };
-  }, [startTypingAnimation]);
+  }, [currentIndex, textArray, intervalMs, startTypingAnimation]);
 
   // Cursor blink effect
   useEffect(() => {

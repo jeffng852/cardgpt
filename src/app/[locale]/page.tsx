@@ -98,10 +98,10 @@ export default function Home() {
               {t('heroDescription')}
             </p>
 
-            {/* Animated Typing Tagline */}
+            {/* Animated Typing Tagline - Cycles through multiple taglines */}
             <div className="mb-12 min-h-[2rem]">
               <TypingAnimation
-                text={t('animatedTagline')}
+                texts={t.raw('animatedTaglines') as string[]}
                 className="text-lg sm:text-xl text-primary font-medium"
               />
             </div>

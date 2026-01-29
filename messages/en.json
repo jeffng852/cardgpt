@@ -2,7 +2,11 @@
   "common": {
     "appName": "CardGPT",
     "tagline": "Find the best credit card for every purchase",
-    "animatedTagline": "How much are you earning from spending today?",
+    "animatedTaglines": [
+      "How much are you earning from spending today?",
+      "Planning for your next big purchase?",
+      "Getting tired of researching before spending?"
+    ],
     "subtitle": "Maximize your rewards with AI-powered card recommendations",
     "getStarted": "Get Started",
     "heroDescription": "Start improving your rewards game. CardGPT finds the best credit card for every purchase, maximizing your rewards every time."
