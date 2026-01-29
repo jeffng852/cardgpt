@@ -6,6 +6,9 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getDatabaseStats } from '@/lib/data/cardRepository';
+
+// Force dynamic rendering so we always check blob storage
+export const dynamic = 'force-dynamic';
 import { getPendingStats } from '@/lib/data/pendingRepository';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
 
@@ -19,7 +22,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const stats = getDatabaseStats();
+    const stats = await getDatabaseStats();
     const pendingStats = getPendingStats();
     return NextResponse.json({
       ...stats,

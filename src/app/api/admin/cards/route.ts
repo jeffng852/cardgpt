@@ -8,7 +8,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllCards, getDatabaseStats } from '@/lib/data/cardRepository';
+import { getAllCardsAsync, getDatabaseStats } from '@/lib/data/cardRepository';
+
+// Force dynamic rendering so we always check blob storage
+export const dynamic = 'force-dynamic';
 import { createCard } from '@/lib/data/cardWriter';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
 import type { CreditCard } from '@/types/card';
@@ -28,7 +31,7 @@ export async function GET(request: NextRequest) {
     const issuerId = searchParams.get('issuer');
     const activeOnly = searchParams.get('active') === 'true';
 
-    let cards = getAllCards();
+    let cards = await getAllCardsAsync();
 
     // Apply filters
     if (issuerId) {
@@ -41,14 +44,14 @@ export async function GET(request: NextRequest) {
     const response: {
       cards: CreditCard[];
       total: number;
-      stats?: ReturnType<typeof getDatabaseStats>;
+      stats?: Awaited<ReturnType<typeof getDatabaseStats>>;
     } = {
       cards,
       total: cards.length,
     };
 
     if (includeStats) {
-      response.stats = getDatabaseStats();
+      response.stats = await getDatabaseStats();
     }
 
     return NextResponse.json(response);
