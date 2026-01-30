@@ -622,6 +622,26 @@ export default function UploadExtractor() {
                       </div>
                     </div>
 
+                    {/* Specific Merchants - show if extracted or priority is specific */}
+                    {(rule.specificMerchants?.length || rule.priority === 'specific') && (
+                      <div className="mt-2">
+                        <label className="text-xs text-foreground-muted">Specific Merchants (comma-separated)</label>
+                        <input
+                          type="text"
+                          value={rule.specificMerchants?.join(', ') || ''}
+                          onChange={(e) =>
+                            updateRule(index, {
+                              specificMerchants: e.target.value
+                                ? e.target.value.split(',').map((m) => m.trim()).filter(Boolean)
+                                : undefined,
+                            })
+                          }
+                          className="w-full px-2 py-1 text-sm rounded border border-border bg-background text-foreground"
+                          placeholder="e.g., mcdonalds, sushiro, starbucks"
+                        />
+                      </div>
+                    )}
+
                     <div className="mt-2 flex gap-4">
                       <label className="flex items-center gap-1 text-xs">
                         <input
