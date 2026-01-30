@@ -38,17 +38,26 @@ export interface WriteResult<T = CreditCard> {
  * Read the cards database (from blob in production, file in development)
  */
 async function readCardsData(): Promise<CardDatabase> {
-  // In production with blob configured, try blob first
-  if (isProductionEnvironment() && isBlobConfigured()) {
-    const blobData = await readCardsFromBlob();
-    if (blobData) {
-      return blobData;
+  // In production, try to read from blob storage
+  if (isProductionEnvironment()) {
+    if (!isBlobConfigured()) {
+      // Blob not configured - warn but fall back to static file
+      // This means any saves will fail, but reads can still work from deployment bundle
+      console.warn(
+        'BLOB_READ_WRITE_TOKEN not configured in production. ' +
+        'Reading from static deployment file. Saves will fail.'
+      );
+    } else {
+      const blobData = await readCardsFromBlob();
+      if (blobData) {
+        return blobData;
+      }
+      // Fall through to file read if blob fails
+      console.warn('Blob read failed, falling back to local file');
     }
-    // Fall through to file read if blob fails
-    console.warn('Blob read failed, falling back to local file');
   }
 
-  // Read from local file
+  // Read from local file (development, or production fallback)
   const content = await fs.readFile(CARDS_FILE_PATH, 'utf-8');
   return JSON.parse(content) as CardDatabase;
 }
@@ -65,8 +74,14 @@ async function writeCardsData(database: CardDatabase): Promise<void> {
     database.metadata.totalCards = database.cards.length;
   }
 
-  // In production with blob configured, write to blob
-  if (isProductionEnvironment() && isBlobConfigured()) {
+  // In production, MUST use blob storage (filesystem is read-only/ephemeral)
+  if (isProductionEnvironment()) {
+    if (!isBlobConfigured()) {
+      throw new Error(
+        'Cannot save changes: BLOB_READ_WRITE_TOKEN is not configured. ' +
+        'Please add this environment variable in your Vercel project settings.'
+      );
+    }
     const success = await writeCardsToBlob(database);
     if (!success) {
       throw new Error('Failed to write cards to blob storage');
@@ -74,7 +89,7 @@ async function writeCardsData(database: CardDatabase): Promise<void> {
     return;
   }
 
-  // Write to local file (development)
+  // Write to local file (development only)
   const content = JSON.stringify(database, null, 2) + '\n';
   await fs.writeFile(CARDS_FILE_PATH, content, 'utf-8');
 }
