@@ -7,7 +7,10 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getCardById } from '@/lib/data/cardRepository';
+import { getCardByIdAsync } from '@/lib/data/cardRepository';
+
+// Force dynamic rendering so we always check blob storage
+export const dynamic = 'force-dynamic';
 import { updateCard, deactivateCard, deleteCard } from '@/lib/data/cardWriter';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
 import type { CreditCard } from '@/types/card';
@@ -27,7 +30,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
 
   try {
     const { id } = await context.params;
-    const card = getCardById(id);
+    const card = await getCardByIdAsync(id);
 
     if (!card) {
       return NextResponse.json(
