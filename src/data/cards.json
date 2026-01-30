@@ -14,7 +14,7 @@
         "hotel"
       ],
       "isActive": true,
-      "lastUpdated": "2026-01-20T00:00:00.000Z",
+      "lastUpdated": "2026-01-30T03:11:29.103Z",
       "rewards": [
         {
           "id": "base-rebate",
@@ -122,7 +122,9 @@
       ],
       "fees": {
         "annualFee": 0,
-        "foreignTransactionFeeRate": 0.0195
+        "foreignTransactionFeeRate": 0,
+        "cashAdvanceFee": 0,
+        "redemptionFee": 0
       },
       "rewardCap": {
         "unit": "cash",
@@ -946,7 +948,7 @@
       "termsUrl": "https://cdn.thesim.com/88_sim_Credit_Card_Terms_and_Conditions_of_Cash_Back_Promotion_EN_Nov25_Jan26_a029889bac.pdf?updated_at=2025-10-31T07:41:40.365Z"
     }
   ],
-  "lastUpdated": "2026-01-29T08:31:11.377Z",
+  "lastUpdated": "2026-01-30T03:11:29.103Z",
   "version": "1.0.0",
   "metadata": {
     "totalCards": 11,

@@ -42,24 +42,28 @@ const EXTRACTION_PROMPT = `You are an expert at analyzing credit card terms and 
 Given the following text from a credit card T&C document, extract ALL reward rules you can find.
 
 For each reward rule, extract:
-1. description - A clear, human-readable description of the reward
-2. rewardRate - The reward rate as a decimal (e.g., 0.04 for 4%)
-3. rewardUnit - One of: "cash", "miles", "points"
-4. priority - One of: "base", "bonus", "specific"
+1. description - A clear, human-readable description of the reward IN ENGLISH
+2. description_zh - The description in TRADITIONAL CHINESE (繁體中文). If the source document is in Chinese, translate it to proper Traditional Chinese. If the source is in English, provide a natural Traditional Chinese translation.
+3. rewardRate - The reward rate as a decimal (e.g., 0.04 for 4%)
+4. rewardUnit - One of: "cash", "miles", "points"
+5. priority - One of: "base", "bonus", "specific"
    - "base": Foundation rate that applies to all eligible transactions
    - "bonus": Additional reward that stacks on top of base rate (cumulative)
    - "specific": Rate for specific merchants that REPLACES the base rate entirely (mutually exclusive)
-5. categories - Array of applicable categories from: "dining", "travel", "online-shopping", "retail", "supermarket", "entertainment", "transport", "utilities", "insurance", "education", "medical", "government". Use ["all"] if it applies to all spending.
-6. specificMerchants - Array of specific merchant names if mentioned (e.g., ["mcdonalds", "sushiro"])
-7. monthlySpendingCap - Maximum monthly spending that qualifies for this rate (if mentioned)
-8. fallbackRate - Rate that applies after the cap is reached (if mentioned)
-9. validFrom - Start date in YYYY-MM-DD format (if promotional/limited time)
-10. validUntil - End date in YYYY-MM-DD format (if promotional/limited time)
-11. isPromotional - true if this is a time-limited promotion, false for permanent rewards
-12. conditions.paymentType - One of: "online", "offline", "contactless", "recurring" (if specified)
-13. conditions.currency - "HKD", "foreign", or specific currency code (if specified)
-14. conditions.minAmount - Minimum transaction amount (if specified)
-15. notes - IMPORTANT: Copy the EXACT original text/sentence from the document that describes this reward rate calculation. This is for verification purposes. Include the verbatim quote that shows where you got the rate from.
+6. categories - Array of applicable categories from: "dining", "travel", "online-shopping", "retail", "supermarket", "entertainment", "transport", "utilities", "insurance", "education", "medical", "government". Use ["all"] if it applies to all spending.
+7. specificMerchants - Array of specific merchant names if mentioned (e.g., ["mcdonalds", "sushiro"])
+8. monthlySpendingCap - Maximum monthly spending that qualifies for this rate (if mentioned)
+9. fallbackRate - Rate that applies after the cap is reached (if mentioned)
+10. validFrom - Start date in YYYY-MM-DD format (if promotional/limited time)
+11. validUntil - End date in YYYY-MM-DD format (if promotional/limited time)
+12. isPromotional - true if this is a time-limited promotion, false for permanent rewards
+13. conditions.paymentType - One of: "online", "offline", "contactless", "recurring" (if specified)
+14. conditions.currency - "HKD", "foreign", or specific currency code (if specified)
+15. conditions.minAmount - Minimum transaction amount (if specified)
+16. actionRequired - Action user must take to activate this reward (e.g., "Register online", "Activate in app") IN ENGLISH
+17. actionRequired_zh - The actionRequired in TRADITIONAL CHINESE (繁體中文)
+18. notes - IMPORTANT: Copy the EXACT original text/sentence from the document that describes this reward rate calculation. This is for verification purposes. Include the verbatim quote that shows where you got the rate from.
+19. notes_zh - If the original notes are in Chinese, copy them here. If the original is in English and you can provide a Chinese translation of special conditions, include it here.
 
 Also extract:
 - cardName: The name of the credit card
@@ -71,7 +75,8 @@ Respond ONLY with valid JSON in this exact format:
   "issuer": "string or null",
   "rules": [
     {
-      "description": "string",
+      "description": "string - English description",
+      "description_zh": "string - Traditional Chinese description",
       "rewardRate": number,
       "rewardUnit": "cash" | "miles" | "points",
       "priority": "base" | "bonus" | "specific",
@@ -87,7 +92,10 @@ Respond ONLY with valid JSON in this exact format:
         "currency": "string" | null,
         "minAmount": number | null
       } | null,
-      "notes": "string - exact quote from source document showing the rate calculation"
+      "actionRequired": "string - English action required" | null,
+      "actionRequired_zh": "string - Traditional Chinese action required" | null,
+      "notes": "string - exact quote from source document showing the rate calculation",
+      "notes_zh": "string - Chinese notes or translation" | null
     }
   ],
   "confidence": {
@@ -283,6 +291,7 @@ function parseAIResponse(content: string): ExtractionResult {
     const rules: Partial<RewardRule>[] = (parsed.rules || []).map((rule: Record<string, unknown>, index: number) => ({
       id: `extracted-${index + 1}`,
       description: String(rule.description || ''),
+      description_zh: typeof rule.description_zh === 'string' && rule.description_zh ? rule.description_zh : undefined,
       rewardRate: typeof rule.rewardRate === 'number' ? rule.rewardRate : 0,
       rewardUnit: validateRewardUnit(rule.rewardUnit),
       priority: validatePriority(rule.priority),
@@ -300,7 +309,10 @@ function parseAIResponse(content: string): ExtractionResult {
           ? (rule.conditions as Record<string, unknown>).minAmount as number
           : undefined,
       } : undefined,
+      actionRequired: typeof rule.actionRequired === 'string' && rule.actionRequired ? rule.actionRequired : undefined,
+      actionRequired_zh: typeof rule.actionRequired_zh === 'string' && rule.actionRequired_zh ? rule.actionRequired_zh : undefined,
       notes: typeof rule.notes === 'string' ? rule.notes : undefined,
+      notes_zh: typeof rule.notes_zh === 'string' && rule.notes_zh ? rule.notes_zh : undefined,
     }));
 
     return {
@@ -348,6 +360,7 @@ function getMockExtraction(text: string): ExtractionResult {
         rules.push({
           id: `mock-${index + 1}`,
           description: `${rateMatch[1]}% cashback (extracted pattern)`,
+          description_zh: `${rateMatch[1]}%現金回贈（提取模式）`,
           rewardRate: parseFloat(rateMatch[1]) / 100,
           rewardUnit: 'cash',
           priority: 'base',
@@ -381,6 +394,7 @@ function getMockExtraction(text: string): ExtractionResult {
     rules: rules.length > 0 ? rules : [{
       id: 'mock-default',
       description: 'Sample reward rule (configure AI API key for real extraction)',
+      description_zh: '範例獎賞規則（請配置AI API密鑰以進行真正的提取）',
       rewardRate: 0.01,
       rewardUnit: 'cash',
       priority: 'base',

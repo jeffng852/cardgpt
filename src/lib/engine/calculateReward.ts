@@ -218,11 +218,13 @@ export function calculateReward(
     rate: rule.rewardRate,
     amount: transaction.amount * rule.rewardRate,
     description: rule.description,
+    description_zh: rule.description_zh,
     priority: rule.priority,
     isPromotional: rule.isPromotional,
     validUntil: rule.validUntil,
     monthlySpendingCap: rule.monthlySpendingCap,
     actionRequired: rule.actionRequired,
+    actionRequired_zh: rule.actionRequired_zh,
     contributionType,
   });
 

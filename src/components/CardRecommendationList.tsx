@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import Image from 'next/image';
 import type { CardRecommendation } from '@/types/recommendation';
 import type { RuleContribution } from '@/types/recommendation';
@@ -20,8 +20,17 @@ export default function CardRecommendationList({
 }: CardRecommendationListProps) {
   const t = useTranslations('results');
   const tRewardTypes = useTranslations('rewardTypes');
+  const locale = useLocale();
+  const isZh = locale === 'zh-HK';
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [filterRewardType, setFilterRewardType] = useState<'all' | 'cash' | 'miles' | 'points'>('all');
+
+  // Locale-aware text helpers - use Chinese if available, fallback to English
+  const getDescription = (contribution: RuleContribution) =>
+    isZh && contribution.description_zh ? contribution.description_zh : contribution.description;
+
+  const getActionRequired = (contribution: RuleContribution) =>
+    isZh && contribution.actionRequired_zh ? contribution.actionRequired_zh : contribution.actionRequired;
 
   if (isLoading) {
     return (
@@ -321,7 +330,7 @@ export default function CardRecommendationList({
                                   {getTagLabel(contribution)}
                                 </span>
                                 <span className="text-xs sm:text-sm text-text-secondary line-clamp-2 sm:truncate">
-                                  {contribution.description}
+                                  {getDescription(contribution)}
                                 </span>
                               </div>
                               {/* Cap info inline */}
@@ -386,7 +395,7 @@ export default function CardRecommendationList({
                             <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-[10px] sm:text-xs font-medium line-clamp-1">{c.actionRequired}</span>
+                            <span className="text-[10px] sm:text-xs font-medium line-clamp-1">{getActionRequired(c)}</span>
                           </div>
                         ))}
                     </div>
@@ -398,25 +407,29 @@ export default function CardRecommendationList({
                     <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-wrap">
                       <span>
                         {t('annualFee')}: {' '}
-                        <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
+                        <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
                           {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
                         </span>
                       </span>
-                      {card.fees.foreignTransactionFeeRate && (
+                      {card.fees.foreignTransactionFeeRate !== undefined && (
                         <>
                           <span className="hidden sm:inline text-border">•</span>
                           <span>
                             {t('breakdown.fxFee')}: {' '}
-                            <span className="text-text-secondary">{(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%</span>
+                            <span className={card.fees.foreignTransactionFeeRate > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
+                              {card.fees.foreignTransactionFeeRate > 0 ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
+                            </span>
                           </span>
                         </>
                       )}
-                      {card.fees.redemptionFee && (
+                      {card.fees.redemptionFee !== undefined && (
                         <>
                           <span className="hidden sm:inline text-border">•</span>
                           <span>
                             {t('breakdown.redemptionFee')}: {' '}
-                            <span className="text-text-secondary">${card.fees.redemptionFee}</span>
+                            <span className={card.fees.redemptionFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
+                              {card.fees.redemptionFee > 0 ? `$${card.fees.redemptionFee}` : t('free')}
+                            </span>
                           </span>
                         </>
                       )}

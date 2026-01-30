@@ -113,6 +113,9 @@ export interface RewardRule {
   /** Description of this reward rule (for display) */
   description: string;
 
+  /** Chinese (Traditional) translation of description */
+  description_zh?: string;
+
   /** Excluded merchant categories */
   excludedCategories?: string[];
 
@@ -166,11 +169,17 @@ export interface RewardRule {
    */
   notes?: string;
 
+  /** Chinese (Traditional) translation of notes */
+  notes_zh?: string;
+
   /**
    * Action required to activate this reward (e.g., "Register online", "Activate in app")
    * Used for promotional offers that require user action
    */
   actionRequired?: string;
+
+  /** Chinese (Traditional) translation of actionRequired */
+  actionRequired_zh?: string;
 }
 
 /**

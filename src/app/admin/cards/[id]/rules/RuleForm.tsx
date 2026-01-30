@@ -299,7 +299,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
             {/* Description */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
-                Description *
+                Description (English) *
               </label>
               <textarea
                 value={rule.description}
@@ -308,6 +308,23 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., 4% cashback on all dining transactions"
               />
+            </div>
+
+            {/* Description Chinese */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Description (繁體中文)
+              </label>
+              <textarea
+                value={rule.description_zh || ''}
+                onChange={(e) => updateRule({ description_zh: e.target.value || undefined })}
+                rows={2}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="例如：所有餐飲交易可享4%現金回贈"
+              />
+              <p className="text-xs text-foreground-muted mt-1">
+                留空則顯示英文 (Falls back to English if empty)
+              </p>
             </div>
 
             {/* Rate and Unit */}
@@ -696,7 +713,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
             {/* Action Required */}
             <div className="pt-2">
               <label className="block text-sm font-medium text-foreground mb-1">
-                Action Required
+                Action Required (English)
               </label>
               <input
                 type="text"
@@ -707,6 +724,23 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               />
               <p className="text-xs text-foreground-muted mt-1">
                 Action user must take to activate this promotional reward
+              </p>
+            </div>
+
+            {/* Action Required Chinese */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">
+                Action Required (繁體中文)
+              </label>
+              <input
+                type="text"
+                value={rule.actionRequired_zh || ''}
+                onChange={(e) => updateRule({ actionRequired_zh: e.target.value || undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="例如：需網上登記、需於應用程式啟用"
+              />
+              <p className="text-xs text-foreground-muted mt-1">
+                留空則顯示英文 (Falls back to English if empty)
               </p>
             </div>
           </div>
@@ -744,7 +778,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
 
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1">
-                  Notes
+                  Notes (English)
                 </label>
                 <textarea
                   value={rule.notes || ''}
@@ -753,6 +787,22 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                   className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                   placeholder="Any special conditions, caveats, or edge cases..."
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Notes (繁體中文)
+                </label>
+                <textarea
+                  value={rule.notes_zh || ''}
+                  onChange={(e) => updateRule({ notes_zh: e.target.value || undefined })}
+                  rows={3}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="任何特殊條件、注意事項或邊緣情況..."
+                />
+                <p className="text-xs text-foreground-muted mt-1">
+                  留空則顯示英文 (Falls back to English if empty)
+                </p>
               </div>
             </div>
           )}

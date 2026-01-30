@@ -29,6 +29,9 @@ export interface RuleContribution {
   /** Rule description for display */
   description: string;
 
+  /** Chinese (Traditional) translation of description */
+  description_zh?: string;
+
   /** Rule priority level */
   priority: RulePriority;
 
@@ -43,6 +46,9 @@ export interface RuleContribution {
 
   /** Action required to activate (e.g., "Register online") */
   actionRequired?: string;
+
+  /** Chinese (Traditional) translation of actionRequired */
+  actionRequired_zh?: string;
 
   /** How this rule contributed to the total */
   contributionType: ContributionType;

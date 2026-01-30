@@ -744,10 +744,10 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
               <input
                 type="number"
                 step="0.0001"
-                value={card.fees?.foreignTransactionFeeRate || ''}
+                value={card.fees?.foreignTransactionFeeRate ?? ''}
                 onChange={(e) =>
                   updateFees({
-                    foreignTransactionFeeRate: e.target.value ? parseFloat(e.target.value) : undefined,
+                    foreignTransactionFeeRate: e.target.value !== '' ? parseFloat(e.target.value) : undefined,
                   })
                 }
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -760,10 +760,10 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
               </label>
               <input
                 type="number"
-                value={card.fees?.cashAdvanceFee || ''}
+                value={card.fees?.cashAdvanceFee ?? ''}
                 onChange={(e) =>
                   updateFees({
-                    cashAdvanceFee: e.target.value ? parseFloat(e.target.value) : undefined,
+                    cashAdvanceFee: e.target.value !== '' ? parseFloat(e.target.value) : undefined,
                   })
                 }
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -775,10 +775,10 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
               </label>
               <input
                 type="number"
-                value={card.fees?.redemptionFee || ''}
+                value={card.fees?.redemptionFee ?? ''}
                 onChange={(e) =>
                   updateFees({
-                    redemptionFee: e.target.value ? parseFloat(e.target.value) : undefined,
+                    redemptionFee: e.target.value !== '' ? parseFloat(e.target.value) : undefined,
                   })
                 }
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -1057,7 +1057,7 @@ function RuleEditor({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description *</label>
+            <label className="block text-sm font-medium text-foreground mb-1">Description (English) *</label>
             <input
               type="text"
               value={rule.description || ''}
@@ -1065,6 +1065,20 @@ function RuleEditor({
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
               placeholder="e.g., 4% cashback on supermarkets"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">Description (繁體中文)</label>
+            <input
+              type="text"
+              value={rule.description_zh || ''}
+              onChange={(e) => update({ description_zh: e.target.value || undefined })}
+              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+              placeholder="例如：超市消費可享4%現金回贈"
+            />
+            <p className="text-xs text-foreground-muted mt-1">
+              留空則顯示英文 (Falls back to English if empty)
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -1192,7 +1206,7 @@ function RuleEditor({
 
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Action Required (optional)
+              Action Required (English, optional)
             </label>
             <input
               type="text"
@@ -1203,6 +1217,22 @@ function RuleEditor({
             />
             <p className="text-xs text-foreground-muted mt-1">
               Action user must take to activate this reward
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Action Required (繁體中文, optional)
+            </label>
+            <input
+              type="text"
+              value={rule.actionRequired_zh || ''}
+              onChange={(e) => update({ actionRequired_zh: e.target.value || undefined })}
+              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+              placeholder="例如：網上登記、App 內啟動"
+            />
+            <p className="text-xs text-foreground-muted mt-1">
+              留空則顯示英文 (Falls back to English if empty)
             </p>
           </div>
 
@@ -1221,7 +1251,7 @@ function RuleEditor({
 
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">
-              Notes (optional)
+              Notes (English, optional)
             </label>
             <textarea
               value={rule.notes || ''}
@@ -1230,6 +1260,22 @@ function RuleEditor({
               className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
               placeholder="Any special conditions or caveats..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1">
+              Notes (繁體中文, optional)
+            </label>
+            <textarea
+              value={rule.notes_zh || ''}
+              onChange={(e) => update({ notes_zh: e.target.value || undefined })}
+              rows={2}
+              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+              placeholder="任何特殊條件或注意事項..."
+            />
+            <p className="text-xs text-foreground-muted mt-1">
+              留空則顯示英文 (Falls back to English if empty)
+            </p>
           </div>
         </div>
 

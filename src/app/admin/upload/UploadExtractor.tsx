@@ -522,14 +522,27 @@ export default function UploadExtractor() {
                     className="p-4 bg-background rounded-lg border border-border"
                   >
                     <div className="flex justify-between items-start mb-3">
-                      <div className="flex-1">
-                        <input
-                          type="text"
-                          value={rule.description || ''}
-                          onChange={(e) => updateRule(index, { description: e.target.value })}
-                          className="w-full px-3 py-1 text-sm rounded border border-border bg-background text-foreground font-medium"
-                          placeholder="Rule description"
-                        />
+                      <div className="flex-1 space-y-2">
+                        <div>
+                          <label className="text-xs text-foreground-muted">Description (English)</label>
+                          <input
+                            type="text"
+                            value={rule.description || ''}
+                            onChange={(e) => updateRule(index, { description: e.target.value })}
+                            className="w-full px-3 py-1 text-sm rounded border border-border bg-background text-foreground font-medium"
+                            placeholder="Rule description in English"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-foreground-muted">Description (繁體中文)</label>
+                          <input
+                            type="text"
+                            value={rule.description_zh || ''}
+                            onChange={(e) => updateRule(index, { description_zh: e.target.value || undefined })}
+                            className="w-full px-3 py-1 text-sm rounded border border-border bg-background text-foreground"
+                            placeholder="繁體中文描述（留空則顯示英文）"
+                          />
+                        </div>
                         {/* Source indicator */}
                         {rule._source && extractedSources.length > 1 && (
                           <span
@@ -621,6 +634,32 @@ export default function UploadExtractor() {
                       </label>
                     </div>
 
+                    {/* Action Required fields */}
+                    {(rule.isPromotional || rule.actionRequired || rule.actionRequired_zh) && (
+                      <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-xs text-foreground-muted">Action Required (English)</label>
+                          <input
+                            type="text"
+                            value={rule.actionRequired || ''}
+                            onChange={(e) => updateRule(index, { actionRequired: e.target.value || undefined })}
+                            className="w-full px-2 py-1 text-sm rounded border border-border bg-background text-foreground"
+                            placeholder="e.g., Register online"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-foreground-muted">Action Required (繁體中文)</label>
+                          <input
+                            type="text"
+                            value={rule.actionRequired_zh || ''}
+                            onChange={(e) => updateRule(index, { actionRequired_zh: e.target.value || undefined })}
+                            className="w-full px-2 py-1 text-sm rounded border border-border bg-background text-foreground"
+                            placeholder="例如：網上登記"
+                          />
+                        </div>
+                      </div>
+                    )}
+
                     {/* Source Notes - for verification */}
                     {rule.notes && (
                       <div className="mt-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded border border-blue-200 dark:border-blue-800">
@@ -630,6 +669,11 @@ export default function UploadExtractor() {
                         <p className="text-xs text-blue-600 dark:text-blue-300 italic">
                           &quot;{rule.notes}&quot;
                         </p>
+                        {rule.notes_zh && rule.notes_zh !== rule.notes && (
+                          <p className="text-xs text-blue-600 dark:text-blue-300 italic mt-1">
+                            繁中: &quot;{rule.notes_zh}&quot;
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
