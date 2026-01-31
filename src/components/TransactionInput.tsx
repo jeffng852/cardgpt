@@ -90,7 +90,7 @@ function Dropdown<T extends string>({ label, value, options, onChange, required,
 
       {isOpen && (
         <div className="absolute top-full left-0 mt-2 min-w-[220px]
-          bg-surface/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/30 z-50
+          bg-[#1e1e1e] border border-white/20 rounded-xl shadow-2xl shadow-black/50 z-50
           animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="p-1.5">
             {value && (
