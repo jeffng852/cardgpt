@@ -151,11 +151,13 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<{ succes
     console.log(`[Blob] Writing blob with timestamp: ${writeTimestamp}`);
 
     // Upload new content (overwrites existing blob with same pathname)
+    // Set cacheControlMaxAge to 0 to prevent CDN caching of stale data
     const result = await put(CARDS_BLOB_NAME, content, {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
       allowOverwrite: true,
+      cacheControlMaxAge: 0,
     });
 
     console.log(`[Blob] Blob written successfully - URL: ${result.url}`);
