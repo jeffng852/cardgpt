@@ -10,20 +10,20 @@ interface RuleFormProps {
   ruleIndex: number | null; // null = new rule
 }
 
+// 11 simplified categories matching TransactionCategory type
 const CATEGORIES = [
-  'dining',
-  'travel',
-  'online-shopping',
-  'retail',
-  'supermarket',
-  'entertainment',
-  'transport',
-  'utilities',
-  'insurance',
-  'education',
-  'medical',
-  'government',
-];
+  { value: 'groceries', label: 'Groceries / Supermarket' },
+  { value: 'dining', label: 'Dining' },
+  { value: 'online', label: 'Online / Subscription' },
+  { value: 'travel', label: 'Travel' },
+  { value: 'transport', label: 'Local Transport' },
+  { value: 'overseas', label: 'Overseas Spending' },
+  { value: 'utilities', label: 'Utilities / Bills' },
+  { value: 'financial', label: 'Financial Services' },
+  { value: 'government', label: 'Government' },
+  { value: 'digital-wallet', label: 'Digital Wallet' },
+  { value: 'others', label: 'Others' },
+] as const;
 
 const PAYMENT_TYPES: PaymentType[] = ['online', 'offline', 'contactless', 'recurring'];
 const CURRENCIES: Currency[] = ['HKD', 'USD', 'CNY', 'JPY', 'EUR', 'GBP', 'SGD', 'AUD', 'CAD', 'TWD'];
@@ -408,18 +408,28 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Select Categories
                 </label>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {CATEGORIES.map((category) => (
-                    <label key={category} className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={(rule.categories as string[])?.includes(category) || false}
-                        onChange={() => handleCategoryToggle(category)}
-                        className="rounded border-border"
-                      />
-                      <span className="text-sm text-foreground capitalize">{category}</span>
-                    </label>
-                  ))}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {CATEGORIES.map((cat) => {
+                    const isSelected = (rule.categories as string[])?.includes(cat.value) || false;
+                    return (
+                      <label
+                        key={cat.value}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                          isSelected
+                            ? 'bg-primary/10 border-primary text-primary'
+                            : 'border-border hover:bg-background-secondary'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleCategoryToggle(cat.value)}
+                          className="rounded border-border text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm">{cat.label}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             )}

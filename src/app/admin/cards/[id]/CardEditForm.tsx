@@ -46,6 +46,22 @@ const emptyRule: Partial<RewardRule> = {
   categories: ['all'],
 };
 
+// Admin category options - 11 simplified categories plus 'all'
+const ADMIN_CATEGORIES = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'groceries', label: 'Groceries / Supermarket' },
+  { value: 'dining', label: 'Dining' },
+  { value: 'online', label: 'Online / Subscription' },
+  { value: 'travel', label: 'Travel' },
+  { value: 'transport', label: 'Local Transport' },
+  { value: 'overseas', label: 'Overseas Spending' },
+  { value: 'utilities', label: 'Utilities / Bills' },
+  { value: 'financial', label: 'Financial Services' },
+  { value: 'government', label: 'Government' },
+  { value: 'digital-wallet', label: 'Digital Wallet' },
+  { value: 'others', label: 'Others' },
+] as const;
+
 // Generate a unique rule ID based on card ID, priority, category, and index
 function generateRuleId(cardId: string, priority: string, categories: string[], existingRuleCount: number): string {
   const cardSlug = cardId || 'card';
@@ -1147,15 +1163,52 @@ function RuleEditor({
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Merchant Targeting</h4>
 
+            {/* Categories Selection */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Categories (comma-separated)</label>
-              <input
-                type="text"
-                value={rule.categories?.join(', ') || ''}
-                onChange={(e) => update({ categories: e.target.value.split(',').map((c) => c.trim()).filter(Boolean) })}
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                placeholder="e.g., dining, travel or 'all' for everything"
-              />
+              <label className="block text-sm font-medium text-foreground mb-2">Categories</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {ADMIN_CATEGORIES.map((cat) => {
+                  const categories = rule.categories as string[] | undefined;
+                  const isAll = cat.value === 'all';
+                  const isAllSelected = categories?.includes('all');
+                  const isSelected = categories?.includes(cat.value);
+                  return (
+                    <label
+                      key={cat.value}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-primary/10 border-primary text-primary'
+                          : 'border-border hover:bg-background-secondary'
+                      } ${isAll ? 'col-span-2 sm:col-span-3 bg-background-secondary' : ''}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected || false}
+                        onChange={() => {
+                          const current = rule.categories || [];
+                          if (isAll) {
+                            // Toggle "All" - clears other selections
+                            update({ categories: isSelected ? [] : ['all'] });
+                          } else {
+                            // Toggle specific category
+                            if (isSelected) {
+                              update({ categories: current.filter(c => c !== cat.value) });
+                            } else {
+                              // Remove 'all' when selecting specific categories
+                              update({ categories: [...current.filter(c => c !== 'all'), cat.value] });
+                            }
+                          }
+                        }}
+                        disabled={!isAll && isAllSelected}
+                        className="rounded border-border text-primary focus:ring-primary"
+                      />
+                      <span className={`text-sm ${!isAll && isAllSelected ? 'text-foreground-muted' : ''}`}>
+                        {cat.label}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
 
             <div>
@@ -1169,15 +1222,41 @@ function RuleEditor({
               />
             </div>
 
+            {/* Excluded Categories Selection */}
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Excluded Categories (comma-separated)</label>
-              <input
-                type="text"
-                value={rule.excludedCategories?.join(', ') || ''}
-                onChange={(e) => update({ excludedCategories: e.target.value ? e.target.value.split(',').map((c) => c.trim()).filter(Boolean) : undefined })}
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                placeholder="e.g., insurance, government"
-              />
+              <label className="block text-sm font-medium text-foreground mb-2">Excluded Categories</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {ADMIN_CATEGORIES.filter(cat => cat.value !== 'all').map((cat) => {
+                  const excludedCategories = rule.excludedCategories as string[] | undefined;
+                  const isSelected = excludedCategories?.includes(cat.value);
+                  return (
+                    <label
+                      key={cat.value}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-red-500/10 border-red-500 text-red-500'
+                          : 'border-border hover:bg-background-secondary'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected || false}
+                        onChange={() => {
+                          const current = rule.excludedCategories || [];
+                          if (isSelected) {
+                            const newExcluded = current.filter(c => c !== cat.value);
+                            update({ excludedCategories: newExcluded.length > 0 ? newExcluded : undefined });
+                          } else {
+                            update({ excludedCategories: [...current, cat.value] });
+                          }
+                        }}
+                        className="rounded border-border text-red-500 focus:ring-red-500"
+                      />
+                      <span className="text-sm">{cat.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
 
             <div>
