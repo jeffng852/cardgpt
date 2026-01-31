@@ -204,7 +204,8 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<{ succes
  */
 export async function initializeBlobFromLocal(localData: CardDatabase): Promise<boolean> {
   console.log('Initializing blob storage with local cards.json data...');
-  return writeCardsToBlob(localData);
+  const result = await writeCardsToBlob(localData);
+  return result.success;
 }
 
 /**
