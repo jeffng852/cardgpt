@@ -82,17 +82,17 @@
     "points": "積分"
   },
   "categories": {
-    "cashback": "現金回贈",
-    "miles": "里數",
-    "points": "積分",
+    "groceries": "超市/雜貨",
     "dining": "餐飲",
+    "online": "網購/訂閱",
     "travel": "旅遊",
-    "online-shopping": "網購",
-    "retail": "零售",
-    "supermarket": "超市",
-    "entertainment": "娛樂",
-    "transport": "交通",
-    "utilities": "公用事業"
+    "transport": "本地交通",
+    "overseas": "海外消費",
+    "utilities": "水電煤/賬單",
+    "financial": "金融服務/保險",
+    "government": "政府",
+    "digital-wallet": "電子錢包",
+    "others": "其他"
   },
   "merchants": {
     "supermarket": "超市",
@@ -122,6 +122,7 @@
     "placeholder": "例如：買Pokemon卡 5000 或 婚禮場地訂金 8000",
     "submit": "搵最適合你既卡",
     "rewardTypeLabel": "想要嘅獎賞類型（可選）",
+    "categoryLabel": "消費類別（可選）",
     "quickTagsLabel": "熱門商戶",
     "exampleText": "試下：「入油 500」或「婚禮場地訂金 8000」",
     "analyzing": "分析緊...",

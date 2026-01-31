@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { parseTransaction } from '@/lib/parser/transactionParser';
 import type { ParseResult } from '@/lib/parser/transactionParser';
+import { TRANSACTION_CATEGORIES, type TransactionCategory } from '@/types/transaction';
 
 type RewardType = 'cash' | 'miles' | 'points';
 
@@ -27,6 +28,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const tCategories = useTranslations('categories');
   const [input, setInput] = useState('');
   const [selectedRewardType, setSelectedRewardType] = useState<RewardType | undefined>();
+  const [selectedCategory, setSelectedCategory] = useState<TransactionCategory | undefined>();
   const [selectedMerchantTag, setSelectedMerchantTag] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
@@ -66,7 +68,21 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
       // Debounce parsing with artificial delay (300ms + 200ms = 500ms total)
       debounceTimerRef.current = setTimeout(() => {
         try {
-          const result = parseTransaction(value);
+          let result = parseTransaction(value);
+          // Use selected category if no category detected
+          if (selectedCategory && !result.transaction.category) {
+            result = {
+              ...result,
+              transaction: {
+                ...result.transaction,
+                category: selectedCategory,
+              },
+              confidence: {
+                ...result.confidence,
+                category: 0.9,
+              },
+            };
+          }
           // Add artificial delay for shimmer effect
           setTimeout(() => {
             setParseResult(result);
@@ -91,6 +107,27 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
       }
     };
   }, []);
+
+  // Re-parse when category selection changes
+  useEffect(() => {
+    if (input.trim()) {
+      let result = parseTransaction(input);
+      if (selectedCategory && !result.transaction.category) {
+        result = {
+          ...result,
+          transaction: {
+            ...result.transaction,
+            category: selectedCategory,
+          },
+          confidence: {
+            ...result.confidence,
+            category: 0.9,
+          },
+        };
+      }
+      setParseResult(result);
+    }
+  }, [selectedCategory, input]);
 
   // Select merchant tag (single-select only)
   const handleQuickTag = (tagLabel: string) => {
@@ -156,6 +193,21 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
     try {
       let result = parseTransaction(input);
+
+      // Use selected category if provided and no category was detected
+      if (selectedCategory && !result.transaction.category) {
+        result = {
+          ...result,
+          transaction: {
+            ...result.transaction,
+            category: selectedCategory,
+          },
+          confidence: {
+            ...result.confidence,
+            category: 0.9, // User-selected category has high confidence
+          },
+        };
+      }
 
       // If no category detected and we have an amount, try AI parsing
       if (!result.transaction.category && result.confidence.amount > 0) {
@@ -227,6 +279,33 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               <span className="ml-2">{tRewardTypes(type)}</span>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Category Selector */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-text-secondary mb-3">
+          {t('categoryLabel')}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {(Object.keys(TRANSACTION_CATEGORIES) as TransactionCategory[]).map((cat) => {
+            const catInfo = TRANSACTION_CATEGORIES[cat];
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setSelectedCategory(selectedCategory === cat ? undefined : cat)}
+                className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+                  selectedCategory === cat
+                    ? 'bg-accent-purple/10 border-accent-purple text-accent-purple'
+                    : 'bg-input-bg border-border text-text-primary hover:border-accent-purple/50 hover:bg-accent-purple/5'
+                }`}
+              >
+                <span className="mr-1">{catInfo.icon}</span>
+                {tCategories(cat)}
+              </button>
+            );
+          })}
         </div>
       </div>
 

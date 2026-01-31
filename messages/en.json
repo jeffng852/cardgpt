@@ -82,17 +82,17 @@
     "points": "Points"
   },
   "categories": {
-    "cashback": "Cash Back",
-    "miles": "Miles",
-    "points": "Points",
+    "groceries": "Groceries / Supermarket",
     "dining": "Dining",
+    "online": "Online / Subscription",
     "travel": "Travel",
-    "online-shopping": "Online Shopping",
-    "retail": "Retail",
-    "supermarket": "Supermarket",
-    "entertainment": "Entertainment",
-    "transport": "Transport",
-    "utilities": "Utilities"
+    "transport": "Local Transport",
+    "overseas": "Overseas Spending",
+    "utilities": "Utilities / Bills",
+    "financial": "Financial Services",
+    "government": "Government",
+    "digital-wallet": "Digital Wallet",
+    "others": "Others"
   },
   "merchants": {
     "supermarket": "Supermarket",
@@ -122,6 +122,7 @@
     "placeholder": "e.g., Buy Pokemon Cards 5000 or Wedding deposit 8000",
     "submit": "Find The Right Card",
     "rewardTypeLabel": "Preferred Reward Type (Optional)",
+    "categoryLabel": "Spending Category (Optional)",
     "quickTagsLabel": "Popular Merchants",
     "exampleText": "Try: \"Gas refill 500\" or \"Wedding venue deposit 8000\"",
     "analyzing": "Analyzing...",

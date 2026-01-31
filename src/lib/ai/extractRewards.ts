@@ -50,7 +50,18 @@ For each reward rule, extract:
    - "base": Foundation rate that applies to all eligible transactions
    - "bonus": Additional reward that stacks on top of base rate (cumulative)
    - "specific": Rate for specific merchants that REPLACES the base rate entirely (mutually exclusive)
-6. categories - Array of applicable categories from: "dining", "travel", "online-shopping", "retail", "supermarket", "entertainment", "transport", "utilities", "insurance", "education", "medical", "government". Use ["all"] if it applies to all spending.
+6. categories - Array of applicable categories from: "groceries", "dining", "online", "travel", "transport", "overseas", "utilities", "financial", "government", "digital-wallet", "others". Use ["all"] if it applies to all spending.
+   - "groceries": Supermarkets like Wellcome, ParknShop, 759
+   - "dining": Restaurants, cafes, fast food
+   - "online": Online shopping, subscriptions (Netflix, Spotify)
+   - "travel": Flights, hotels, Klook, Agoda
+   - "transport": Local transport - MTR, taxi, Uber, fuel
+   - "overseas": Foreign currency transactions
+   - "utilities": CLP, Towngas, broadband, bills
+   - "financial": Insurance, loan payments (AIA, Prudential)
+   - "government": Tax, fines, license fees
+   - "digital-wallet": Octopus, PayMe, AlipayHK
+   - "others": Everything else
 7. specificMerchants - Array of specific merchant names if mentioned (e.g., ["mcdonalds", "sushiro"])
 8. excludedCategories - Array of categories that are excluded from this reward (e.g., ["insurance", "government"])
 9. excludedMerchants - Array of merchants excluded from this reward (e.g., ["casino", "gambling"])
