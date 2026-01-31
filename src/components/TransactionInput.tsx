@@ -8,7 +8,7 @@ import { TRANSACTION_CATEGORIES, type TransactionCategory } from '@/types/transa
 
 type RewardType = 'cash' | 'miles' | 'points';
 
-// SVG line icons for categories (single color, matches text)
+// SVG line icons for categories
 const CategoryIcon = ({ category, className = "w-4 h-4" }: { category: TransactionCategory; className?: string }) => {
   const icons: Record<TransactionCategory, React.ReactElement> = {
     groceries: (
@@ -70,6 +70,28 @@ const CategoryIcon = ({ category, className = "w-4 h-4" }: { category: Transacti
   return icons[category];
 };
 
+// Reward type icons (SVG)
+const RewardIcon = ({ type, className = "w-5 h-5" }: { type: RewardType; className?: string }) => {
+  const icons: Record<RewardType, React.ReactElement> = {
+    cash: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    miles: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+      </svg>
+    ),
+    points: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+      </svg>
+    ),
+  };
+  return icons[type];
+};
+
 interface TransactionInputProps {
   onSubmit: (result: ParseResult, rewardType?: RewardType) => void;
 }
@@ -103,7 +125,6 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
   const MAX_INPUT_LENGTH = 80;
 
-  // Popular merchant quick-tags (no icons, text only)
   const quickTags = [
     { key: 'mcdonalds', label: t('quickTags.mcdonalds') },
     { key: 'wellcome', label: t('quickTags.wellcome') },
@@ -113,15 +134,12 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     { key: 'cathay', label: t('quickTags.cathay') },
   ];
 
-  // Parse input in real-time for feedback with debounce and artificial delay
   const handleInputChange = (value: string) => {
-    // Enforce max length
     if (value.length > MAX_INPUT_LENGTH) {
       value = value.slice(0, MAX_INPUT_LENGTH);
     }
     setInput(value);
 
-    // Clear existing timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
@@ -130,30 +148,21 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
       setIsAnalyzing(true);
       setParseResult(null);
 
-      // Debounce parsing with artificial delay (300ms + 200ms = 500ms total)
       debounceTimerRef.current = setTimeout(() => {
         try {
           let result = parseTransaction(value);
-          // Use selected category if no category detected
           if (selectedCategory && !result.transaction.category) {
             result = {
               ...result,
-              transaction: {
-                ...result.transaction,
-                category: selectedCategory,
-              },
-              confidence: {
-                ...result.confidence,
-                category: 0.9,
-              },
+              transaction: { ...result.transaction, category: selectedCategory },
+              confidence: { ...result.confidence, category: 0.9 },
             };
           }
-          // Add artificial delay for shimmer effect
           setTimeout(() => {
             setParseResult(result);
             setIsAnalyzing(false);
           }, 200);
-        } catch (error) {
+        } catch {
           setParseResult(null);
           setIsAnalyzing(false);
         }
@@ -164,7 +173,6 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     }
   };
 
-  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current) {
@@ -173,91 +181,45 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     };
   }, []);
 
-  // Re-parse when category selection changes
   useEffect(() => {
     if (input.trim()) {
       let result = parseTransaction(input);
       if (selectedCategory && !result.transaction.category) {
         result = {
           ...result,
-          transaction: {
-            ...result.transaction,
-            category: selectedCategory,
-          },
-          confidence: {
-            ...result.confidence,
-            category: 0.9,
-          },
+          transaction: { ...result.transaction, category: selectedCategory },
+          confidence: { ...result.confidence, category: 0.9 },
         };
       }
       setParseResult(result);
     }
   }, [selectedCategory, input]);
 
-  // Select merchant tag (single-select only)
   const handleQuickTag = (tagLabel: string) => {
     if (selectedMerchantTag === tagLabel) {
-      // Deselect if clicking the same tag
       setSelectedMerchantTag(null);
-      // Remove tag from input
       const inputWithoutTag = input.replace(new RegExp(`\\s*${tagLabel}\\s*`, 'g'), '').trim();
       handleInputChange(inputWithoutTag);
     } else {
-      // Select new tag and replace previous selection
       setSelectedMerchantTag(tagLabel);
-      // Remove previous tag if exists
       let newInput = input;
       if (selectedMerchantTag) {
         newInput = newInput.replace(new RegExp(`\\s*${selectedMerchantTag}\\s*`, 'g'), '').trim();
       }
-      // Add new tag
       newInput = newInput ? `${newInput} ${tagLabel}` : tagLabel;
       handleInputChange(newInput);
     }
   };
 
-  // Call AI to parse activity when no category detected
-  const parseActivityWithAI = async (activity: string): Promise<{ category?: string; error?: string; rateLimitSeconds?: number }> => {
-    try {
-      const response = await fetch('/api/parse-activity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activity }),
-      });
-
-      const data = await response.json();
-
-      if (response.status === 429) {
-        // Rate limited
-        return { error: data.message, rateLimitSeconds: data.retryAfterSeconds };
-      }
-
-      if (!response.ok) {
-        return { error: data.message || 'Failed to analyze activity' };
-      }
-
-      if (data.error) {
-        return { error: data.error };
-      }
-
-      return { category: data.category };
-    } catch (error) {
-      console.error('[AI Parse] Error:', error);
-      return { error: 'Network error. Please try again.' };
-    }
-  };
-
-  // Submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!input.trim()) return;
 
-    // Check if category is selected (mandatory)
     const hasCategory = selectedCategory || (parseResult?.transaction?.category);
     if (!hasCategory) {
       setShowCategoryError(true);
-      setIsCategoryExpanded(true); // Expand category section to show options
+      setIsCategoryExpanded(true);
       return;
     }
     setShowCategoryError(false);
@@ -268,24 +230,16 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     try {
       let result = parseTransaction(input);
 
-      // Use selected category if provided and no category was detected
       if (selectedCategory && !result.transaction.category) {
         result = {
           ...result,
-          transaction: {
-            ...result.transaction,
-            category: selectedCategory,
-          },
-          confidence: {
-            ...result.confidence,
-            category: 0.9, // User-selected category has high confidence
-          },
+          transaction: { ...result.transaction, category: selectedCategory },
+          confidence: { ...result.confidence, category: 0.9 },
         };
       }
 
       await onSubmit(result, selectedRewardType);
-    } catch (error) {
-      console.error('Parse error:', error);
+    } catch {
       setAIState({ isLoading: false, error: t('moreContextNeeded') });
     } finally {
       setIsProcessing(false);
@@ -293,66 +247,172 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      {/* Reward Type Selector */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-text-secondary mb-3">
-          {t('rewardTypeLabel')}
-        </label>
-        <div className="flex gap-3">
-          {(['cash', 'miles', 'points'] as RewardType[]).map((type) => (
-            <button
-              key={type}
-              type="button"
-              onClick={() => setSelectedRewardType(selectedRewardType === type ? undefined : type)}
-              className={`flex-1 px-4 py-3 rounded-xl border-2 font-medium transition-all ${
-                selectedRewardType === type
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border bg-surface text-text-secondary hover:border-primary/50'
-              }`}
-            >
-              {type === 'cash' && '💵'}
-              {type === 'miles' && '✈️'}
-              {type === 'points' && '⭐'}
-              <span className="ml-2">{tRewardTypes(type)}</span>
-            </button>
-          ))}
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      {/* Main Input Card - Glass morphism style */}
+      <div className="relative">
+        {/* Subtle glow effect behind card */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 rounded-3xl blur-xl opacity-50" />
+
+        <div className="relative backdrop-blur-xl bg-surface/80 border border-white/10 rounded-2xl shadow-2xl shadow-black/20 overflow-hidden">
+          {/* Input Section */}
+          <form onSubmit={handleSubmit}>
+            <div className="p-5">
+              {/* Search Input */}
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20">
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => handleInputChange(e.target.value)}
+                  placeholder={t('placeholder')}
+                  maxLength={MAX_INPUT_LENGTH}
+                  className="flex-1 bg-transparent text-lg text-text-primary placeholder:text-text-tertiary/60 focus:outline-none font-medium"
+                  autoFocus
+                />
+                {input.length > 0 && (
+                  <span className={`text-xs tabular-nums px-2 py-1 rounded-md ${
+                    input.length >= MAX_INPUT_LENGTH ? 'bg-amber-500/20 text-amber-400' : 'bg-white/5 text-text-tertiary'
+                  }`}>
+                    {input.length}/{MAX_INPUT_LENGTH}
+                  </span>
+                )}
+              </div>
+
+              {/* Real-time Detection Feedback */}
+              {(isAnalyzing || (parseResult && parseResult.transaction.amount > 0)) && (
+                <div className="mt-4 pt-4 border-t border-white/5">
+                  {isAnalyzing ? (
+                    <div className="flex gap-3">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="flex-1 h-12 rounded-xl bg-white/5 animate-pulse" />
+                      ))}
+                    </div>
+                  ) : parseResult && parseResult.transaction.amount > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {/* Amount Chip */}
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {parseResult.transaction.currency} ${parseResult.transaction.amount.toLocaleString()}
+                      </div>
+
+                      {/* Merchant Chip */}
+                      {parseResult.transaction.merchantId && (
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                          </svg>
+                          {tMerchants(parseResult.transaction.merchantId)}
+                        </div>
+                      )}
+
+                      {/* Category Chip */}
+                      {parseResult.transaction.category && (
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium">
+                          <CategoryIcon category={parseResult.transaction.category as TransactionCategory} className="w-4 h-4" />
+                          {tCategories(parseResult.transaction.category)}
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <div className="px-5 pb-5">
+              <button
+                type="submit"
+                disabled={!input.trim() || isProcessing || aiState.isLoading}
+                className="w-full relative group overflow-hidden rounded-xl font-semibold text-white transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {/* Gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary to-emerald-500 transition-all duration-300 group-hover:scale-105" />
+                {/* Shine effect */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white to-transparent -skew-x-12 translate-x-[-100%] group-hover:translate-x-[100%]" style={{ transition: 'transform 0.6s' }} />
+
+                <span className="relative flex items-center justify-center gap-2 px-6 py-3.5">
+                  {isProcessing || aiState.isLoading ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      {aiState.isLoading ? t('aiAnalyzing') : t('analyzing')}
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                      </svg>
+                      {t('submit')}
+                    </>
+                  )}
+                </span>
+              </button>
+            </div>
+          </form>
+
+          {/* Error Message */}
+          {aiState.error && (
+            <div className="mx-5 mb-5 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                </div>
+                <p className="text-sm text-red-300">{aiState.error}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Category Selector - Collapsible */}
-      <div className="mb-6">
+      {/* Category Selection */}
+      <div className="backdrop-blur-xl bg-surface/60 border border-white/5 rounded-2xl overflow-hidden">
         <button
           type="button"
           onClick={() => setIsCategoryExpanded(!isCategoryExpanded)}
-          className="w-full flex items-center justify-between text-sm font-medium text-text-secondary mb-3 hover:text-text-primary transition-colors"
+          className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
         >
-          <span className="flex items-center gap-2">
-            {t('categoryLabel')}
-            <span className="text-red-500">*</span>
-            {selectedCategory && (
-              <span className="px-2 py-0.5 rounded-full bg-accent-purple/10 text-accent-purple text-xs">
-                {tCategories(selectedCategory)}
-              </span>
-            )}
-          </span>
-          <svg
-            className={`w-4 h-4 transition-transform ${isCategoryExpanded ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
+              </svg>
+            </div>
+            <div className="text-left">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-text-primary">{t('categoryLabel')}</span>
+                <span className="text-red-400 text-xs">*</span>
+              </div>
+              {selectedCategory && (
+                <span className="text-xs text-purple-400">{tCategories(selectedCategory)}</span>
+              )}
+            </div>
+          </div>
+          <svg className={`w-5 h-5 text-text-tertiary transition-transform duration-200 ${isCategoryExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         </button>
+
         {showCategoryError && !selectedCategory && (
-          <p className="text-xs text-red-500 mb-2">{t('categoryRequired')}</p>
+          <div className="px-4 pb-2">
+            <p className="text-xs text-red-400">{t('categoryRequired')}</p>
+          </div>
         )}
+
         {isCategoryExpanded && (
-          <div className="flex flex-wrap gap-2">
-            {(Object.keys(TRANSACTION_CATEGORIES) as TransactionCategory[]).map((cat) => {
-              const catInfo = TRANSACTION_CATEGORIES[cat];
-              return (
+          <div className="px-4 pb-4">
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(TRANSACTION_CATEGORIES) as TransactionCategory[]).map((cat) => (
                 <button
                   key={cat}
                   type="button"
@@ -360,247 +420,105 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                     setSelectedCategory(selectedCategory === cat ? undefined : cat);
                     setShowCategoryError(false);
                   }}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all ${
+                  className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     selectedCategory === cat
-                      ? 'bg-text-primary/10 border-text-primary/30 text-text-primary'
-                      : 'bg-transparent border-border/60 text-text-secondary hover:border-text-primary/40 hover:text-text-primary'
+                      ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 shadow-lg shadow-purple-500/10'
+                      : 'bg-white/5 border border-white/10 text-text-secondary hover:bg-white/10 hover:border-white/20 hover:text-text-primary'
                   }`}
                 >
                   <CategoryIcon category={cat} className="w-4 h-4" />
                   {tCategories(cat)}
                 </button>
-              );
-            })}
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Quick Tags - Collapsible */}
-      <div className="mb-4">
+      {/* Reward Type Selection */}
+      <div className="backdrop-blur-xl bg-surface/60 border border-white/5 rounded-2xl p-4">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+            <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+          </div>
+          <span className="text-sm font-medium text-text-primary">{t('rewardTypeLabel')}</span>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2">
+          {(['cash', 'miles', 'points'] as RewardType[]).map((type) => (
+            <button
+              key={type}
+              type="button"
+              onClick={() => setSelectedRewardType(selectedRewardType === type ? undefined : type)}
+              className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-200 ${
+                selectedRewardType === type
+                  ? 'bg-primary/20 border border-primary/40 text-primary shadow-lg shadow-primary/10'
+                  : 'bg-white/5 border border-white/10 text-text-secondary hover:bg-white/10 hover:text-text-primary'
+              }`}
+            >
+              <RewardIcon type={type} className="w-5 h-5" />
+              <span className="text-xs font-medium">{tRewardTypes(type)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Popular Merchants */}
+      <div className="backdrop-blur-xl bg-surface/60 border border-white/5 rounded-2xl overflow-hidden">
         <button
           type="button"
           onClick={() => setIsMerchantsExpanded(!isMerchantsExpanded)}
-          className="w-full flex items-center justify-between text-sm font-medium text-text-secondary mb-3 hover:text-text-primary transition-colors"
+          className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
         >
-          <span className="flex items-center gap-2">
-            {t('quickTagsLabel')}
-            <span className="text-text-tertiary text-xs">({t('optional')})</span>
-            {selectedMerchantTag && (
-              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs">
-                {selectedMerchantTag}
-              </span>
-            )}
-          </span>
-          <svg
-            className={`w-4 h-4 transition-transform ${isMerchantsExpanded ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+              </svg>
+            </div>
+            <div className="text-left">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-text-primary">{t('quickTagsLabel')}</span>
+                <span className="text-xs text-text-tertiary">({t('optional')})</span>
+              </div>
+              {selectedMerchantTag && (
+                <span className="text-xs text-blue-400">{selectedMerchantTag}</span>
+              )}
+            </div>
+          </div>
+          <svg className={`w-5 h-5 text-text-tertiary transition-transform duration-200 ${isMerchantsExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         </button>
+
         {isMerchantsExpanded && (
-          <div className="flex flex-wrap gap-2">
-            {quickTags.map((tag) => (
-              <button
-                key={tag.key}
-                type="button"
-                onClick={() => handleQuickTag(tag.label)}
-                className={`px-4 py-2.5 rounded-xl border text-sm transition-all ${
-                  selectedMerchantTag === tag.label
-                    ? 'bg-text-primary/10 border-text-primary/30 text-text-primary'
-                    : 'bg-transparent border-border/60 text-text-secondary hover:border-text-primary/40 hover:text-text-primary'
-                }`}
-              >
-                {tag.label}
-              </button>
-            ))}
+          <div className="px-4 pb-4">
+            <div className="flex flex-wrap gap-2">
+              {quickTags.map((tag) => (
+                <button
+                  key={tag.key}
+                  type="button"
+                  onClick={() => handleQuickTag(tag.label)}
+                  className={`px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    selectedMerchantTag === tag.label
+                      ? 'bg-blue-500/20 border border-blue-500/40 text-blue-300 shadow-lg shadow-blue-500/10'
+                      : 'bg-white/5 border border-white/10 text-text-secondary hover:bg-white/10 hover:border-white/20 hover:text-text-primary'
+                  }`}
+                >
+                  {tag.label}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Main Input Form */}
-      <form onSubmit={handleSubmit}>
-        <div className="bg-input-bg border-2 border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow focus-within:border-primary/50">
-          {/* Input Field */}
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                />
-              </svg>
-            </div>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder={t('placeholder')}
-              maxLength={MAX_INPUT_LENGTH}
-              className="flex-1 bg-transparent text-lg text-text-primary placeholder:text-text-tertiary focus:outline-none"
-              autoFocus
-            />
-            {/* Character count indicator */}
-            {input.length > 0 && (
-              <span className={`text-xs tabular-nums flex-shrink-0 ${
-                input.length >= MAX_INPUT_LENGTH
-                  ? 'text-amber-500'
-                  : 'text-text-tertiary'
-              }`}>
-                {input.length}/{MAX_INPUT_LENGTH}
-              </span>
-            )}
-          </div>
-
-          {/* Real-time Feedback with Shimmer Effect */}
-          {(isAnalyzing || (parseResult && parseResult.transaction)) && (
-            <div className="mb-4 p-4 bg-surface rounded-xl border border-border">
-              {isAnalyzing ? (
-                // Shimmer Loading Effect
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="relative overflow-hidden h-16 bg-background-secondary rounded-lg">
-                      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-foreground-subtle/10 to-transparent" />
-                    </div>
-                  ))}
-                </div>
-              ) : parseResult && parseResult.transaction ? (
-                // Detected Information Badges
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* Amount Badge */}
-                  <div className="flex items-center gap-3 px-3 py-2.5 bg-primary-light rounded-lg border border-primary/20 transition-all hover:border-primary/40">
-                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10">
-                      <span className="text-lg">💵</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium text-foreground-muted mb-0.5">
-                        {tResults('detectedAmount')}
-                      </div>
-                      <div className="text-sm font-bold text-foreground truncate">
-                        {parseResult.transaction.currency} ${parseResult.transaction.amount}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Merchant Badge */}
-                  {parseResult.transaction.merchantId ? (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-accent-blue-light rounded-lg border border-accent-blue/20 transition-all hover:border-accent-blue/40">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-accent-blue/10">
-                        <span className="text-lg">🏪</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-muted mb-0.5">
-                          {tResults('detectedMerchant')}
-                        </div>
-                        <div className="text-sm font-bold text-foreground truncate">
-                          {tMerchants(parseResult.transaction.merchantId)}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-background-tertiary/50 rounded-lg border border-border-light">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-foreground-subtle/10">
-                        <span className="text-lg opacity-50">🏪</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-subtle">
-                          {tResults('detectedMerchant')}
-                        </div>
-                        <div className="text-xs text-foreground-muted italic">
-                          {tResults('merchantHint')}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Category Badge */}
-                  {parseResult.transaction.category ? (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-accent-purple-light rounded-lg border border-accent-purple/20 transition-all hover:border-accent-purple/40">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-accent-purple/10">
-                        <span className="text-lg">🏷️</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-muted mb-0.5">
-                          {tResults('detectedCategory')}
-                        </div>
-                        <div className="text-sm font-bold text-foreground truncate">
-                          {tCategories(parseResult.transaction.category)}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-background-tertiary/50 rounded-lg border border-border-light">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-foreground-subtle/10">
-                        <span className="text-lg opacity-50">🏷️</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-subtle">
-                          {tResults('detectedCategory')}
-                        </div>
-                        <div className="text-xs text-foreground-muted italic">
-                          {tResults('categoryHint')}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {/* AI Error Message */}
-          {aiState.error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <div className="flex items-start gap-2">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div className="flex-1">
-                  <p className="text-sm text-red-700 dark:text-red-300">{aiState.error}</p>
-                  {aiState.rateLimitSeconds && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                      {t('rateLimitMessage', { seconds: aiState.rateLimitSeconds })}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={!input.trim() || isProcessing || aiState.isLoading}
-            className="w-full px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            {isProcessing || aiState.isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                {aiState.isLoading ? t('aiAnalyzing') : t('analyzing')}
-              </span>
-            ) : (
-              t('submit')
-            )}
-          </button>
-
-          {/* Example Text */}
-          <p className="text-xs text-text-tertiary text-center mt-4">
-            {t('exampleText')}
-          </p>
-        </div>
-      </form>
+      {/* Helper Text */}
+      <p className="text-center text-xs text-text-tertiary/60">
+        {t('exampleText')}
+      </p>
     </div>
   );
 }
