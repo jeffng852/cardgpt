@@ -21,10 +21,11 @@ let redis: Redis | null = null;
 
 function getRedis(): Redis {
   if (!redis) {
-    redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL!,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-    });
+    // Support both Upstash direct and Vercel KV variable names
+    const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+
+    redis = new Redis({ url: url!, token: token! });
   }
   return redis;
 }
@@ -40,7 +41,9 @@ export function isProductionEnvironment(): boolean {
  * Check if Redis storage is configured
  */
 export function isRedisConfigured(): boolean {
-  return !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  return !!(url && token);
 }
 
 /**
