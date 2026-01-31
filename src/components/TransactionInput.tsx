@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { parseTransaction } from '@/lib/parser/transactionParser';
 import type { ParseResult } from '@/lib/parser/transactionParser';
 import { TRANSACTION_CATEGORIES, type TransactionCategory } from '@/types/transaction';
@@ -171,8 +171,6 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const t = useTranslations('input');
   const tCategories = useTranslations('categories');
   const tRewardTypes = useTranslations('rewardTypes');
-  const locale = useLocale();
-  const isZh = locale === 'zh-HK';
   const [input, setInput] = useState('');
   const [selectedRewardType, setSelectedRewardType] = useState<RewardType | undefined>();
   const [selectedCategory, setSelectedCategory] = useState<TransactionCategory | undefined>();
@@ -205,7 +203,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const merchantOptions = selectedCategory
     ? getMerchantsForCategory(selectedCategory).map((merchant) => ({
         key: merchant.id,
-        label: isZh ? merchant.label_zh : merchant.label,
+        label: merchant.label,
       }))
     : [];
 

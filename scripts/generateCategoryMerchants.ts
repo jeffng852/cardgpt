@@ -57,49 +57,65 @@ const CATEGORY_MAPPING: Record<string, string> = {
   'all': 'others', // General merchants go to 'others'
 };
 
-// Popular merchants that we want to highlight (with display names)
-const MERCHANT_DISPLAY_NAMES: Record<string, { en: string; zh: string }> = {
-  'mcdonalds': { en: `McDonald's`, zh: '麥當勞' },
-  'wellcome': { en: 'Wellcome', zh: '惠康' },
-  'parknshop': { en: 'ParknShop', zh: '百佳' },
-  'sushiro': { en: 'Sushiro', zh: '壽司郎' },
-  'shell': { en: 'Shell', zh: '蜆殼' },
-  'esso': { en: 'Esso', zh: 'Esso' },
-  'caltex': { en: 'Caltex', zh: '加德士' },
-  'cathay-pacific': { en: 'Cathay Pacific', zh: '國泰航空' },
-  'mtr': { en: 'MTR', zh: '港鐵' },
-  'starbucks': { en: 'Starbucks', zh: '星巴克' },
-  'pacific-coffee': { en: 'Pacific Coffee', zh: 'Pacific Coffee' },
-  'watsons': { en: 'Watsons', zh: '屈臣氏' },
-  'mannings': { en: 'Mannings', zh: '萬寧' },
-  'klook': { en: 'Klook', zh: 'Klook' },
-  'agoda': { en: 'Agoda', zh: 'Agoda' },
-  'netflix': { en: 'Netflix', zh: 'Netflix' },
-  'spotify': { en: 'Spotify', zh: 'Spotify' },
-  'apple': { en: 'Apple', zh: 'Apple' },
-  'openrice': { en: 'OpenRice', zh: 'OpenRice' },
-  'foodpanda': { en: 'foodpanda', zh: 'foodpanda' },
-  'deliveroo': { en: 'Deliveroo', zh: 'Deliveroo' },
-  '759-store': { en: '759 Store', zh: '759阿信屋' },
-  'circle-k': { en: 'Circle K', zh: 'OK便利店' },
-  '7-eleven': { en: '7-Eleven', zh: '7-Eleven' },
-  'decathlon': { en: 'Decathlon', zh: '迪卡儂' },
-  'ikea': { en: 'IKEA', zh: 'IKEA' },
-  'muji': { en: 'MUJI', zh: '無印良品' },
-  'uniqlo': { en: 'UNIQLO', zh: 'UNIQLO' },
-  'hktvmall': { en: 'HKTVmall', zh: 'HKTVmall' },
-  'amazon': { en: 'Amazon', zh: 'Amazon' },
-  'taobao': { en: 'Taobao', zh: '淘寶' },
-  'clp': { en: 'CLP', zh: '中電' },
-  'hk-electric': { en: 'HK Electric', zh: '港燈' },
-  'towngas': { en: 'Towngas', zh: '煤氣公司' },
-  'octopus': { en: 'Octopus', zh: '八達通' },
-  'payme': { en: 'PayMe', zh: 'PayMe' },
-  'alipay-hk': { en: 'AlipayHK', zh: '支付寶香港' },
-  'wechat-pay': { en: 'WeChat Pay', zh: '微信支付' },
-  'aia': { en: 'AIA', zh: '友邦' },
-  'prudential': { en: 'Prudential', zh: '保誠' },
-  'manulife': { en: 'Manulife', zh: '宏利' },
+// Primary display names for merchants
+// Use English brand name as primary; use Chinese only when that IS the brand name
+const MERCHANT_DISPLAY_NAMES: Record<string, string> = {
+  // Dining
+  'mcdonalds': `McDonald's`,
+  'sushiro': 'Sushiro',
+  'starbucks': 'Starbucks',
+  'pacific-coffee': 'Pacific Coffee',
+  'openrice': 'OpenRice',
+  'foodpanda': 'foodpanda',
+  'deliveroo': 'Deliveroo',
+  // Groceries
+  'wellcome': 'Wellcome',
+  'parknshop': 'ParknShop',
+  '759-store': '759 Store',
+  'circle-k': 'Circle K',
+  '7-eleven': '7-Eleven',
+  // Transport
+  'shell': 'Shell',
+  'esso': 'Esso',
+  'caltex': 'Caltex',
+  'mtr': 'MTR',
+  'kmb': 'KMB',
+  'citybus': 'Citybus',
+  'star-ferry': 'Star Ferry',
+  // Travel
+  'cathay-pacific': 'Cathay Pacific',
+  'klook': 'Klook',
+  'agoda': 'Agoda',
+  // Online/Subscription
+  'netflix': 'Netflix',
+  'spotify': 'Spotify',
+  'apple': 'Apple',
+  'amazon': 'Amazon',
+  'taobao': 'Taobao',
+  'hktvmall': 'HKTVmall',
+  // Retail
+  'watsons': 'Watsons',
+  'mannings': 'Mannings',
+  'decathlon': 'Decathlon',
+  'ikea': 'IKEA',
+  'muji': 'MUJI',
+  'uniqlo': 'UNIQLO',
+  'adidas': 'Adidas',
+  'puma': 'Puma',
+  'fila': 'Fila',
+  // Utilities
+  'clp': 'CLP',
+  'hk-electric': 'HK Electric',
+  'towngas': 'Towngas',
+  // Digital Wallet
+  'octopus': 'Octopus',
+  'payme': 'PayMe',
+  'alipay-hk': 'AlipayHK',
+  'wechat-pay': 'WeChat Pay',
+  // Financial
+  'aia': 'AIA',
+  'prudential': 'Prudential',
+  'manulife': 'Manulife',
 };
 
 function normalizeCategory(category: string): string {
@@ -114,17 +130,16 @@ function normalizeMerchantId(merchant: string): string {
     .replace(/[^a-z0-9-]/g, '');
 }
 
-function getMerchantDisplayName(merchantId: string): { en: string; zh: string } {
+function getMerchantDisplayName(merchantId: string): string {
   const normalized = normalizeMerchantId(merchantId);
   if (MERCHANT_DISPLAY_NAMES[normalized]) {
     return MERCHANT_DISPLAY_NAMES[normalized];
   }
-  // Convert merchant ID to display name
-  const displayName = merchantId
+  // Convert merchant ID to display name (capitalize each word)
+  return merchantId
     .split(/[-_]/)
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
-  return { en: displayName, zh: displayName };
 }
 
 function main() {
@@ -198,14 +213,16 @@ function main() {
  *
  * This file contains merchants grouped by spending category,
  * extracted from card rules in cards.json
+ *
+ * Note: Uses primary brand names only (no bilingual labels)
+ * HK users are bilingual and recognize both EN/ZH brand names
  */
 
 import type { TransactionCategory } from '@/types/transaction';
 
 export interface MerchantInfo {
   id: string;
-  label: string;
-  label_zh: string;
+  label: string;  // Primary display name (brand name)
 }
 
 export const CATEGORY_MERCHANTS: Record<TransactionCategory, MerchantInfo[]> = {
@@ -217,9 +234,8 @@ export const CATEGORY_MERCHANTS: Record<TransactionCategory, MerchantInfo[]> = {
     for (const merchantId of merchants) {
       const displayName = getMerchantDisplayName(merchantId);
       // Escape single quotes in labels by using double quotes for strings containing apostrophes
-      const enLabel = displayName.en.includes("'") ? `"${displayName.en}"` : `'${displayName.en}'`;
-      const zhLabel = displayName.zh.includes("'") ? `"${displayName.zh}"` : `'${displayName.zh}'`;
-      output += `    { id: '${merchantId}', label: ${enLabel}, label_zh: ${zhLabel} },\n`;
+      const labelStr = displayName.includes("'") ? `"${displayName}"` : `'${displayName}'`;
+      output += `    { id: '${merchantId}', label: ${labelStr} },\n`;
     }
     output += `  ],\n`;
   }

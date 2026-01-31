@@ -4,92 +4,94 @@
  *
  * This file contains merchants grouped by spending category,
  * extracted from card rules in cards.json
+ *
+ * Note: Uses primary brand names only (no bilingual labels)
+ * HK users are bilingual and recognize both EN/ZH brand names
  */
 
 import type { TransactionCategory } from '@/types/transaction';
 
 export interface MerchantInfo {
   id: string;
-  label: string;
-  label_zh: string;
+  label: string;  // Primary display name (brand name)
 }
 
 export const CATEGORY_MERCHANTS: Record<TransactionCategory, MerchantInfo[]> = {
   'groceries': [
-    { id: '7-eleven', label: '7-Eleven', label_zh: '7-Eleven' },
-    { id: '759-store', label: '759 Store', label_zh: '759阿信屋' },
-    { id: 'circle-k', label: 'Circle K', label_zh: 'OK便利店' },
-    { id: 'parknshop', label: 'ParknShop', label_zh: '百佳' },
-    { id: 'wellcome', label: 'Wellcome', label_zh: '惠康' },
+    { id: '7-eleven', label: '7-Eleven' },
+    { id: '759-store', label: '759 Store' },
+    { id: 'circle-k', label: 'Circle K' },
+    { id: 'parknshop', label: 'ParknShop' },
+    { id: 'wellcome', label: 'Wellcome' },
   ],
   'dining': [
-    { id: 'deliveroo', label: 'Deliveroo', label_zh: 'Deliveroo' },
-    { id: 'foodpanda', label: 'foodpanda', label_zh: 'foodpanda' },
-    { id: 'mcdonalds', label: "McDonald's", label_zh: '麥當勞' },
-    { id: 'openrice', label: 'OpenRice', label_zh: 'OpenRice' },
-    { id: 'pacific-coffee', label: 'Pacific Coffee', label_zh: 'Pacific Coffee' },
-    { id: 'starbucks', label: 'Starbucks', label_zh: '星巴克' },
-    { id: 'sushiro', label: 'Sushiro', label_zh: '壽司郎' },
+    { id: 'deliveroo', label: 'Deliveroo' },
+    { id: 'foodpanda', label: 'foodpanda' },
+    { id: 'mcdonalds', label: "McDonald's" },
+    { id: 'openrice', label: 'OpenRice' },
+    { id: 'pacific-coffee', label: 'Pacific Coffee' },
+    { id: 'starbucks', label: 'Starbucks' },
+    { id: 'sushiro', label: 'Sushiro' },
   ],
   'online': [
-    { id: 'amazon', label: 'Amazon', label_zh: 'Amazon' },
-    { id: 'apple', label: 'Apple', label_zh: 'Apple' },
-    { id: 'hktvmall', label: 'HKTVmall', label_zh: 'HKTVmall' },
-    { id: 'netflix', label: 'Netflix', label_zh: 'Netflix' },
-    { id: 'spotify', label: 'Spotify', label_zh: 'Spotify' },
-    { id: 'taobao', label: 'Taobao', label_zh: '淘寶' },
+    { id: 'amazon', label: 'Amazon' },
+    { id: 'apple', label: 'Apple' },
+    { id: 'hktvmall', label: 'HKTVmall' },
+    { id: 'netflix', label: 'Netflix' },
+    { id: 'spotify', label: 'Spotify' },
+    { id: 'taobao', label: 'Taobao' },
   ],
   'travel': [
-    { id: 'agoda', label: 'Agoda', label_zh: 'Agoda' },
-    { id: 'cathay-pacific', label: 'Cathay Pacific', label_zh: '國泰航空' },
-    { id: 'klook', label: 'Klook', label_zh: 'Klook' },
+    { id: 'agoda', label: 'Agoda' },
+    { id: 'cathay-pacific', label: 'Cathay Pacific' },
+    { id: 'klook', label: 'Klook' },
   ],
   'transport': [
-    { id: 'caltex', label: 'Caltex', label_zh: '加德士' },
-    { id: 'citybus', label: 'Citybus', label_zh: 'Citybus' },
-    { id: 'cityflyer', label: 'Cityflyer', label_zh: 'Cityflyer' },
-    { id: 'esso', label: 'Esso', label_zh: 'Esso' },
-    { id: 'kmb', label: 'Kmb', label_zh: 'Kmb' },
-    { id: 'lwb', label: 'Lwb', label_zh: 'Lwb' },
-    { id: 'mtr', label: 'MTR', label_zh: '港鐵' },
-    { id: 'shell', label: 'Shell', label_zh: '蜆殼' },
-    { id: 'star-ferry', label: 'Star Ferry', label_zh: 'Star Ferry' },
-    { id: 'tram', label: 'Tram', label_zh: 'Tram' },
+    { id: 'caltex', label: 'Caltex' },
+    { id: 'citybus', label: 'Citybus' },
+    { id: 'cityflyer', label: 'Cityflyer' },
+    { id: 'esso', label: 'Esso' },
+    { id: 'kmb', label: 'KMB' },
+    { id: 'lwb', label: 'Lwb' },
+    { id: 'mtr', label: 'MTR' },
+    { id: 'shell', label: 'Shell' },
+    { id: 'star-ferry', label: 'Star Ferry' },
+    { id: 'tram', label: 'Tram' },
   ],
   'overseas': [
   ],
   'utilities': [
-    { id: 'clp', label: 'CLP', label_zh: '中電' },
-    { id: 'hk-electric', label: 'HK Electric', label_zh: '港燈' },
-    { id: 'towngas', label: 'Towngas', label_zh: '煤氣公司' },
+    { id: 'clp', label: 'CLP' },
+    { id: 'hk-electric', label: 'HK Electric' },
+    { id: 'towngas', label: 'Towngas' },
   ],
   'financial': [
-    { id: 'aia', label: 'AIA', label_zh: '友邦' },
-    { id: 'manulife', label: 'Manulife', label_zh: '宏利' },
-    { id: 'prudential', label: 'Prudential', label_zh: '保誠' },
+    { id: 'aia', label: 'AIA' },
+    { id: 'manulife', label: 'Manulife' },
+    { id: 'prudential', label: 'Prudential' },
   ],
   'government': [
   ],
   'digital-wallet': [
-    { id: 'alipay-hk', label: 'AlipayHK', label_zh: '支付寶香港' },
-    { id: 'octopus', label: 'Octopus', label_zh: '八達通' },
-    { id: 'payme', label: 'PayMe', label_zh: 'PayMe' },
-    { id: 'wechat-pay', label: 'WeChat Pay', label_zh: '微信支付' },
+    { id: 'alipay-hk', label: 'AlipayHK' },
+    { id: 'octopus', label: 'Octopus' },
+    { id: 'payme', label: 'PayMe' },
+    { id: 'wechat-pay', label: 'WeChat Pay' },
   ],
   'others': [
-    { id: 'adidas', label: 'Adidas', label_zh: 'Adidas' },
-    { id: 'cosme-store', label: 'Cosme Store', label_zh: 'Cosme Store' },
-    { id: 'decathlon', label: 'Decathlon', label_zh: '迪卡儂' },
-    { id: 'fila', label: 'Fila', label_zh: 'Fila' },
-    { id: 'ikea', label: 'IKEA', label_zh: 'IKEA' },
-    { id: 'mannings', label: 'Mannings', label_zh: '萬寧' },
-    { id: 'matsukiyo-hk', label: 'Matsukiyo Hk', label_zh: 'Matsukiyo Hk' },
-    { id: 'muji', label: 'MUJI', label_zh: '無印良品' },
-    { id: 'puma', label: 'Puma', label_zh: 'Puma' },
-    { id: 'sushiro', label: 'Sushiro', label_zh: '壽司郎' },
-    { id: 'tokyo-lifestyle', label: 'Tokyo Lifestyle', label_zh: 'Tokyo Lifestyle' },
-    { id: 'uniqlo', label: 'UNIQLO', label_zh: 'UNIQLO' },
-    { id: 'watsons', label: 'Watsons', label_zh: '屈臣氏' },
+    { id: 'adidas', label: 'Adidas' },
+    { id: 'cosme-store', label: 'Cosme Store' },
+    { id: 'decathlon', label: 'Decathlon' },
+    { id: 'fila', label: 'Fila' },
+    { id: 'ikea', label: 'IKEA' },
+    { id: 'mannings', label: 'Mannings' },
+    { id: 'matsukiyo-hk', label: 'Matsukiyo Hk' },
+    { id: 'muji', label: 'MUJI' },
+    { id: 'puma', label: 'Puma' },
+    { id: 'sushiro', label: 'Sushiro' },
+    { id: 'tokyo-lifestyle', label: 'Tokyo Lifestyle' },
+    { id: 'uniqlo', label: 'UNIQLO' },
+    { id: 'watsons', label: 'Watsons' },
   ],
 };
 
