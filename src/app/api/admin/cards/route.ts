@@ -8,11 +8,13 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getAllCardsAsync, getDatabaseStats } from '@/lib/data/cardRepository';
 
 // Force dynamic rendering and disable all caching
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 import { createCard } from '@/lib/data/cardWriter';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
@@ -109,6 +111,14 @@ export async function POST(request: NextRequest) {
         },
         400
       );
+    }
+
+    // Force revalidation of all admin card routes to clear server-side cache
+    revalidatePath('/api/admin/cards', 'page');
+    revalidatePath('/admin/cards', 'page');
+    if (result.data?.id) {
+      revalidatePath(`/api/admin/cards/${result.data.id}`, 'page');
+      revalidatePath(`/admin/cards/${result.data.id}`, 'page');
     }
 
     return noCacheResponse(
