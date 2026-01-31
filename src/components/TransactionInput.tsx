@@ -89,7 +89,7 @@ function Dropdown<T extends string>({ label, value, options, onChange, required,
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 min-w-[200px] max-h-[300px] overflow-y-auto
+        <div className="absolute top-full left-0 mt-2 min-w-[220px]
           bg-surface/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl shadow-black/30 z-50
           animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="p-1.5">
@@ -290,7 +290,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
         {/* Glow effect */}
         <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 via-primary/10 to-primary/30 rounded-3xl blur-lg opacity-60" />
 
-        <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 overflow-hidden">
+        <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20">
           <form onSubmit={handleSubmit}>
             {/* Input Area */}
             <div className="p-5">
@@ -337,7 +337,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                   value={selectedRewardType}
                   options={rewardOptions}
                   onChange={setSelectedRewardType}
-                  placeholder={tRewardTypes('cash').split(' ')[0]}
+                  placeholder={t('rewardsPlaceholder')}
                 />
                 <Dropdown
                   label={t('quickTagsLabel')}
@@ -430,11 +430,6 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
           )}
         </div>
       </div>
-
-      {/* Helper Text */}
-      <p className="text-center text-xs text-text-tertiary/50 mt-4">
-        {t('exampleText')}
-      </p>
     </div>
   );
 }

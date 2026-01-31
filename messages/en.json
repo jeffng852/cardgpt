@@ -124,6 +124,7 @@
     "rewardTypeLabel": "Preferred Reward Type (Optional)",
     "categoryLabel": "Spending Category",
     "categoryRequired": "Please select a spending category",
+    "rewardsPlaceholder": "Rewards",
     "quickTagsLabel": "Popular Merchants",
     "optional": "optional",
     "moreContextNeeded": "Please provide more context",
