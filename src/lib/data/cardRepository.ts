@@ -80,16 +80,26 @@ export function getCardById(id: string): CreditCard | undefined {
  */
 export async function getDatabaseAsync(): Promise<CardDatabase> {
   // In production with blob configured, try blob first
-  if (isProductionEnvironment() && isBlobConfigured()) {
+  const isProd = isProductionEnvironment();
+  const blobConfigured = isBlobConfigured();
+
+  console.log(`[CardRepo] getDatabaseAsync called - isProd: ${isProd}, blobConfigured: ${blobConfigured}`);
+
+  if (isProd && blobConfigured) {
+    console.log('[CardRepo] Attempting to read from blob storage...');
     const blobData = await readCardsFromBlob();
     if (blobData) {
+      console.log(`[CardRepo] Successfully read from blob - lastUpdated: ${blobData.lastUpdated}, cards: ${blobData.cards.length}`);
       return blobData;
     }
     // Fall through to static import if blob fails
-    console.warn('Blob read failed, falling back to static import');
+    console.warn('[CardRepo] Blob read failed, falling back to static import');
+  } else {
+    console.log(`[CardRepo] Skipping blob read - isProd: ${isProd}, blobConfigured: ${blobConfigured}`);
   }
 
   // Use static import
+  console.log(`[CardRepo] Using static import - lastUpdated: ${(cardsData as CardDatabase).lastUpdated}`);
   return cardsData as CardDatabase;
 }
 
