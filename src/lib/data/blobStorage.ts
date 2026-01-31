@@ -10,10 +10,13 @@
  * 3. Run the init script to upload initial cards.json to blob
  */
 
-import { put, list, del } from '@vercel/blob';
+import { put, list, del, head } from '@vercel/blob';
 import type { CardDatabase } from './cardRepository';
 
 const CARDS_BLOB_NAME = 'cards.json';
+
+// Module-level cache for the last known blob URL (helps with consistency)
+let lastKnownBlobUrl: string | null = null;
 
 /**
  * Check if we're in a Vercel production environment
@@ -32,16 +35,28 @@ export function isBlobConfigured(): boolean {
 
 /**
  * Get the URL of the cards blob if it exists
+ * Uses cached URL first, then falls back to list()
  */
 async function getCardsBlobUrl(): Promise<string | null> {
+  // Try cached URL first (faster and more consistent)
+  if (lastKnownBlobUrl) {
+    try {
+      const headResult = await head(lastKnownBlobUrl);
+      if (headResult) {
+        console.log(`[Blob] Using cached URL: ${lastKnownBlobUrl}`);
+        return lastKnownBlobUrl;
+      }
+    } catch {
+      console.log('[Blob] Cached URL no longer valid, falling back to list()');
+      lastKnownBlobUrl = null;
+    }
+  }
+
   try {
     // List ALL blobs (prefix filter appears unreliable)
     const { blobs } = await list();
 
-    // Debug: log what blobs we found
-    console.log(`[Blob] Listed ${blobs.length} total blobs:`,
-      blobs.map(b => ({ pathname: b.pathname, url: b.url.substring(0, 50) + '...' }))
-    );
+    console.log(`[Blob] Listed ${blobs.length} total blobs`);
 
     // Find by exact pathname match
     const cardsBlob = blobs.find(b => b.pathname === CARDS_BLOB_NAME);
@@ -51,10 +66,42 @@ async function getCardsBlobUrl(): Promise<string | null> {
       return null;
     }
 
+    // Cache the URL for future use
+    lastKnownBlobUrl = cardsBlob.url;
     console.log(`[Blob] Found cards blob - URL: ${cardsBlob.url}`);
     return cardsBlob.url;
   } catch (error) {
     console.error('[Blob] Failed to list blobs:', error);
+    return null;
+  }
+}
+
+/**
+ * Read cards data directly from a specific URL
+ */
+async function fetchBlobData(blobUrl: string): Promise<CardDatabase | null> {
+  try {
+    // Add cache-busting query param to bypass CDN caching
+    const cacheBustUrl = `${blobUrl}?t=${Date.now()}&r=${Math.random()}`;
+    console.log(`[Blob] Fetching blob data from: ${blobUrl}`);
+
+    const response = await fetch(cacheBustUrl, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
+    });
+
+    if (!response.ok) {
+      console.error(`[Blob] Failed to fetch blob: HTTP ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+    return data as CardDatabase;
+  } catch (error) {
+    console.error('[Blob] Failed to fetch blob data:', error);
     return null;
   }
 }
@@ -73,25 +120,11 @@ export async function readCardsFromBlob(): Promise<CardDatabase | null> {
       return null;
     }
 
-    // Add cache-busting query param to bypass CDN caching
-    const cacheBustUrl = `${blobUrl}?t=${Date.now()}`;
-    console.log(`[Blob] Fetching blob data from: ${cacheBustUrl}`);
-    const response = await fetch(cacheBustUrl, {
-      cache: 'no-store', // Always get fresh data
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-      },
-    });
-
-    if (!response.ok) {
-      console.error(`[Blob] Failed to fetch cards blob: HTTP ${response.status}`);
-      return null;
+    const data = await fetchBlobData(blobUrl);
+    if (data) {
+      console.log(`[Blob] Successfully read ${data.cards?.length || 0} cards, lastUpdated: ${data.lastUpdated}`);
     }
-
-    const data = await response.json();
-    console.log(`[Blob] Successfully read ${data.cards?.length || 0} cards from blob storage`);
-    return data as CardDatabase;
+    return data;
   } catch (error) {
     console.error('[Blob] Failed to read cards from blob:', error);
     return null;
@@ -100,11 +133,13 @@ export async function readCardsFromBlob(): Promise<CardDatabase | null> {
 
 /**
  * Write cards data to Vercel Blob storage
+ * Returns the written data for immediate use (avoids read-after-write consistency issues)
  */
-export async function writeCardsToBlob(database: CardDatabase): Promise<boolean> {
+export async function writeCardsToBlob(database: CardDatabase): Promise<{ success: boolean; data?: CardDatabase; url?: string }> {
   try {
     // Update lastUpdated timestamp
-    database.lastUpdated = new Date().toISOString();
+    const writeTimestamp = new Date().toISOString();
+    database.lastUpdated = writeTimestamp;
 
     // Update metadata
     if (database.metadata) {
@@ -113,33 +148,53 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<boolean>
 
     const content = JSON.stringify(database, null, 2);
 
-    // Delete existing blob if it exists (put with same name creates a new one)
-    const existingUrl = await getCardsBlobUrl();
-    if (existingUrl) {
-      console.log(`[Blob] Deleting existing blob: ${existingUrl}`);
-      try {
-        await del(existingUrl);
-        console.log('[Blob] Existing blob deleted');
-      } catch (delError) {
-        console.warn('[Blob] Failed to delete existing blob (continuing anyway):', delError);
-      }
-    }
+    console.log(`[Blob] Writing blob with timestamp: ${writeTimestamp}`);
 
-    // Upload new content
-    console.log(`[Blob] Uploading new blob with pathname "${CARDS_BLOB_NAME}"...`);
+    // Upload new content (overwrites existing with same pathname when addRandomSuffix: false)
     const result = await put(CARDS_BLOB_NAME, content, {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
     });
 
-    console.log(`[Blob] Cards data written to blob storage successfully`);
-    console.log(`[Blob] New blob URL: ${result.url}`);
-    console.log(`[Blob] New blob pathname: ${result.pathname}`);
-    return true;
+    console.log(`[Blob] Blob written successfully - URL: ${result.url}`);
+
+    // Update cached URL immediately
+    lastKnownBlobUrl = result.url;
+
+    // Verify the write by reading back from the NEW URL
+    console.log('[Blob] Verifying write...');
+    const verifyData = await fetchBlobData(result.url);
+
+    if (!verifyData) {
+      console.error('[Blob] Write verification failed - could not read back data');
+      return { success: false };
+    }
+
+    if (verifyData.lastUpdated !== writeTimestamp) {
+      console.error(`[Blob] Write verification failed - timestamp mismatch. Expected: ${writeTimestamp}, Got: ${verifyData.lastUpdated}`);
+      return { success: false };
+    }
+
+    console.log(`[Blob] Write verified successfully - lastUpdated: ${verifyData.lastUpdated}`);
+
+    // Clean up old blobs with the same pathname (there might be duplicates)
+    try {
+      const { blobs } = await list();
+      const oldBlobs = blobs.filter(b => b.pathname === CARDS_BLOB_NAME && b.url !== result.url);
+      for (const oldBlob of oldBlobs) {
+        console.log(`[Blob] Cleaning up old blob: ${oldBlob.url}`);
+        await del(oldBlob.url);
+      }
+    } catch (cleanupError) {
+      console.warn('[Blob] Failed to clean up old blobs:', cleanupError);
+      // Don't fail the write operation if cleanup fails
+    }
+
+    return { success: true, data: verifyData, url: result.url };
   } catch (error) {
     console.error('[Blob] Failed to write cards to blob:', error);
-    return false;
+    return { success: false };
   }
 }
 

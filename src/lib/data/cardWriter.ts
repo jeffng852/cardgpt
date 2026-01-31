@@ -73,16 +73,9 @@ async function readCardsData(): Promise<CardDatabase> {
 
 /**
  * Write the cards database (to blob in production, file in development)
+ * Returns the verified written data in production for immediate use
  */
-async function writeCardsData(database: CardDatabase): Promise<void> {
-  // Update lastUpdated timestamp
-  database.lastUpdated = new Date().toISOString();
-
-  // Update metadata
-  if (database.metadata) {
-    database.metadata.totalCards = database.cards.length;
-  }
-
+async function writeCardsData(database: CardDatabase): Promise<CardDatabase> {
   // In production, MUST use blob storage (filesystem is read-only/ephemeral)
   if (isProductionEnvironment()) {
     if (!isBlobConfigured()) {
@@ -91,16 +84,25 @@ async function writeCardsData(database: CardDatabase): Promise<void> {
         'Please add this environment variable in your Vercel project settings.'
       );
     }
-    const success = await writeCardsToBlob(database);
-    if (!success) {
-      throw new Error('Failed to write cards to blob storage');
+
+    const result = await writeCardsToBlob(database);
+    if (!result.success || !result.data) {
+      throw new Error('Failed to write cards to blob storage - verification failed');
     }
-    return;
+
+    console.log(`[CardWriter] Write verified - lastUpdated: ${result.data.lastUpdated}`);
+    return result.data; // Return verified data
   }
 
-  // Write to local file (development only)
+  // Development: Update timestamps and write to local file
+  database.lastUpdated = new Date().toISOString();
+  if (database.metadata) {
+    database.metadata.totalCards = database.cards.length;
+  }
+
   const content = JSON.stringify(database, null, 2) + '\n';
   await fs.writeFile(CARDS_FILE_PATH, content, 'utf-8');
+  return database;
 }
 
 /**
@@ -133,10 +135,17 @@ export async function createCard(card: CreditCard): Promise<WriteResult> {
     // Add the new card
     database.cards.push(card);
 
-    // Write back
-    await writeCardsData(database);
+    // Write back and get verified data
+    const verifiedDatabase = await writeCardsData(database);
 
-    return { success: true, data: card };
+    // Return the verified card from the written database
+    const verifiedCard = verifiedDatabase.cards.find(c => c.id === card.id);
+    if (!verifiedCard) {
+      throw new Error('Card not found in verified database after write');
+    }
+
+    console.log(`[CardWriter] Create verified for card ${card.id} - lastUpdated: ${verifiedCard.lastUpdated}`);
+    return { success: true, data: verifiedCard };
   } catch (error) {
     console.error('Failed to create card:', error);
     return {
@@ -181,10 +190,17 @@ export async function updateCard(
     // Update in place
     database.cards[cardIndex] = updatedCard;
 
-    // Write back
-    await writeCardsData(database);
+    // Write back and get verified data
+    const verifiedDatabase = await writeCardsData(database);
 
-    return { success: true, data: updatedCard };
+    // Return the verified card from the written database
+    const verifiedCard = verifiedDatabase.cards.find(c => c.id === id);
+    if (!verifiedCard) {
+      throw new Error('Card not found in verified database after write');
+    }
+
+    console.log(`[CardWriter] Update verified for card ${id} - lastUpdated: ${verifiedCard.lastUpdated}`);
+    return { success: true, data: verifiedCard };
   } catch (error) {
     console.error('Failed to update card:', error);
     return {
