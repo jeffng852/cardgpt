@@ -52,9 +52,8 @@ For each reward rule, extract:
    - "specific": Rate for specific merchants that REPLACES the base rate entirely (mutually exclusive)
 6. categories - Array of applicable categories from: "dining", "travel", "online-shopping", "retail", "supermarket", "entertainment", "transport", "utilities", "insurance", "education", "medical", "government". Use ["all"] if it applies to all spending.
 7. specificMerchants - Array of specific merchant names if mentioned (e.g., ["mcdonalds", "sushiro"])
-8. monthlySpendingCap - Maximum monthly spending that qualifies for this rate (if mentioned)
-9. fallbackRate - Rate that applies after the cap is reached (if mentioned)
-10. validFrom - Start date in YYYY-MM-DD format (if promotional/limited time)
+8. monthlySpendingCap - Maximum monthly spending that qualifies for this rate (if mentioned). This will be converted to maxRewardCap (spending cap × rate).
+9. validFrom - Start date in YYYY-MM-DD format (if promotional/limited time)
 11. validUntil - End date in YYYY-MM-DD format (if promotional/limited time)
 12. isPromotional - true if this is a time-limited promotion, false for permanent rewards
 13. conditions.paymentType - One of: "online", "offline", "contactless", "recurring" (if specified)
@@ -83,7 +82,6 @@ Respond ONLY with valid JSON in this exact format:
       "categories": ["string"],
       "specificMerchants": ["string"] | null,
       "monthlySpendingCap": number | null,
-      "fallbackRate": number | null,
       "validFrom": "YYYY-MM-DD" | null,
       "validUntil": "YYYY-MM-DD" | null,
       "isPromotional": boolean,
@@ -297,8 +295,10 @@ function parseAIResponse(content: string): ExtractionResult {
       priority: validatePriority(rule.priority),
       categories: Array.isArray(rule.categories) ? rule.categories : ['all'],
       specificMerchants: Array.isArray(rule.specificMerchants) ? rule.specificMerchants : undefined,
-      monthlySpendingCap: typeof rule.monthlySpendingCap === 'number' ? rule.monthlySpendingCap : undefined,
-      fallbackRate: typeof rule.fallbackRate === 'number' ? rule.fallbackRate : undefined,
+      // Convert spending cap to reward cap (spending cap × rate)
+      maxRewardCap: typeof rule.monthlySpendingCap === 'number' && typeof rule.rewardRate === 'number'
+        ? rule.monthlySpendingCap * rule.rewardRate
+        : undefined,
       validFrom: typeof rule.validFrom === 'string' ? rule.validFrom : undefined,
       validUntil: typeof rule.validUntil === 'string' ? rule.validUntil : undefined,
       isPromotional: Boolean(rule.isPromotional),

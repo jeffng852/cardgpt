@@ -100,7 +100,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
 
         // Expand sections if they have data
         if (existingRule.conditions) setShowConditions(true);
-        if (existingRule.monthlySpendingCap) setShowCaps(true);
+        if (existingRule.maxRewardCap) setShowCaps(true);
         if (existingRule.sourceUrl || existingRule.notes) setShowSource(true);
       } else {
         // New rule - generate ID
@@ -609,60 +609,36 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
           )}
         </section>
 
-        {/* Spending Caps Section (Collapsible) */}
+        {/* Reward Caps Section (Collapsible) */}
         <section className="bg-background-secondary rounded-xl border border-border mb-6">
           <button
             onClick={() => setShowCaps(!showCaps)}
             className="w-full px-6 py-4 flex justify-between items-center text-left"
           >
-            <h2 className="text-lg font-semibold text-foreground">Spending Caps</h2>
+            <h2 className="text-lg font-semibold text-foreground">Reward Caps</h2>
             <span className="text-foreground-muted">{showCaps ? '−' : '+'}</span>
           </button>
 
           {showCaps && (
             <div className="px-6 pb-6 space-y-4 border-t border-border pt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Monthly Spending Cap (HKD)
-                  </label>
-                  <input
-                    type="number"
-                    value={rule.monthlySpendingCap || ''}
-                    onChange={(e) =>
-                      updateRule({
-                        monthlySpendingCap: e.target.value ? parseFloat(e.target.value) : undefined,
-                      })
-                    }
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                    placeholder="e.g., 10000"
-                  />
-                  <p className="text-xs text-foreground-muted mt-1">
-                    This rate applies to the first X dollars of monthly spending
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Fallback Rate (after cap)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.0001"
-                    value={rule.fallbackRate || ''}
-                    onChange={(e) =>
-                      updateRule({
-                        fallbackRate: e.target.value ? parseFloat(e.target.value) : undefined,
-                      })
-                    }
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                    placeholder="0.01 for 1%"
-                    disabled={!rule.monthlySpendingCap}
-                  />
-                  <p className="text-xs text-foreground-muted mt-1">
-                    {rule.fallbackRate ? `= ${(rule.fallbackRate * 100).toFixed(2)}%` : 'Set cap first'}
-                  </p>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Max Reward Cap (per month)
+                </label>
+                <input
+                  type="number"
+                  value={rule.maxRewardCap || ''}
+                  onChange={(e) =>
+                    updateRule({
+                      maxRewardCap: e.target.value ? parseFloat(e.target.value) : undefined,
+                    })
+                  }
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="e.g., 100"
+                />
+                <p className="text-xs text-foreground-muted mt-1">
+                  Maximum reward amount that can be earned from this rule per month
+                </p>
               </div>
             </div>
           )}

@@ -24,6 +24,7 @@ export default function CardRecommendationList({
   const isZh = locale === 'zh-HK';
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [filterRewardType, setFilterRewardType] = useState<'all' | 'cash' | 'miles' | 'points'>('all');
+  const [expandedCapRuleId, setExpandedCapRuleId] = useState<string | null>(null);
 
   // Locale-aware text helpers - use Chinese if available, fallback to English
   const getDescription = (contribution: RuleContribution) =>
@@ -333,10 +334,49 @@ export default function CardRecommendationList({
                                   {getDescription(contribution)}
                                 </span>
                               </div>
-                              {/* Cap info inline */}
-                              {contribution.monthlySpendingCap && (
-                                <div className="mt-0.5 sm:mt-1 text-[9px] sm:text-[10px] text-text-tertiary">
-                                  {t('breakdown.cap')}: ${contribution.monthlySpendingCap.toLocaleString()}/{t('breakdown.month')}
+                              {/* Capped reward explainer */}
+                              {contribution.wasCapped && contribution.maxRewardCap && (
+                                <div className="mt-1">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setExpandedCapRuleId(
+                                        expandedCapRuleId === contribution.ruleId ? null : contribution.ruleId
+                                      );
+                                    }}
+                                    className="flex items-center gap-1 text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
+                                  >
+                                    <svg
+                                      className="w-3.5 h-3.5 flex-shrink-0"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                      />
+                                    </svg>
+                                    <span>{t('breakdown.rewardCapped')}</span>
+                                    <svg
+                                      className={`w-3 h-3 transition-transform ${expandedCapRuleId === contribution.ruleId ? 'rotate-180' : ''}`}
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                  </button>
+                                  {expandedCapRuleId === contribution.ruleId && (
+                                    <div className="mt-1.5 p-2 text-[10px] sm:text-xs text-text-secondary bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                                      {t('breakdown.cappedExplainer', {
+                                        cap: formatAmount(contribution.maxRewardCap, calculation.rewardUnit, card),
+                                        original: formatAmount(contribution.originalAmount || 0, calculation.rewardUnit, card)
+                                      })}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>

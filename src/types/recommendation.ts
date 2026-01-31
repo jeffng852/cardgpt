@@ -41,8 +41,14 @@ export interface RuleContribution {
   /** Expiry date if promotional (ISO date string) */
   validUntil?: string;
 
-  /** Monthly spending cap for this rule */
-  monthlySpendingCap?: number;
+  /** Maximum reward cap for this rule */
+  maxRewardCap?: number;
+
+  /** Whether the reward was capped due to maxRewardCap */
+  wasCapped?: boolean;
+
+  /** Original uncapped reward amount (only set when wasCapped is true) */
+  originalAmount?: number;
 
   /** Action required to activate (e.g., "Register online") */
   actionRequired?: string;

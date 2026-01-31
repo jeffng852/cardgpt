@@ -175,8 +175,6 @@
     },
     "breakdown": {
       "title": "獎賞明細",
-      "cap": "上限",
-      "month": "月",
       "total": "總計",
       "offerExpires": "優惠到期日",
       "actionRequired": "需要操作",
@@ -184,7 +182,9 @@
       "fxFee": "外幣交易費",
       "redemptionFee": "兌換手續費",
       "minIncome": "最低年薪要求",
-      "perYear": "每年"
+      "perYear": "每年",
+      "rewardCapped": "獎賞已達上限",
+      "cappedExplainer": "此獎賞設有每月上限 {cap}。您的計算獎賞 {original} 已被調整至最高限額。"
     }
   },
   "paymentTypes": {

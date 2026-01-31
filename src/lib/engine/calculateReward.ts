@@ -209,24 +209,32 @@ export function calculateReward(
   const appliedRules: string[] = [];
   const ruleBreakdown: RuleContribution[] = [];
 
-  // Helper to create a RuleContribution
+  // Helper to create a RuleContribution with reward cap logic
   const createContribution = (
     rule: RewardRule,
     contributionType: ContributionType
-  ): RuleContribution => ({
-    ruleId: rule.id,
-    rate: rule.rewardRate,
-    amount: transaction.amount * rule.rewardRate,
-    description: rule.description,
-    description_zh: rule.description_zh,
-    priority: rule.priority,
-    isPromotional: rule.isPromotional,
-    validUntil: rule.validUntil,
-    monthlySpendingCap: rule.monthlySpendingCap,
-    actionRequired: rule.actionRequired,
-    actionRequired_zh: rule.actionRequired_zh,
-    contributionType,
-  });
+  ): RuleContribution => {
+    const calculatedAmount = transaction.amount * rule.rewardRate;
+    const wasCapped = rule.maxRewardCap !== undefined && calculatedAmount > rule.maxRewardCap;
+    const cappedAmount = wasCapped ? rule.maxRewardCap! : calculatedAmount;
+
+    return {
+      ruleId: rule.id,
+      rate: rule.rewardRate,
+      amount: cappedAmount,
+      description: rule.description,
+      description_zh: rule.description_zh,
+      priority: rule.priority,
+      isPromotional: rule.isPromotional,
+      validUntil: rule.validUntil,
+      maxRewardCap: rule.maxRewardCap,
+      wasCapped,
+      originalAmount: wasCapped ? calculatedAmount : undefined,
+      actionRequired: rule.actionRequired,
+      actionRequired_zh: rule.actionRequired_zh,
+      contributionType,
+    };
+  };
 
   // Check if any specific rules match - they replace base entirely
   if (specificRules.length > 0) {
@@ -254,26 +262,10 @@ export function calculateReward(
     ruleBreakdown.push(createContribution(bonus, 'stacked'));
   }
 
-  // 4. Handle monthly spending caps
-  let cappedOut = false;
-  let effectiveRate = totalRate;
-
-  // Check if any applied rule has a monthly spending cap
-  for (const ruleId of appliedRules) {
-    const rule = matchingRules.find(r => r.id === ruleId);
-    if (rule?.monthlySpendingCap && options?.monthlySpending !== undefined) {
-      if (options.monthlySpending >= rule.monthlySpendingCap) {
-        // Cap reached, use fallback rate if available
-        if (rule.fallbackRate !== undefined) {
-          effectiveRate = rule.fallbackRate;
-          cappedOut = true;
-        }
-      }
-    }
-  }
-
-  // 5. Calculate final reward amount
-  const rewardAmount = transaction.amount * effectiveRate;
+  // 4. Calculate final reward amount from capped rule contributions
+  const rewardAmount = ruleBreakdown.reduce((sum, contrib) => sum + contrib.amount, 0);
+  const cappedOut = ruleBreakdown.some(contrib => contrib.wasCapped);
+  const effectiveRate = totalRate; // Keep for reference
   const rewardUnit = matchingRules[0].rewardUnit; // All matching rules should have same unit
 
   // 6. Calculate fees

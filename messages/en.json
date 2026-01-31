@@ -175,8 +175,6 @@
     },
     "breakdown": {
       "title": "Reward Breakdown",
-      "cap": "Cap",
-      "month": "month",
       "total": "Total",
       "offerExpires": "Offer expires",
       "actionRequired": "Action required",
@@ -184,7 +182,9 @@
       "fxFee": "FX Fee",
       "redemptionFee": "Redemption Fee",
       "minIncome": "Min. Income",
-      "perYear": "per year"
+      "perYear": "per year",
+      "rewardCapped": "Reward capped",
+      "cappedExplainer": "This reward has a monthly cap of {cap}. Your calculated reward of {original} has been reduced to the maximum allowed."
     }
   },
   "paymentTypes": {
