@@ -163,36 +163,15 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<{ succes
     // Update cached URL immediately
     lastKnownBlobUrl = result.url;
 
-    // Verify the write by reading back from the NEW URL
-    console.log('[Blob] Verifying write...');
-    const verifyData = await fetchBlobData(result.url);
+    // Trust the put() operation - if it succeeded without throwing, the data is written.
+    // CDN caching can cause immediate read-back to return stale data, so we return
+    // the data we wrote (which we have in memory) rather than verifying via fetch.
+    console.log(`[Blob] Write complete - returning written data with timestamp: ${writeTimestamp}`);
 
-    if (!verifyData) {
-      console.error('[Blob] Write verification failed - could not read back data');
-      return { success: false };
-    }
+    // Return the database we wrote (deep clone to avoid mutation issues)
+    const writtenData: CardDatabase = JSON.parse(content);
 
-    if (verifyData.lastUpdated !== writeTimestamp) {
-      console.error(`[Blob] Write verification failed - timestamp mismatch. Expected: ${writeTimestamp}, Got: ${verifyData.lastUpdated}`);
-      return { success: false };
-    }
-
-    console.log(`[Blob] Write verified successfully - lastUpdated: ${verifyData.lastUpdated}`);
-
-    // Clean up old blobs with the same pathname (there might be duplicates)
-    try {
-      const { blobs } = await list();
-      const oldBlobs = blobs.filter(b => b.pathname === CARDS_BLOB_NAME && b.url !== result.url);
-      for (const oldBlob of oldBlobs) {
-        console.log(`[Blob] Cleaning up old blob: ${oldBlob.url}`);
-        await del(oldBlob.url);
-      }
-    } catch (cleanupError) {
-      console.warn('[Blob] Failed to clean up old blobs:', cleanupError);
-      // Don't fail the write operation if cleanup fails
-    }
-
-    return { success: true, data: verifyData, url: result.url };
+    return { success: true, data: writtenData, url: result.url };
   } catch (error) {
     console.error('[Blob] Failed to write cards to blob:', error);
     return { success: false };
