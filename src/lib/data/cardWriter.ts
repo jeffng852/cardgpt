@@ -38,28 +38,37 @@ export interface WriteResult<T = CreditCard> {
  * Read the cards database (from blob in production, file in development)
  */
 async function readCardsData(): Promise<CardDatabase> {
+  const isProd = isProductionEnvironment();
+  const blobConfigured = isBlobConfigured();
+
+  console.log(`[CardWriter] readCardsData called - isProd: ${isProd}, blobConfigured: ${blobConfigured}`);
+
   // In production, try to read from blob storage
-  if (isProductionEnvironment()) {
-    if (!isBlobConfigured()) {
+  if (isProd) {
+    if (!blobConfigured) {
       // Blob not configured - warn but fall back to static file
-      // This means any saves will fail, but reads can still work from deployment bundle
       console.warn(
-        'BLOB_READ_WRITE_TOKEN not configured in production. ' +
+        '[CardWriter] BLOB_READ_WRITE_TOKEN not configured in production. ' +
         'Reading from static deployment file. Saves will fail.'
       );
     } else {
+      console.log('[CardWriter] Attempting to read from blob for save operation...');
       const blobData = await readCardsFromBlob();
       if (blobData) {
+        console.log(`[CardWriter] Read from blob for save - lastUpdated: ${blobData.lastUpdated}, cards: ${blobData.cards.length}`);
         return blobData;
       }
       // Fall through to file read if blob fails
-      console.warn('Blob read failed, falling back to local file');
+      console.warn('[CardWriter] Blob read FAILED, falling back to local file');
     }
   }
 
   // Read from local file (development, or production fallback)
+  console.log('[CardWriter] Reading from local file...');
   const content = await fs.readFile(CARDS_FILE_PATH, 'utf-8');
-  return JSON.parse(content) as CardDatabase;
+  const data = JSON.parse(content) as CardDatabase;
+  console.log(`[CardWriter] Read from LOCAL FILE - lastUpdated: ${data.lastUpdated}, cards: ${data.cards.length}`);
+  return data;
 }
 
 /**
