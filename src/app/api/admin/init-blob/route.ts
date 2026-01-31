@@ -11,7 +11,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
 import { getDatabase } from '@/lib/data/cardRepository';
-import { writeCardsToBlob, isBlobConfigured, readCardsFromBlob, listAllBlobs } from '@/lib/data/blobStorage';
+import { writeCardsToBlob, isBlobConfigured, readCardsFromBlob, listAllBlobs, isProductionEnvironment } from '@/lib/data/blobStorage';
 
 export async function POST(request: NextRequest) {
   if (!isAuthenticatedFromRequest(request)) {
@@ -100,6 +100,12 @@ export async function GET(request: NextRequest) {
         message: 'Blob storage is configured but no cards data found. Run POST to initialize.',
         debug: {
           allBlobsInStore: allBlobs,
+          environment: {
+            isProductionEnvironment: isProductionEnvironment(),
+            VERCEL: process.env.VERCEL,
+            NODE_ENV: process.env.NODE_ENV,
+            VERCEL_ENV: process.env.VERCEL_ENV,
+          },
         },
       });
     }
@@ -115,6 +121,12 @@ export async function GET(request: NextRequest) {
       },
       debug: {
         allBlobsInStore: allBlobs,
+        environment: {
+          isProductionEnvironment: isProductionEnvironment(),
+          VERCEL: process.env.VERCEL,
+          NODE_ENV: process.env.NODE_ENV,
+          VERCEL_ENV: process.env.VERCEL_ENV,
+        },
       },
     });
   } catch (error) {
