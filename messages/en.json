@@ -126,6 +126,7 @@
     "categoryRequired": "Please select a spending category",
     "rewardsPlaceholder": "Rewards",
     "quickTagsLabel": "Popular Merchants",
+    "selectCategoryFirst": "Select Spending Category first",
     "optional": "optional",
     "moreContextNeeded": "Please provide more context",
     "exampleText": "Try: \"Gas refill 500\" or \"Wedding venue deposit 8000\"",
