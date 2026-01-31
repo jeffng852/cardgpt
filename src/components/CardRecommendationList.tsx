@@ -35,13 +35,19 @@ export default function CardRecommendationList({
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-8 p-8 bg-surface border border-border rounded-2xl">
-        <div className="flex items-center justify-center gap-3">
-          <svg className="animate-spin h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          <span className="text-text-secondary">{t('loading')}</span>
+      <div className="w-full max-w-3xl mx-auto mt-8">
+        <div className="relative">
+          {/* Blue glow effect */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
+          <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 p-8">
+            <div className="flex items-center justify-center gap-3">
+              <svg className="animate-spin h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span className="text-text-secondary">{t('loading')}</span>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -49,18 +55,24 @@ export default function CardRecommendationList({
 
   if (!recommendations || recommendations.length === 0) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-8 p-8 bg-surface border border-border rounded-2xl text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-text-tertiary/10 mb-4">
-          <svg className="w-8 h-8 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      <div className="w-full max-w-3xl mx-auto mt-8">
+        <div className="relative">
+          {/* Blue glow effect */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
+          <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-500/10 mb-4">
+              <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              {t('noResults')}
+            </h3>
+            <p className="text-sm text-text-secondary">
+              {t('noResultsHint')}
+            </p>
+          </div>
         </div>
-        <h3 className="text-lg font-semibold text-text-primary mb-2">
-          {t('noResults')}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t('noResultsHint')}
-        </p>
       </div>
     );
   }
@@ -125,83 +137,89 @@ export default function CardRecommendationList({
 
   return (
     <div className="w-full max-w-3xl mx-auto mt-8">
-      {/* Filter Tabs */}
-      {availableRewardTypes.size > 1 && (
-        <div className="mb-6 flex gap-2 border-b border-border">
-          <button
-            onClick={() => setFilterRewardType('all')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-              filterRewardType === 'all'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            {t('allCards')} ({recommendations.length})
-          </button>
-          {availableRewardTypes.has('cash') && (
-            <button
-              onClick={() => setFilterRewardType('cash')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-                filterRewardType === 'cash'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {t('cashBack')} ({recommendations.filter(r => r.calculation.rewardUnit === 'cash').length})
-            </button>
-          )}
-          {availableRewardTypes.has('miles') && (
-            <button
-              onClick={() => setFilterRewardType('miles')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-                filterRewardType === 'miles'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {tRewardTypes('miles')} ({recommendations.filter(r => r.calculation.rewardUnit === 'miles').length})
-            </button>
-          )}
-          {availableRewardTypes.has('points') && (
-            <button
-              onClick={() => setFilterRewardType('points')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-                filterRewardType === 'points'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {tRewardTypes('points')} ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
-            </button>
-          )}
-        </div>
-      )}
+      {/* Main Container with Glass-morphism */}
+      <div className="relative">
+        {/* Blue glow effect - adjacent to primary teal */}
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
 
-      {/* Results Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t('found')} {filteredRecommendations.length} {filteredRecommendations.length === 1 ? t('card') : t('cards')}
-        </h3>
-      </div>
+        <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 p-4 sm:p-6">
+          {/* Filter Tabs - Pill Style */}
+          {availableRewardTypes.size > 1 && (
+            <div className="mb-6 flex flex-wrap gap-2 p-3 bg-blue-500/5 rounded-xl border border-blue-500/10">
+              <button
+                onClick={() => setFilterRewardType('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  filterRewardType === 'all'
+                    ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                    : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                }`}
+              >
+                {t('allCards')} ({recommendations.length})
+              </button>
+              {availableRewardTypes.has('cash') && (
+                <button
+                  onClick={() => setFilterRewardType('cash')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterRewardType === 'cash'
+                      ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                  }`}
+                >
+                  {t('cashBack')} ({recommendations.filter(r => r.calculation.rewardUnit === 'cash').length})
+                </button>
+              )}
+              {availableRewardTypes.has('miles') && (
+                <button
+                  onClick={() => setFilterRewardType('miles')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterRewardType === 'miles'
+                      ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                  }`}
+                >
+                  {tRewardTypes('miles')} ({recommendations.filter(r => r.calculation.rewardUnit === 'miles').length})
+                </button>
+              )}
+              {availableRewardTypes.has('points') && (
+                <button
+                  onClick={() => setFilterRewardType('points')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterRewardType === 'points'
+                      ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                  }`}
+                >
+                  {tRewardTypes('points')} ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
+                </button>
+              )}
+            </div>
+          )}
 
-      {/* Card List */}
-      <div className="space-y-4">
-        {filteredRecommendations.map((recommendation, index) => {
-          const isExpanded = expandedCardId === recommendation.card.id;
-          const isTopRecommended = index === 0;
-          const { calculation, card } = recommendation;
-          const ruleBreakdown = calculation.ruleBreakdown || [];
-          const totalAmount = ruleBreakdown.reduce((sum, c) => sum + c.amount, 0) || calculation.rewardAmount;
+          {/* Results Header */}
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-text-primary">
+              {t('found')} {filteredRecommendations.length} {filteredRecommendations.length === 1 ? t('card') : t('cards')}
+            </h3>
+          </div>
 
-          return (
-            <div
-              key={card.id}
-              className={`bg-surface rounded-2xl transition-all duration-300 ease-out overflow-hidden ${
-                isTopRecommended
-                  ? 'ring-2 ring-primary shadow-lg shadow-primary/10'
-                  : 'ring-1 ring-border hover:ring-primary/40 hover:shadow-md'
-              }`}
-            >
+          {/* Card List */}
+          <div className="space-y-4">
+            {filteredRecommendations.map((recommendation, index) => {
+              const isExpanded = expandedCardId === recommendation.card.id;
+              const isTopRecommended = index === 0;
+              const { calculation, card } = recommendation;
+              const ruleBreakdown = calculation.ruleBreakdown || [];
+              const totalAmount = ruleBreakdown.reduce((sum, c) => sum + c.amount, 0) || calculation.rewardAmount;
+
+              return (
+                <div
+                  key={card.id}
+                  className={`rounded-2xl transition-all duration-300 ease-out overflow-hidden ${
+                    isTopRecommended
+                      ? 'bg-surface/95 backdrop-blur-sm border border-primary/30 shadow-lg shadow-primary/10'
+                      : 'bg-surface/80 backdrop-blur-sm border border-white/10 hover:border-blue-500/30 hover:shadow-md'
+                  }`}
+                >
               {/* Preview Layer - Clickable to expand */}
               <button
                 onClick={() => toggleExpand(card.id)}
@@ -527,7 +545,9 @@ export default function CardRecommendationList({
               </div>
             </div>
           );
-        })}
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
