@@ -2,16 +2,16 @@
  * Card data loader with validation
  *
  * - Sync version: Uses static import (build-time)
- * - Async version: Checks blob storage in production for fresh data
+ * - Async version: Checks Redis in production for fresh data
  */
 
 import type { CreditCard } from '@/types';
 import cardsData from '@/data/cards.json';
 import {
   isProductionEnvironment,
-  isBlobConfigured,
-  readCardsFromBlob,
-} from './blobStorage';
+  isRedisConfigured,
+  readCardsFromRedis,
+} from './redisStorage';
 
 /**
  * Card database structure
@@ -121,7 +121,7 @@ export function loadCardsSync(): CreditCard[] {
 }
 
 /**
- * Load and validate credit card data (async, checks blob in production)
+ * Load and validate credit card data (async, checks Redis in production)
  *
  * @returns Promise of array of valid active credit cards
  * @throws Error if data cannot be loaded
@@ -130,13 +130,13 @@ export async function loadCards(): Promise<CreditCard[]> {
   try {
     let database: CardDatabase;
 
-    // In production with blob configured, try blob first
-    if (isProductionEnvironment() && isBlobConfigured()) {
-      const blobData = await readCardsFromBlob();
-      if (blobData) {
-        database = blobData;
+    // In production with Redis configured, try Redis first
+    if (isProductionEnvironment() && isRedisConfigured()) {
+      const redisData = await readCardsFromRedis();
+      if (redisData) {
+        database = redisData;
       } else {
-        console.warn('Blob read failed, falling back to static import');
+        console.warn('Redis empty, falling back to static import');
         database = cardsData as CardDatabase;
       }
     } else {
@@ -190,14 +190,14 @@ export async function getCardsByRewardUnit(
 }
 
 /**
- * Get database metadata (async, checks blob)
+ * Get database metadata (async, checks Redis)
  */
 export async function getDatabaseMetadata() {
   let database: CardDatabase;
 
-  if (isProductionEnvironment() && isBlobConfigured()) {
-    const blobData = await readCardsFromBlob();
-    database = blobData || (cardsData as CardDatabase);
+  if (isProductionEnvironment() && isRedisConfigured()) {
+    const redisData = await readCardsFromRedis();
+    database = redisData || (cardsData as CardDatabase);
   } else {
     database = cardsData as CardDatabase;
   }

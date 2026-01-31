@@ -7,7 +7,7 @@
  *
  * Write Flow:
  * - Development: Direct file system writes to cards.json
- * - Production: Vercel Blob storage (filesystem is read-only)
+ * - Production: Upstash Redis (filesystem is read-only)
  */
 
 import fs from 'fs/promises';
@@ -17,10 +17,10 @@ import { validateCard } from './cardRepository';
 import type { CardDatabase } from './cardRepository';
 import {
   isProductionEnvironment,
-  isBlobConfigured,
-  readCardsFromBlob,
-  writeCardsToBlob,
-} from './blobStorage';
+  isRedisConfigured,
+  readCardsFromRedis,
+  writeCardsToRedis,
+} from './redisStorage';
 
 const CARDS_FILE_PATH = path.join(process.cwd(), 'src/data/cards.json');
 
@@ -35,66 +35,59 @@ export interface WriteResult<T = CreditCard> {
 }
 
 /**
- * Read the cards database (from blob in production, file in development)
+ * Read the cards database (from Redis in production, file in development)
  */
 async function readCardsData(): Promise<CardDatabase> {
   const isProd = isProductionEnvironment();
-  const blobConfigured = isBlobConfigured();
+  const redisConfigured = isRedisConfigured();
 
-  console.log(`[CardWriter] readCardsData called - isProd: ${isProd}, blobConfigured: ${blobConfigured}`);
+  console.log(`[CardWriter] readCardsData - isProd: ${isProd}, redisConfigured: ${redisConfigured}`);
 
-  // In production, try to read from blob storage
+  // In production, read from Redis
   if (isProd) {
-    if (!blobConfigured) {
-      // Blob not configured - warn but fall back to static file
-      console.warn(
-        '[CardWriter] BLOB_READ_WRITE_TOKEN not configured in production. ' +
-        'Reading from static deployment file. Saves will fail.'
-      );
+    if (!redisConfigured) {
+      console.warn('[CardWriter] Redis not configured in production. Saves will fail.');
     } else {
-      console.log('[CardWriter] Attempting to read from blob for save operation...');
-      const blobData = await readCardsFromBlob();
-      if (blobData) {
-        console.log(`[CardWriter] Read from blob for save - lastUpdated: ${blobData.lastUpdated}, cards: ${blobData.cards.length}`);
-        return blobData;
+      const redisData = await readCardsFromRedis();
+      if (redisData) {
+        console.log(`[CardWriter] Read from Redis - lastUpdated: ${redisData.lastUpdated}, cards: ${redisData.cards.length}`);
+        return redisData;
       }
-      // Fall through to file read if blob fails
-      console.warn('[CardWriter] Blob read FAILED, falling back to local file');
+      console.warn('[CardWriter] Redis empty, falling back to local file');
     }
   }
 
-  // Read from local file (development, or production fallback)
+  // Read from local file (development, or production fallback for initial data)
   console.log('[CardWriter] Reading from local file...');
   const content = await fs.readFile(CARDS_FILE_PATH, 'utf-8');
   const data = JSON.parse(content) as CardDatabase;
-  console.log(`[CardWriter] Read from LOCAL FILE - lastUpdated: ${data.lastUpdated}, cards: ${data.cards.length}`);
+  console.log(`[CardWriter] Read from file - lastUpdated: ${data.lastUpdated}, cards: ${data.cards.length}`);
   return data;
 }
 
 /**
- * Write the cards database (to blob in production, file in development)
- * Returns the verified written data in production for immediate use
+ * Write the cards database (to Redis in production, file in development)
  */
 async function writeCardsData(database: CardDatabase): Promise<CardDatabase> {
-  // In production, MUST use blob storage (filesystem is read-only/ephemeral)
+  // In production, use Redis (filesystem is read-only)
   if (isProductionEnvironment()) {
-    if (!isBlobConfigured()) {
+    if (!isRedisConfigured()) {
       throw new Error(
-        'Cannot save changes: BLOB_READ_WRITE_TOKEN is not configured. ' +
-        'Please add this environment variable in your Vercel project settings.'
+        'Cannot save changes: Upstash Redis is not configured. ' +
+        'Please add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.'
       );
     }
 
-    const result = await writeCardsToBlob(database);
+    const result = await writeCardsToRedis(database);
     if (!result.success || !result.data) {
-      throw new Error('Failed to write cards to blob storage - verification failed');
+      throw new Error('Failed to write cards to Redis');
     }
 
-    console.log(`[CardWriter] Write verified - lastUpdated: ${result.data.lastUpdated}`);
-    return result.data; // Return verified data
+    console.log(`[CardWriter] Saved to Redis - lastUpdated: ${result.data.lastUpdated}`);
+    return result.data;
   }
 
-  // Development: Update timestamps and write to local file
+  // Development: Write to local file
   database.lastUpdated = new Date().toISOString();
   if (database.metadata) {
     database.metadata.totalCards = database.cards.length;
