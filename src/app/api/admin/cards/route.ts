@@ -8,13 +8,30 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getAllCardsAsync, getDatabaseStats } from '@/lib/data/cardRepository';
 
-// Force dynamic rendering so we always check blob storage
+// Force dynamic rendering and disable all caching
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 import { createCard } from '@/lib/data/cardWriter';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
 import type { CreditCard } from '@/types/card';
+
+// Helper to add no-cache headers to response
+function noCacheResponse(data: object, status = 200) {
+  return NextResponse.json(data, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
+    },
+  });
+}
 
 /**
  * GET /api/admin/cards
@@ -54,12 +71,12 @@ export async function GET(request: NextRequest) {
       response.stats = await getDatabaseStats();
     }
 
-    return NextResponse.json(response);
+    return noCacheResponse(response);
   } catch (error) {
     console.error('Failed to fetch cards:', error);
-    return NextResponse.json(
+    return noCacheResponse(
       { error: 'Internal Server Error', message: 'Failed to fetch cards' },
-      { status: 500 }
+      500
     );
   }
 }
@@ -86,25 +103,33 @@ export async function POST(request: NextRequest) {
     const result = await createCard(card);
 
     if (!result.success) {
-      return NextResponse.json(
+      return noCacheResponse(
         {
           error: 'Validation Error',
           message: result.error,
           validationErrors: result.validationErrors,
         },
-        { status: 400 }
+        400
       );
     }
 
-    return NextResponse.json(
+    // Force revalidation of all admin card routes to clear server-side cache
+    revalidatePath('/api/admin/cards', 'page');
+    revalidatePath('/admin/cards', 'page');
+    if (result.data?.id) {
+      revalidatePath(`/api/admin/cards/${result.data.id}`, 'page');
+      revalidatePath(`/admin/cards/${result.data.id}`, 'page');
+    }
+
+    return noCacheResponse(
       { success: true, card: result.data },
-      { status: 201 }
+      201
     );
   } catch (error) {
     console.error('Failed to create card:', error);
-    return NextResponse.json(
+    return noCacheResponse(
       { error: 'Internal Server Error', message: 'Failed to create card' },
-      { status: 500 }
+      500
     );
   }
 }

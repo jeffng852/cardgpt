@@ -7,10 +7,14 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getCardByIdAsync } from '@/lib/data/cardRepository';
 
-// Force dynamic rendering so we always check blob storage
+// Force dynamic rendering and disable all caching
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
+
 import { updateCard, deactivateCard, deleteCard } from '@/lib/data/cardWriter';
 import { isAuthenticatedFromRequest, unauthorizedResponse } from '@/lib/auth/adminAuth';
 import type { CreditCard } from '@/types/card';
@@ -18,6 +22,19 @@ import type { CreditCard } from '@/types/card';
 type RouteContext = {
   params: Promise<{ id: string }>;
 };
+
+// Helper to add no-cache headers to response
+function noCacheResponse(data: object, status = 200) {
+  return NextResponse.json(data, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store',
+    },
+  });
+}
 
 /**
  * GET /api/admin/cards/[id]
@@ -33,18 +50,18 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const card = await getCardByIdAsync(id);
 
     if (!card) {
-      return NextResponse.json(
+      return noCacheResponse(
         { error: 'Not Found', message: `Card with ID "${id}" not found` },
-        { status: 404 }
+        404
       );
     }
 
-    return NextResponse.json({ card });
+    return noCacheResponse({ card });
   } catch (error) {
     console.error('Failed to fetch card:', error);
-    return NextResponse.json(
+    return noCacheResponse(
       { error: 'Internal Server Error', message: 'Failed to fetch card' },
-      { status: 500 }
+      500
     );
   }
 }
@@ -69,22 +86,28 @@ export async function PUT(request: NextRequest, context: RouteContext) {
 
     if (!result.success) {
       const status = result.error?.includes('not found') ? 404 : 400;
-      return NextResponse.json(
+      return noCacheResponse(
         {
           error: status === 404 ? 'Not Found' : 'Validation Error',
           message: result.error,
           validationErrors: result.validationErrors,
         },
-        { status }
+        status
       );
     }
 
-    return NextResponse.json({ success: true, card: result.data });
+    // Force revalidation of all admin card routes to clear server-side cache
+    revalidatePath('/api/admin/cards', 'page');
+    revalidatePath(`/api/admin/cards/${id}`, 'page');
+    revalidatePath('/admin/cards', 'page');
+    revalidatePath(`/admin/cards/${id}`, 'page');
+
+    return noCacheResponse({ success: true, card: result.data });
   } catch (error) {
     console.error('Failed to update card:', error);
-    return NextResponse.json(
+    return noCacheResponse(
       { error: 'Internal Server Error', message: 'Failed to update card' },
-      { status: 500 }
+      500
     );
   }
 }
@@ -109,13 +132,19 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
 
     if (!result.success) {
       const status = result.error?.includes('not found') ? 404 : 400;
-      return NextResponse.json(
+      return noCacheResponse(
         { error: status === 404 ? 'Not Found' : 'Error', message: result.error },
-        { status }
+        status
       );
     }
 
-    return NextResponse.json({
+    // Force revalidation of all admin card routes to clear server-side cache
+    revalidatePath('/api/admin/cards', 'page');
+    revalidatePath(`/api/admin/cards/${id}`, 'page');
+    revalidatePath('/admin/cards', 'page');
+    revalidatePath(`/admin/cards/${id}`, 'page');
+
+    return noCacheResponse({
       success: true,
       message: hardDelete
         ? `Card "${id}" permanently deleted`
@@ -123,9 +152,9 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     });
   } catch (error) {
     console.error('Failed to delete card:', error);
-    return NextResponse.json(
+    return noCacheResponse(
       { error: 'Internal Server Error', message: 'Failed to delete card' },
-      { status: 500 }
+      500
     );
   }
 }

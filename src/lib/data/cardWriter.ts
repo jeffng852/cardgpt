@@ -7,7 +7,7 @@
  *
  * Write Flow:
  * - Development: Direct file system writes to cards.json
- * - Production: Vercel Blob storage (filesystem is read-only)
+ * - Production: Upstash Redis (filesystem is read-only)
  */
 
 import fs from 'fs/promises';
@@ -17,10 +17,10 @@ import { validateCard } from './cardRepository';
 import type { CardDatabase } from './cardRepository';
 import {
   isProductionEnvironment,
-  isBlobConfigured,
-  readCardsFromBlob,
-  writeCardsToBlob,
-} from './blobStorage';
+  isRedisConfigured,
+  readCardsFromRedis,
+  writeCardsToRedis,
+} from './redisStorage';
 
 const CARDS_FILE_PATH = path.join(process.cwd(), 'src/data/cards.json');
 
@@ -35,48 +35,67 @@ export interface WriteResult<T = CreditCard> {
 }
 
 /**
- * Read the cards database (from blob in production, file in development)
+ * Read the cards database (from Redis in production, file in development)
  */
 async function readCardsData(): Promise<CardDatabase> {
-  // In production with blob configured, try blob first
-  if (isProductionEnvironment() && isBlobConfigured()) {
-    const blobData = await readCardsFromBlob();
-    if (blobData) {
-      return blobData;
+  const isProd = isProductionEnvironment();
+  const redisConfigured = isRedisConfigured();
+
+  console.log(`[CardWriter] readCardsData - isProd: ${isProd}, redisConfigured: ${redisConfigured}`);
+
+  // In production, read from Redis
+  if (isProd) {
+    if (!redisConfigured) {
+      console.warn('[CardWriter] Redis not configured in production. Saves will fail.');
+    } else {
+      const redisData = await readCardsFromRedis();
+      if (redisData) {
+        console.log(`[CardWriter] Read from Redis - lastUpdated: ${redisData.lastUpdated}, cards: ${redisData.cards.length}`);
+        return redisData;
+      }
+      console.warn('[CardWriter] Redis empty, falling back to local file');
     }
-    // Fall through to file read if blob fails
-    console.warn('Blob read failed, falling back to local file');
   }
 
-  // Read from local file
+  // Read from local file (development, or production fallback for initial data)
+  console.log('[CardWriter] Reading from local file...');
   const content = await fs.readFile(CARDS_FILE_PATH, 'utf-8');
-  return JSON.parse(content) as CardDatabase;
+  const data = JSON.parse(content) as CardDatabase;
+  console.log(`[CardWriter] Read from file - lastUpdated: ${data.lastUpdated}, cards: ${data.cards.length}`);
+  return data;
 }
 
 /**
- * Write the cards database (to blob in production, file in development)
+ * Write the cards database (to Redis in production, file in development)
  */
-async function writeCardsData(database: CardDatabase): Promise<void> {
-  // Update lastUpdated timestamp
-  database.lastUpdated = new Date().toISOString();
+async function writeCardsData(database: CardDatabase): Promise<CardDatabase> {
+  // In production, use Redis (filesystem is read-only)
+  if (isProductionEnvironment()) {
+    if (!isRedisConfigured()) {
+      throw new Error(
+        'Cannot save changes: Upstash Redis is not configured. ' +
+        'Please add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.'
+      );
+    }
 
-  // Update metadata
+    const result = await writeCardsToRedis(database);
+    if (!result.success || !result.data) {
+      throw new Error('Failed to write cards to Redis');
+    }
+
+    console.log(`[CardWriter] Saved to Redis - lastUpdated: ${result.data.lastUpdated}`);
+    return result.data;
+  }
+
+  // Development: Write to local file
+  database.lastUpdated = new Date().toISOString();
   if (database.metadata) {
     database.metadata.totalCards = database.cards.length;
   }
 
-  // In production with blob configured, write to blob
-  if (isProductionEnvironment() && isBlobConfigured()) {
-    const success = await writeCardsToBlob(database);
-    if (!success) {
-      throw new Error('Failed to write cards to blob storage');
-    }
-    return;
-  }
-
-  // Write to local file (development)
   const content = JSON.stringify(database, null, 2) + '\n';
   await fs.writeFile(CARDS_FILE_PATH, content, 'utf-8');
+  return database;
 }
 
 /**
@@ -109,10 +128,17 @@ export async function createCard(card: CreditCard): Promise<WriteResult> {
     // Add the new card
     database.cards.push(card);
 
-    // Write back
-    await writeCardsData(database);
+    // Write back and get verified data
+    const verifiedDatabase = await writeCardsData(database);
 
-    return { success: true, data: card };
+    // Return the verified card from the written database
+    const verifiedCard = verifiedDatabase.cards.find(c => c.id === card.id);
+    if (!verifiedCard) {
+      throw new Error('Card not found in verified database after write');
+    }
+
+    console.log(`[CardWriter] Create verified for card ${card.id} - lastUpdated: ${verifiedCard.lastUpdated}`);
+    return { success: true, data: verifiedCard };
   } catch (error) {
     console.error('Failed to create card:', error);
     return {
@@ -157,10 +183,17 @@ export async function updateCard(
     // Update in place
     database.cards[cardIndex] = updatedCard;
 
-    // Write back
-    await writeCardsData(database);
+    // Write back and get verified data
+    const verifiedDatabase = await writeCardsData(database);
 
-    return { success: true, data: updatedCard };
+    // Return the verified card from the written database
+    const verifiedCard = verifiedDatabase.cards.find(c => c.id === id);
+    if (!verifiedCard) {
+      throw new Error('Card not found in verified database after write');
+    }
+
+    console.log(`[CardWriter] Update verified for card ${id} - lastUpdated: ${verifiedCard.lastUpdated}`);
+    return { success: true, data: verifiedCard };
   } catch (error) {
     console.error('Failed to update card:', error);
     return {

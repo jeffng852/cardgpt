@@ -3,7 +3,7 @@
  *
  * Design:
  * - Sync functions: Use static JSON import (fast, for build-time)
- * - Async functions: Check blob storage in production, fallback to static
+ * - Async functions: Check Redis in production, fallback to static
  * - Write operations: Via cardWriter module
  */
 
@@ -11,9 +11,9 @@ import type { CreditCard, RewardRule } from '@/types/card';
 import cardsData from '@/data/cards.json';
 import {
   isProductionEnvironment,
-  isBlobConfigured,
-  readCardsFromBlob,
-} from './blobStorage';
+  isRedisConfigured,
+  readCardsFromRedis,
+} from './redisStorage';
 
 /**
  * Card database structure (matches cards.json schema)
@@ -76,20 +76,25 @@ export function getCardById(id: string): CreditCard | undefined {
 // ============================================================================
 
 /**
- * Get the full database async (checks blob in production)
+ * Get the full database async (checks Redis in production)
  */
 export async function getDatabaseAsync(): Promise<CardDatabase> {
-  // In production with blob configured, try blob first
-  if (isProductionEnvironment() && isBlobConfigured()) {
-    const blobData = await readCardsFromBlob();
-    if (blobData) {
-      return blobData;
+  const isProd = isProductionEnvironment();
+  const redisConfigured = isRedisConfigured();
+
+  console.log(`[CardRepo] getDatabaseAsync - isProd: ${isProd}, redisConfigured: ${redisConfigured}`);
+
+  if (isProd && redisConfigured) {
+    const redisData = await readCardsFromRedis();
+    if (redisData) {
+      console.log(`[CardRepo] Read from Redis - lastUpdated: ${redisData.lastUpdated}, cards: ${redisData.cards.length}`);
+      return redisData;
     }
-    // Fall through to static import if blob fails
-    console.warn('Blob read failed, falling back to static import');
+    console.warn('[CardRepo] Redis empty, falling back to static import');
   }
 
   // Use static import
+  console.log(`[CardRepo] Using static import - lastUpdated: ${(cardsData as CardDatabase).lastUpdated}`);
   return cardsData as CardDatabase;
 }
 

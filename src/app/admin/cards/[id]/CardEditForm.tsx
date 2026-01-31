@@ -151,7 +151,14 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
 
   const fetchCard = async () => {
     try {
-      const response = await fetch(`/api/admin/cards/${cardId}`);
+      // Add cache-busting to prevent stale data on refresh
+      const response = await fetch(`/api/admin/cards/${cardId}?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      });
       if (!response.ok) {
         if (response.status === 401) {
           router.push('/admin/login');
@@ -198,7 +205,16 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
         return;
       }
 
+      // Update local state with the saved card data
+      if (data.card) {
+        setCard(data.card);
+      }
+
       setSuccess('Card saved successfully!');
+
+      // Refresh the router cache to ensure fresh data on navigation
+      router.refresh();
+
       if (isNew && data.card?.id) {
         router.push(`/admin/cards/${data.card.id}`);
       }
