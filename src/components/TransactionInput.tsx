@@ -8,6 +8,68 @@ import { TRANSACTION_CATEGORIES, type TransactionCategory } from '@/types/transa
 
 type RewardType = 'cash' | 'miles' | 'points';
 
+// SVG line icons for categories (single color, matches text)
+const CategoryIcon = ({ category, className = "w-4 h-4" }: { category: TransactionCategory; className?: string }) => {
+  const icons: Record<TransactionCategory, React.ReactElement> = {
+    groceries: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+      </svg>
+    ),
+    dining: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75l-1.5.75a3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0L3 16.5m18-4.5a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+    online: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
+      </svg>
+    ),
+    travel: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+      </svg>
+    ),
+    transport: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+      </svg>
+    ),
+    overseas: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+      </svg>
+    ),
+    utilities: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" />
+      </svg>
+    ),
+    financial: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+      </svg>
+    ),
+    government: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" />
+      </svg>
+    ),
+    'digital-wallet': (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+      </svg>
+    ),
+    others: (
+      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+      </svg>
+    ),
+  };
+  return icons[category];
+};
+
 interface TransactionInputProps {
   onSubmit: (result: ParseResult, rewardType?: RewardType) => void;
 }
@@ -41,14 +103,14 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
   const MAX_INPUT_LENGTH = 80;
 
-  // Popular merchant quick-tags
+  // Popular merchant quick-tags (no icons, text only)
   const quickTags = [
-    { key: 'mcdonalds', label: t('quickTags.mcdonalds'), icon: '🍔' },
-    { key: 'wellcome', label: t('quickTags.wellcome'), icon: '🛒' },
-    { key: 'parknshop', label: t('quickTags.parknshop'), icon: '🛒' },
-    { key: 'sushiro', label: t('quickTags.sushiro'), icon: '🍣' },
-    { key: 'shell', label: t('quickTags.shell'), icon: '⛽' },
-    { key: 'cathay', label: t('quickTags.cathay'), icon: '✈️' },
+    { key: 'mcdonalds', label: t('quickTags.mcdonalds') },
+    { key: 'wellcome', label: t('quickTags.wellcome') },
+    { key: 'parknshop', label: t('quickTags.parknshop') },
+    { key: 'sushiro', label: t('quickTags.sushiro') },
+    { key: 'shell', label: t('quickTags.shell') },
+    { key: 'cathay', label: t('quickTags.cathay') },
   ];
 
   // Parse input in real-time for feedback with debounce and artificial delay
@@ -298,13 +360,13 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                     setSelectedCategory(selectedCategory === cat ? undefined : cat);
                     setShowCategoryError(false);
                   }}
-                  className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm transition-all ${
                     selectedCategory === cat
-                      ? 'bg-accent-purple/10 border-accent-purple text-accent-purple'
-                      : 'bg-input-bg border-border text-text-primary hover:border-accent-purple/50 hover:bg-accent-purple/5'
+                      ? 'bg-text-primary/10 border-text-primary/30 text-text-primary'
+                      : 'bg-transparent border-border/60 text-text-secondary hover:border-text-primary/40 hover:text-text-primary'
                   }`}
                 >
-                  <span className="mr-1">{catInfo.icon}</span>
+                  <CategoryIcon category={cat} className="w-4 h-4" />
                   {tCategories(cat)}
                 </button>
               );
@@ -345,13 +407,12 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                 key={tag.key}
                 type="button"
                 onClick={() => handleQuickTag(tag.label)}
-                className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+                className={`px-4 py-2.5 rounded-xl border text-sm transition-all ${
                   selectedMerchantTag === tag.label
-                    ? 'bg-primary/10 border-primary text-primary'
-                    : 'bg-input-bg border-border text-text-primary hover:border-primary/50 hover:bg-primary/5'
+                    ? 'bg-text-primary/10 border-text-primary/30 text-text-primary'
+                    : 'bg-transparent border-border/60 text-text-secondary hover:border-text-primary/40 hover:text-text-primary'
                 }`}
               >
-                <span className="mr-1">{tag.icon}</span>
                 {tag.label}
               </button>
             ))}
