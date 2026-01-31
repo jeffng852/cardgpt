@@ -36,10 +36,32 @@ export function isBlobConfigured(): boolean {
 async function getCardsBlobUrl(): Promise<string | null> {
   try {
     const { blobs } = await list({ prefix: CARDS_BLOB_NAME });
-    const cardsBlob = blobs.find(b => b.pathname === CARDS_BLOB_NAME);
-    return cardsBlob?.url || null;
+
+    // Debug: log what blobs we found
+    console.log(`[Blob] Listed ${blobs.length} blobs with prefix "${CARDS_BLOB_NAME}":`,
+      blobs.map(b => ({ pathname: b.pathname, url: b.url.substring(0, 50) + '...' }))
+    );
+
+    // Try exact match first
+    let cardsBlob = blobs.find(b => b.pathname === CARDS_BLOB_NAME);
+
+    // If not found, try matching just the filename (in case there's a folder prefix)
+    if (!cardsBlob) {
+      cardsBlob = blobs.find(b => b.pathname.endsWith(CARDS_BLOB_NAME));
+      if (cardsBlob) {
+        console.log(`[Blob] Found blob with pathname "${cardsBlob.pathname}" (partial match)`);
+      }
+    }
+
+    if (!cardsBlob) {
+      console.log(`[Blob] No blob found matching "${CARDS_BLOB_NAME}"`);
+      return null;
+    }
+
+    console.log(`[Blob] Using blob URL: ${cardsBlob.url}`);
+    return cardsBlob.url;
   } catch (error) {
-    console.error('Failed to list blobs:', error);
+    console.error('[Blob] Failed to list blobs:', error);
     return null;
   }
 }
@@ -49,26 +71,30 @@ async function getCardsBlobUrl(): Promise<string | null> {
  */
 export async function readCardsFromBlob(): Promise<CardDatabase | null> {
   try {
+    console.log('[Blob] Attempting to read cards from blob storage...');
+
     const blobUrl = await getCardsBlobUrl();
 
     if (!blobUrl) {
-      console.log('Cards blob not found, will use local file');
+      console.log('[Blob] Cards blob not found, will use local file');
       return null;
     }
 
+    console.log('[Blob] Fetching blob data...');
     const response = await fetch(blobUrl, {
       cache: 'no-store', // Always get fresh data
     });
 
     if (!response.ok) {
-      console.error('Failed to fetch cards blob:', response.status);
+      console.error(`[Blob] Failed to fetch cards blob: HTTP ${response.status}`);
       return null;
     }
 
     const data = await response.json();
+    console.log(`[Blob] Successfully read ${data.cards?.length || 0} cards from blob storage`);
     return data as CardDatabase;
   } catch (error) {
-    console.error('Failed to read cards from blob:', error);
+    console.error('[Blob] Failed to read cards from blob:', error);
     return null;
   }
 }
@@ -91,24 +117,29 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<boolean>
     // Delete existing blob if it exists (put with same name creates a new one)
     const existingUrl = await getCardsBlobUrl();
     if (existingUrl) {
+      console.log(`[Blob] Deleting existing blob: ${existingUrl}`);
       try {
         await del(existingUrl);
-      } catch {
-        // Ignore delete errors, we'll overwrite anyway
+        console.log('[Blob] Existing blob deleted');
+      } catch (delError) {
+        console.warn('[Blob] Failed to delete existing blob (continuing anyway):', delError);
       }
     }
 
     // Upload new content
-    await put(CARDS_BLOB_NAME, content, {
+    console.log(`[Blob] Uploading new blob with pathname "${CARDS_BLOB_NAME}"...`);
+    const result = await put(CARDS_BLOB_NAME, content, {
       access: 'public',
       contentType: 'application/json',
       addRandomSuffix: false,
     });
 
-    console.log('Cards data written to blob storage');
+    console.log(`[Blob] Cards data written to blob storage successfully`);
+    console.log(`[Blob] New blob URL: ${result.url}`);
+    console.log(`[Blob] New blob pathname: ${result.pathname}`);
     return true;
   } catch (error) {
-    console.error('Failed to write cards to blob:', error);
+    console.error('[Blob] Failed to write cards to blob:', error);
     return false;
   }
 }
@@ -120,4 +151,21 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<boolean>
 export async function initializeBlobFromLocal(localData: CardDatabase): Promise<boolean> {
   console.log('Initializing blob storage with local cards.json data...');
   return writeCardsToBlob(localData);
+}
+
+/**
+ * List all blobs in the store (for debugging)
+ */
+export async function listAllBlobs(): Promise<{ pathname: string; url: string; size: number }[]> {
+  try {
+    const { blobs } = await list();
+    return blobs.map(b => ({
+      pathname: b.pathname,
+      url: b.url,
+      size: b.size,
+    }));
+  } catch (error) {
+    console.error('[Blob] Failed to list all blobs:', error);
+    return [];
+  }
 }
