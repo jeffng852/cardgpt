@@ -184,7 +184,9 @@
       "minIncome": "最低年薪要求",
       "perYear": "每年",
       "rewardCapped": "獎賞已達上限",
-      "cappedExplainer": "此獎賞設有每月上限 {cap}。您的計算獎賞 {original} 已被調整至最高限額。"
+      "cappedExplainer": "此獎賞設有每月上限 {cap}。您的計算獎賞 {original} 已被調整至最高限額。",
+      "upgradeAvailable": "可獲額外獎賞",
+      "upgradeHint": "消費滿 ${minAmount} 可享 {rate} 額外獎賞"
     }
   },
   "paymentTypes": {

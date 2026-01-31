@@ -184,7 +184,9 @@
       "minIncome": "Min. Income",
       "perYear": "per year",
       "rewardCapped": "Reward capped",
-      "cappedExplainer": "This reward has a monthly cap of {cap}. Your calculated reward of {original} has been reduced to the maximum allowed."
+      "cappedExplainer": "This reward has a monthly cap of {cap}. Your calculated reward of {original} has been reduced to the maximum allowed.",
+      "upgradeAvailable": "Bonus available",
+      "upgradeHint": "{rate} bonus available for transactions ≥ ${minAmount}"
     }
   },
   "paymentTypes": {

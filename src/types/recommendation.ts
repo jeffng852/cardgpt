@@ -14,6 +14,37 @@ import type { Transaction } from './transaction';
 export type ContributionType = 'base' | 'stacked' | 'replaced';
 
 /**
+ * Reason why a rule was skipped
+ */
+export type SkipReason = 'minAmount' | 'maxAmount' | 'currency' | 'paymentType' | 'category';
+
+/**
+ * A rule that was skipped due to conditions not being met
+ */
+export interface SkippedRule {
+  /** Rule ID for reference */
+  ruleId: string;
+
+  /** Rule description for display */
+  description: string;
+
+  /** Chinese (Traditional) translation of description */
+  description_zh?: string;
+
+  /** The rate this rule would have contributed */
+  rate: number;
+
+  /** Why this rule was skipped */
+  reason: SkipReason;
+
+  /** The threshold that wasn't met (e.g., minAmount value) */
+  threshold?: number;
+
+  /** The actual value from the transaction */
+  actualValue?: number;
+}
+
+/**
  * Detailed breakdown of how a single rule contributed to the reward
  */
 export interface RuleContribution {
@@ -87,6 +118,9 @@ export interface RewardCalculation {
 
   /** Whether monthly spending cap was reached */
   cappedOut: boolean;
+
+  /** Rules that were skipped due to conditions not being met */
+  skippedRules: SkippedRule[];
 }
 
 /**
