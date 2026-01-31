@@ -312,7 +312,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto relative z-10">
       {/* Main Card */}
       <div className="relative">
         {/* Glow effect */}
