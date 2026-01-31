@@ -46,6 +46,22 @@ const emptyRule: Partial<RewardRule> = {
   categories: ['all'],
 };
 
+// Admin category options - 11 simplified categories plus 'all'
+const ADMIN_CATEGORIES = [
+  { value: 'all', label: 'All Categories' },
+  { value: 'groceries', label: 'Groceries / Supermarket' },
+  { value: 'dining', label: 'Dining' },
+  { value: 'online', label: 'Online / Subscription' },
+  { value: 'travel', label: 'Travel' },
+  { value: 'transport', label: 'Local Transport' },
+  { value: 'overseas', label: 'Overseas Spending' },
+  { value: 'utilities', label: 'Utilities / Bills' },
+  { value: 'financial', label: 'Financial Services' },
+  { value: 'government', label: 'Government' },
+  { value: 'digital-wallet', label: 'Digital Wallet' },
+  { value: 'others', label: 'Others' },
+] as const;
+
 // Generate a unique rule ID based on card ID, priority, category, and index
 function generateRuleId(cardId: string, priority: string, categories: string[], existingRuleCount: number): string {
   const cardSlug = cardId || 'card';
@@ -1058,77 +1074,72 @@ function RuleEditor({
         <div className="p-6 border-b border-border">
           <h3 className="text-lg font-semibold text-foreground">Edit Reward Rule</h3>
         </div>
-        <div className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Rule ID (auto-generated)</label>
-            <input
-              type="text"
-              value={rule.id || ''}
-              disabled
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background-secondary text-foreground-muted cursor-not-allowed font-mono text-sm"
-            />
-            <p className="text-xs text-foreground-muted mt-1">
-              Format: {'{cardId}'}-{'{priority}'}-{'{category}'}-{'{index}'}
-            </p>
-          </div>
+        <div className="p-6 space-y-6">
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description (English) *</label>
-            <input
-              type="text"
-              value={rule.description || ''}
-              onChange={(e) => update({ description: e.target.value })}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="e.g., 4% cashback on supermarkets"
-            />
-          </div>
+          {/* ===== Core Information ===== */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Core Information</h4>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">Description (繁體中文)</label>
-            <input
-              type="text"
-              value={rule.description_zh || ''}
-              onChange={(e) => update({ description_zh: e.target.value || undefined })}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="例如：超市消費可享4%現金回贈"
-            />
-            <p className="text-xs text-foreground-muted mt-1">
-              留空則顯示英文 (Falls back to English if empty)
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Reward Rate (as decimal)
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1">Rule ID (auto-generated)</label>
               <input
-                type="number"
-                step="0.0001"
-                value={rule.rewardRate || 0}
-                onChange={(e) => update({ rewardRate: parseFloat(e.target.value) || 0 })}
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                placeholder="0.04 for 4%"
+                type="text"
+                value={rule.id || ''}
+                disabled
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background-secondary text-foreground-muted cursor-not-allowed font-mono text-sm"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                {((rule.rewardRate || 0) * 100).toFixed(2)}%
-              </p>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1">Reward Unit</label>
-              <select
-                value={rule.rewardUnit || 'cash'}
-                onChange={(e) => update({ rewardUnit: e.target.value as RewardRule['rewardUnit'] })}
-                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              >
-                <option value="cash">Cash</option>
-                <option value="miles">Miles</option>
-                <option value="points">Points</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Description (English) *</label>
+              <input
+                type="text"
+                value={rule.description || ''}
+                onChange={(e) => update({ description: e.target.value })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., 4% cashback on supermarkets"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Description (繁體中文)</label>
+              <input
+                type="text"
+                value={rule.description_zh || ''}
+                onChange={(e) => update({ description_zh: e.target.value || undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="例如：超市消費可享4%現金回贈"
+              />
+              <p className="text-xs text-foreground-muted mt-1">留空則顯示英文 (Falls back to English if empty)</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Reward Rate (decimal) *</label>
+                <input
+                  type="number"
+                  step="0.0001"
+                  value={rule.rewardRate || 0}
+                  onChange={(e) => update({ rewardRate: parseFloat(e.target.value) || 0 })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="0.04 for 4%"
+                />
+                <p className="text-xs text-foreground-muted mt-1">= {((rule.rewardRate || 0) * 100).toFixed(2)}%</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Reward Unit *</label>
+                <select
+                  value={rule.rewardUnit || 'cash'}
+                  onChange={(e) => update({ rewardUnit: e.target.value as RewardRule['rewardUnit'] })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                >
+                  <option value="cash">Cash</option>
+                  <option value="miles">Miles</option>
+                  <option value="points">Points</option>
+                </select>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">Priority</label>
               <select
@@ -1146,153 +1157,298 @@ function RuleEditor({
                 {rule.priority === 'specific' && 'Replaces base for specific merchants'}
               </p>
             </div>
-            <div className="flex flex-col justify-end">
-              <label className="flex items-center gap-2">
+          </div>
+
+          {/* ===== Merchant Targeting ===== */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Merchant Targeting</h4>
+
+            {/* Categories Selection */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Categories</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {ADMIN_CATEGORIES.map((cat) => {
+                  const categories = rule.categories as string[] | undefined;
+                  const isAll = cat.value === 'all';
+                  const isAllSelected = categories?.includes('all');
+                  const isSelected = categories?.includes(cat.value);
+                  return (
+                    <label
+                      key={cat.value}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-primary/10 border-primary text-primary'
+                          : 'border-border hover:bg-background-secondary'
+                      } ${isAll ? 'col-span-2 sm:col-span-3 bg-background-secondary' : ''}`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected || false}
+                        onChange={() => {
+                          const current = rule.categories || [];
+                          if (isAll) {
+                            // Toggle "All" - clears other selections
+                            update({ categories: isSelected ? [] : ['all'] });
+                          } else {
+                            // Toggle specific category
+                            if (isSelected) {
+                              update({ categories: current.filter(c => c !== cat.value) });
+                            } else {
+                              // Remove 'all' when selecting specific categories
+                              update({ categories: [...current.filter(c => c !== 'all'), cat.value] });
+                            }
+                          }
+                        }}
+                        disabled={!isAll && isAllSelected}
+                        className="rounded border-border text-primary focus:ring-primary"
+                      />
+                      <span className={`text-sm ${!isAll && isAllSelected ? 'text-foreground-muted' : ''}`}>
+                        {cat.label}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Specific Merchants (comma-separated)</label>
+              <input
+                type="text"
+                value={rule.specificMerchants?.join(', ') || ''}
+                onChange={(e) => update({ specificMerchants: e.target.value ? e.target.value.split(',').map((c) => c.trim()).filter(Boolean) : undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., mcdonalds, sushiro"
+              />
+            </div>
+
+            {/* Excluded Categories Selection */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Excluded Categories</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {ADMIN_CATEGORIES.filter(cat => cat.value !== 'all').map((cat) => {
+                  const excludedCategories = rule.excludedCategories as string[] | undefined;
+                  const isSelected = excludedCategories?.includes(cat.value);
+                  return (
+                    <label
+                      key={cat.value}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                        isSelected
+                          ? 'bg-red-500/10 border-red-500 text-red-500'
+                          : 'border-border hover:bg-background-secondary'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isSelected || false}
+                        onChange={() => {
+                          const current = rule.excludedCategories || [];
+                          if (isSelected) {
+                            const newExcluded = current.filter(c => c !== cat.value);
+                            update({ excludedCategories: newExcluded.length > 0 ? newExcluded : undefined });
+                          } else {
+                            update({ excludedCategories: [...current, cat.value] });
+                          }
+                        }}
+                        className="rounded border-border text-red-500 focus:ring-red-500"
+                      />
+                      <span className="text-sm">{cat.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Excluded Merchants (comma-separated)</label>
+              <input
+                type="text"
+                value={rule.excludedMerchants?.join(', ') || ''}
+                onChange={(e) => update({ excludedMerchants: e.target.value ? e.target.value.split(',').map((c) => c.trim()).filter(Boolean) : undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., government-fees, bill-payments"
+              />
+            </div>
+          </div>
+
+          {/* ===== Conditions ===== */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Conditions</h4>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Payment Type</label>
+                <select
+                  value={rule.conditions?.paymentType || ''}
+                  onChange={(e) => update({ conditions: { ...rule.conditions, paymentType: (e.target.value || undefined) as RewardRule['conditions'] extends { paymentType?: infer P } ? P : never } })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                >
+                  <option value="">Any</option>
+                  <option value="online">Online</option>
+                  <option value="offline">Offline</option>
+                  <option value="contactless">Contactless</option>
+                  <option value="recurring">Recurring</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Currency</label>
+                <select
+                  value={rule.conditions?.currency || ''}
+                  onChange={(e) => update({ conditions: { ...rule.conditions, currency: (e.target.value || undefined) as RewardRule['conditions'] extends { currency?: infer C } ? C : never } })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                >
+                  <option value="">Any</option>
+                  <option value="foreign">Foreign (non-HKD)</option>
+                  <option value="HKD">HKD</option>
+                  <option value="USD">USD</option>
+                  <option value="CNY">CNY</option>
+                  <option value="JPY">JPY</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Min Transaction Amount (HKD)</label>
                 <input
-                  type="checkbox"
-                  checked={rule.isPromotional ?? false}
-                  onChange={(e) => update({ isPromotional: e.target.checked })}
-                  className="rounded border-border"
+                  type="number"
+                  value={rule.conditions?.minAmount || ''}
+                  onChange={(e) => update({ conditions: { ...rule.conditions, minAmount: e.target.value ? parseFloat(e.target.value) : undefined } })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="e.g., 500"
                 />
-                <span className="text-sm text-foreground">Promotional (time-limited)</span>
-              </label>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Max Transaction Amount (HKD)</label>
+                <input
+                  type="number"
+                  value={rule.conditions?.maxAmount || ''}
+                  onChange={(e) => update({ conditions: { ...rule.conditions, maxAmount: e.target.value ? parseFloat(e.target.value) : undefined } })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="e.g., 10000"
+                />
+              </div>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Categories (comma-separated)
-            </label>
-            <input
-              type="text"
-              value={rule.categories?.join(', ') || ''}
-              onChange={(e) =>
-                update({
-                  categories: e.target.value.split(',').map((c) => c.trim()).filter(Boolean),
-                })
-              }
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="e.g., dining, travel or 'all' for everything"
-            />
-          </div>
+          {/* ===== Reward Caps ===== */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Reward Caps</h4>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Specific Merchants (comma-separated, optional)
-            </label>
-            <input
-              type="text"
-              value={rule.specificMerchants?.join(', ') || ''}
-              onChange={(e) =>
-                update({
-                  specificMerchants: e.target.value
-                    ? e.target.value.split(',').map((c) => c.trim()).filter(Boolean)
-                    : undefined,
-                })
-              }
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="e.g., mcdonalds, sushiro"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Valid From (optional)
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1">Max Reward Cap (per month)</label>
               <input
-                type="date"
-                value={rule.validFrom || ''}
-                onChange={(e) => update({ validFrom: e.target.value || undefined })}
+                type="number"
+                value={rule.maxRewardCap || ''}
+                onChange={(e) => update({ maxRewardCap: e.target.value ? parseFloat(e.target.value) : undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., 100"
+              />
+              <p className="text-xs text-foreground-muted mt-1">Maximum reward amount from this rule per month</p>
+            </div>
+          </div>
+
+          {/* ===== Validity Period ===== */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Validity Period</h4>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Valid From</label>
+                <input
+                  type="date"
+                  value={rule.validFrom || ''}
+                  onChange={(e) => update({ validFrom: e.target.value || undefined })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Valid Until</label>
+                <input
+                  type="date"
+                  value={rule.validUntil || ''}
+                  onChange={(e) => update({ validUntil: e.target.value || undefined })}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                />
+              </div>
+            </div>
+
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={rule.isPromotional ?? false}
+                onChange={(e) => update({ isPromotional: e.target.checked })}
+                className="rounded border-border"
+              />
+              <span className="text-sm text-foreground">Promotional (time-limited offer)</span>
+            </label>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Action Required (English)</label>
+              <input
+                type="text"
+                value={rule.actionRequired || ''}
+                onChange={(e) => update({ actionRequired: e.target.value || undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="e.g., Register online, Activate in app"
+              />
+              <p className="text-xs text-foreground-muted mt-1">Action user must take to activate this reward</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Action Required (繁體中文)</label>
+              <input
+                type="text"
+                value={rule.actionRequired_zh || ''}
+                onChange={(e) => update({ actionRequired_zh: e.target.value || undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="例如：網上登記、App 內啟動"
+              />
+              <p className="text-xs text-foreground-muted mt-1">留空則顯示英文 (Falls back to English if empty)</p>
+            </div>
+          </div>
+
+          {/* ===== Source & Notes ===== */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground border-b border-border pb-2">Source & Notes</h4>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Source URL</label>
+              <input
+                type="url"
+                value={rule.sourceUrl || ''}
+                onChange={(e) => update({ sourceUrl: e.target.value || undefined })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="https://..."
               />
             </div>
+
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1">
-                Valid Until (optional)
-              </label>
-              <input
-                type="date"
-                value={rule.validUntil || ''}
-                onChange={(e) => update({ validUntil: e.target.value || undefined })}
+              <label className="block text-sm font-medium text-foreground mb-1">Notes (English)</label>
+              <textarea
+                value={rule.notes || ''}
+                onChange={(e) => update({ notes: e.target.value || undefined })}
+                rows={2}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="Any special conditions or caveats..."
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Notes (繁體中文)</label>
+              <textarea
+                value={rule.notes_zh || ''}
+                onChange={(e) => update({ notes_zh: e.target.value || undefined })}
+                rows={2}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                placeholder="任何特殊條件或注意事項..."
+              />
+              <p className="text-xs text-foreground-muted mt-1">留空則顯示英文 (Falls back to English if empty)</p>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Action Required (English, optional)
-            </label>
-            <input
-              type="text"
-              value={rule.actionRequired || ''}
-              onChange={(e) => update({ actionRequired: e.target.value || undefined })}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="e.g., Register online, Activate in app"
-            />
-            <p className="text-xs text-foreground-muted mt-1">
-              Action user must take to activate this reward
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Action Required (繁體中文, optional)
-            </label>
-            <input
-              type="text"
-              value={rule.actionRequired_zh || ''}
-              onChange={(e) => update({ actionRequired_zh: e.target.value || undefined })}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="例如：網上登記、App 內啟動"
-            />
-            <p className="text-xs text-foreground-muted mt-1">
-              留空則顯示英文 (Falls back to English if empty)
-            </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Source URL (optional)
-            </label>
-            <input
-              type="url"
-              value={rule.sourceUrl || ''}
-              onChange={(e) => update({ sourceUrl: e.target.value || undefined })}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="https://..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Notes (English, optional)
-            </label>
-            <textarea
-              value={rule.notes || ''}
-              onChange={(e) => update({ notes: e.target.value || undefined })}
-              rows={2}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="Any special conditions or caveats..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-1">
-              Notes (繁體中文, optional)
-            </label>
-            <textarea
-              value={rule.notes_zh || ''}
-              onChange={(e) => update({ notes_zh: e.target.value || undefined })}
-              rows={2}
-              className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-              placeholder="任何特殊條件或注意事項..."
-            />
-            <p className="text-xs text-foreground-muted mt-1">
-              留空則顯示英文 (Falls back to English if empty)
-            </p>
-          </div>
         </div>
 
         <div className="p-6 border-t border-border flex justify-end gap-3">

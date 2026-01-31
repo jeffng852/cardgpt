@@ -7,7 +7,7 @@
 
 import type { CreditCard, RewardRule } from '@/types/card';
 import type { Transaction } from '@/types/transaction';
-import type { RewardCalculation, RuleContribution, ContributionType } from '@/types/recommendation';
+import type { RewardCalculation, RuleContribution, ContributionType, SkippedRule, SkipReason } from '@/types/recommendation';
 
 /**
  * Check if a reward rule is currently valid based on temporal fields
@@ -167,6 +167,39 @@ function matchesRule(rule: RewardRule, transaction: Transaction): boolean {
 }
 
 /**
+ * Check why a rule's conditions failed (for tracking skipped rules)
+ * Returns the skip reason if conditions failed, null if conditions passed
+ */
+function getConditionFailureReason(
+  rule: RewardRule,
+  transaction: Transaction
+): { reason: SkipReason; threshold?: number; actualValue?: number } | null {
+  if (!rule.conditions) return null;
+
+  const { conditions } = rule;
+
+  // Check minimum amount - this is the main one we want to surface
+  if (conditions.minAmount && transaction.amount < conditions.minAmount) {
+    return {
+      reason: 'minAmount',
+      threshold: conditions.minAmount,
+      actualValue: transaction.amount,
+    };
+  }
+
+  // Check maximum amount
+  if (conditions.maxAmount && transaction.amount > conditions.maxAmount) {
+    return {
+      reason: 'maxAmount',
+      threshold: conditions.maxAmount,
+      actualValue: transaction.amount,
+    };
+  }
+
+  return null;
+}
+
+/**
  * Calculate reward for a single card and transaction
  *
  * Algorithm:
@@ -187,6 +220,40 @@ export function calculateReward(
     matchesRule(rule, transaction)
   );
 
+  // Track rules that would match by category but failed condition checks (for upgrade hints)
+  const skippedRules: SkippedRule[] = [];
+  for (const rule of card.rewards) {
+    // Skip if rule already matched
+    if (matchingRules.includes(rule)) continue;
+
+    // Check if the rule would have matched by category/merchant (without condition checks)
+    // Only check bonus/specific rules (not base) since those are the "upgrade" opportunities
+    if (rule.priority === 'base') continue;
+
+    // Check if rule is temporally valid
+    if (!isRuleTemporallyValid(rule, transaction.date)) continue;
+
+    // Check if rule matches by category/merchant (the basic match without conditions)
+    const matchesCategoryOrMerchant = rule.categories?.includes('all' as any) ||
+      (transaction.merchantId && rule.specificMerchants?.includes(transaction.merchantId)) ||
+      (transaction.category && rule.categories?.includes(transaction.category as any));
+
+    if (matchesCategoryOrMerchant) {
+      const failureReason = getConditionFailureReason(rule, transaction);
+      if (failureReason && failureReason.reason === 'minAmount') {
+        skippedRules.push({
+          ruleId: rule.id,
+          description: rule.description,
+          description_zh: rule.description_zh,
+          rate: rule.rewardRate,
+          reason: failureReason.reason,
+          threshold: failureReason.threshold,
+          actualValue: failureReason.actualValue,
+        });
+      }
+    }
+  }
+
   if (matchingRules.length === 0) {
     return {
       cardId: card.id,
@@ -196,7 +263,8 @@ export function calculateReward(
       appliedRules: [],
       ruleBreakdown: [],
       fees: calculateFees(card, transaction),
-      cappedOut: false
+      cappedOut: false,
+      skippedRules,
     };
   }
 
@@ -209,24 +277,32 @@ export function calculateReward(
   const appliedRules: string[] = [];
   const ruleBreakdown: RuleContribution[] = [];
 
-  // Helper to create a RuleContribution
+  // Helper to create a RuleContribution with reward cap logic
   const createContribution = (
     rule: RewardRule,
     contributionType: ContributionType
-  ): RuleContribution => ({
-    ruleId: rule.id,
-    rate: rule.rewardRate,
-    amount: transaction.amount * rule.rewardRate,
-    description: rule.description,
-    description_zh: rule.description_zh,
-    priority: rule.priority,
-    isPromotional: rule.isPromotional,
-    validUntil: rule.validUntil,
-    monthlySpendingCap: rule.monthlySpendingCap,
-    actionRequired: rule.actionRequired,
-    actionRequired_zh: rule.actionRequired_zh,
-    contributionType,
-  });
+  ): RuleContribution => {
+    const calculatedAmount = transaction.amount * rule.rewardRate;
+    const wasCapped = rule.maxRewardCap !== undefined && calculatedAmount > rule.maxRewardCap;
+    const cappedAmount = wasCapped ? rule.maxRewardCap! : calculatedAmount;
+
+    return {
+      ruleId: rule.id,
+      rate: rule.rewardRate,
+      amount: cappedAmount,
+      description: rule.description,
+      description_zh: rule.description_zh,
+      priority: rule.priority,
+      isPromotional: rule.isPromotional,
+      validUntil: rule.validUntil,
+      maxRewardCap: rule.maxRewardCap,
+      wasCapped,
+      originalAmount: wasCapped ? calculatedAmount : undefined,
+      actionRequired: rule.actionRequired,
+      actionRequired_zh: rule.actionRequired_zh,
+      contributionType,
+    };
+  };
 
   // Check if any specific rules match - they replace base entirely
   if (specificRules.length > 0) {
@@ -254,26 +330,10 @@ export function calculateReward(
     ruleBreakdown.push(createContribution(bonus, 'stacked'));
   }
 
-  // 4. Handle monthly spending caps
-  let cappedOut = false;
-  let effectiveRate = totalRate;
-
-  // Check if any applied rule has a monthly spending cap
-  for (const ruleId of appliedRules) {
-    const rule = matchingRules.find(r => r.id === ruleId);
-    if (rule?.monthlySpendingCap && options?.monthlySpending !== undefined) {
-      if (options.monthlySpending >= rule.monthlySpendingCap) {
-        // Cap reached, use fallback rate if available
-        if (rule.fallbackRate !== undefined) {
-          effectiveRate = rule.fallbackRate;
-          cappedOut = true;
-        }
-      }
-    }
-  }
-
-  // 5. Calculate final reward amount
-  const rewardAmount = transaction.amount * effectiveRate;
+  // 4. Calculate final reward amount from capped rule contributions
+  const rewardAmount = ruleBreakdown.reduce((sum, contrib) => sum + contrib.amount, 0);
+  const cappedOut = ruleBreakdown.some(contrib => contrib.wasCapped);
+  const effectiveRate = totalRate; // Keep for reference
   const rewardUnit = matchingRules[0].rewardUnit; // All matching rules should have same unit
 
   // 6. Calculate fees
@@ -287,7 +347,8 @@ export function calculateReward(
     appliedRules,
     ruleBreakdown,
     fees,
-    cappedOut
+    cappedOut,
+    skippedRules,
   };
 }
 

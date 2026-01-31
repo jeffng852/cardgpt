@@ -373,8 +373,8 @@ function RulePreview({
         <FieldRow label="Promotional" value={ruleData.isPromotional ? 'Yes' : 'No'} />
         {ruleData.validFrom && <FieldRow label="Valid From" value={ruleData.validFrom} />}
         {ruleData.validUntil && <FieldRow label="Valid Until" value={ruleData.validUntil} />}
-        {ruleData.monthlySpendingCap && (
-          <FieldRow label="Monthly Cap" value={`HKD ${ruleData.monthlySpendingCap}`} />
+        {ruleData.maxRewardCap && (
+          <FieldRow label="Max Reward Cap" value={`HKD ${ruleData.maxRewardCap}`} />
         )}
       </div>
     </section>
