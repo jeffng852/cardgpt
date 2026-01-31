@@ -4,19 +4,19 @@
  * This module provides read/write access to card data stored in Vercel Blob.
  * Used in production where the filesystem is read-only.
  *
+ * Strategy: Use addRandomSuffix to create unique URLs per write.
+ * This bypasses CDN caching issues because each write goes to a fresh URL.
+ *
  * Setup:
  * 1. Create a Vercel Blob store in your Vercel dashboard
  * 2. Add BLOB_READ_WRITE_TOKEN to your environment variables
  * 3. Run the init script to upload initial cards.json to blob
  */
 
-import { put, list, del, head } from '@vercel/blob';
+import { put, list, del } from '@vercel/blob';
 import type { CardDatabase } from './cardRepository';
 
-const CARDS_BLOB_NAME = 'cards.json';
-
-// Module-level cache for the last known blob URL (helps with consistency)
-let lastKnownBlobUrl: string | null = null;
+const CARDS_BLOB_PREFIX = 'cards';
 
 /**
  * Check if we're in a Vercel production environment
@@ -34,42 +34,33 @@ export function isBlobConfigured(): boolean {
 }
 
 /**
- * Get the URL of the cards blob if it exists
- * Uses cached URL first, then falls back to list()
+ * Find the most recent cards blob by uploadedAt timestamp
  */
-async function getCardsBlobUrl(): Promise<string | null> {
-  // Try cached URL first (faster and more consistent)
-  if (lastKnownBlobUrl) {
-    try {
-      const headResult = await head(lastKnownBlobUrl);
-      if (headResult) {
-        console.log(`[Blob] Using cached URL: ${lastKnownBlobUrl}`);
-        return lastKnownBlobUrl;
-      }
-    } catch {
-      console.log('[Blob] Cached URL no longer valid, falling back to list()');
-      lastKnownBlobUrl = null;
-    }
-  }
-
+async function getLatestCardsBlobUrl(): Promise<string | null> {
   try {
-    // List ALL blobs (prefix filter appears unreliable)
     const { blobs } = await list();
 
-    console.log(`[Blob] Listed ${blobs.length} total blobs`);
+    // Filter to cards blobs only (pathname starts with 'cards')
+    const cardsBlobs = blobs.filter(b =>
+      b.pathname.startsWith(CARDS_BLOB_PREFIX) && b.pathname.endsWith('.json')
+    );
 
-    // Find by exact pathname match
-    const cardsBlob = blobs.find(b => b.pathname === CARDS_BLOB_NAME);
+    console.log(`[Blob] Found ${cardsBlobs.length} cards blobs`);
 
-    if (!cardsBlob) {
-      console.log(`[Blob] No blob found with pathname "${CARDS_BLOB_NAME}"`);
+    if (cardsBlobs.length === 0) {
+      console.log('[Blob] No cards blobs found');
       return null;
     }
 
-    // Cache the URL for future use
-    lastKnownBlobUrl = cardsBlob.url;
-    console.log(`[Blob] Found cards blob - URL: ${cardsBlob.url}`);
-    return cardsBlob.url;
+    // Sort by uploadedAt descending to get the most recent
+    cardsBlobs.sort((a, b) =>
+      new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
+    );
+
+    const latestBlob = cardsBlobs[0];
+    console.log(`[Blob] Latest blob: ${latestBlob.pathname} (uploaded: ${latestBlob.uploadedAt})`);
+
+    return latestBlob.url;
   } catch (error) {
     console.error('[Blob] Failed to list blobs:', error);
     return null;
@@ -81,11 +72,9 @@ async function getCardsBlobUrl(): Promise<string | null> {
  */
 async function fetchBlobData(blobUrl: string): Promise<CardDatabase | null> {
   try {
-    // Add cache-busting query param to bypass CDN caching
-    const cacheBustUrl = `${blobUrl}?t=${Date.now()}&r=${Math.random()}`;
     console.log(`[Blob] Fetching blob data from: ${blobUrl}`);
 
-    const response = await fetch(cacheBustUrl, {
+    const response = await fetch(blobUrl, {
       cache: 'no-store',
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -108,12 +97,13 @@ async function fetchBlobData(blobUrl: string): Promise<CardDatabase | null> {
 
 /**
  * Read cards data from Vercel Blob storage
+ * Finds the most recently uploaded cards blob
  */
 export async function readCardsFromBlob(): Promise<CardDatabase | null> {
   try {
     console.log('[Blob] Attempting to read cards from blob storage...');
 
-    const blobUrl = await getCardsBlobUrl();
+    const blobUrl = await getLatestCardsBlobUrl();
 
     if (!blobUrl) {
       console.log('[Blob] Cards blob not found, will use local file');
@@ -133,7 +123,8 @@ export async function readCardsFromBlob(): Promise<CardDatabase | null> {
 
 /**
  * Write cards data to Vercel Blob storage
- * Returns the written data for immediate use (avoids read-after-write consistency issues)
+ * Creates a new blob with unique URL each time to bypass CDN caching
+ * Returns the written data for immediate use
  */
 export async function writeCardsToBlob(database: CardDatabase): Promise<{ success: boolean; data?: CardDatabase; url?: string }> {
   try {
@@ -148,30 +139,42 @@ export async function writeCardsToBlob(database: CardDatabase): Promise<{ succes
 
     const content = JSON.stringify(database, null, 2);
 
-    console.log(`[Blob] Writing blob with timestamp: ${writeTimestamp}`);
+    console.log(`[Blob] Writing new blob with timestamp: ${writeTimestamp}`);
 
-    // Upload new content (overwrites existing blob with same pathname)
-    // Set cacheControlMaxAge to 0 to prevent CDN caching of stale data
-    const result = await put(CARDS_BLOB_NAME, content, {
+    // Create new blob with random suffix - creates unique URL each time
+    // This bypasses CDN caching because each write goes to a fresh URL
+    const result = await put(`${CARDS_BLOB_PREFIX}.json`, content, {
       access: 'public',
       contentType: 'application/json',
-      addRandomSuffix: false,
-      allowOverwrite: true,
-      cacheControlMaxAge: 0,
+      addRandomSuffix: true,
     });
 
     console.log(`[Blob] Blob written successfully - URL: ${result.url}`);
 
-    // Update cached URL immediately
-    lastKnownBlobUrl = result.url;
+    // Clean up old blobs (keep only the one we just created)
+    try {
+      const { blobs } = await list();
+      const oldBlobs = blobs.filter(b =>
+        b.pathname.startsWith(CARDS_BLOB_PREFIX) &&
+        b.pathname.endsWith('.json') &&
+        b.url !== result.url
+      );
 
-    // Trust the put() operation - if it succeeded without throwing, the data is written.
-    // CDN caching can cause immediate read-back to return stale data, so we return
-    // the data we wrote (which we have in memory) rather than verifying via fetch.
-    console.log(`[Blob] Write complete - returning written data with timestamp: ${writeTimestamp}`);
+      if (oldBlobs.length > 0) {
+        console.log(`[Blob] Cleaning up ${oldBlobs.length} old blob(s)`);
+        for (const oldBlob of oldBlobs) {
+          await del(oldBlob.url);
+          console.log(`[Blob] Deleted old blob: ${oldBlob.pathname}`);
+        }
+      }
+    } catch (cleanupError) {
+      console.warn('[Blob] Failed to clean up old blobs:', cleanupError);
+      // Don't fail the write operation if cleanup fails
+    }
 
     // Return the database we wrote (deep clone to avoid mutation issues)
     const writtenData: CardDatabase = JSON.parse(content);
+    console.log(`[Blob] Write complete - returning written data with timestamp: ${writeTimestamp}`);
 
     return { success: true, data: writtenData, url: result.url };
   } catch (error) {
@@ -193,16 +196,17 @@ export async function initializeBlobFromLocal(localData: CardDatabase): Promise<
 /**
  * List all blobs in the store (for debugging)
  */
-export async function listAllBlobs(): Promise<{ pathname: string; url: string; size: number }[]> {
+export async function listAllBlobs(): Promise<{ pathname: string; url: string; size: number; uploadedAt: Date }[]> {
   try {
     const { blobs } = await list();
     return blobs.map(b => ({
       pathname: b.pathname,
       url: b.url,
       size: b.size,
+      uploadedAt: b.uploadedAt,
     }));
   } catch (error) {
-    console.error('[Blob] Failed to list all blobs:', error);
+    console.error('[Blob] Failed to list blobs:', error);
     return [];
   }
 }
