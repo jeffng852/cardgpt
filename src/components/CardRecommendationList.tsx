@@ -35,7 +35,7 @@ export default function CardRecommendationList({
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-8">
+      <div className="w-full max-w-2xl mx-auto mt-8">
         <div className="relative">
           {/* Blue glow effect */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
@@ -55,7 +55,7 @@ export default function CardRecommendationList({
 
   if (!recommendations || recommendations.length === 0) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-8">
+      <div className="w-full max-w-2xl mx-auto mt-8">
         <div className="relative">
           {/* Blue glow effect */}
           <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
@@ -136,7 +136,7 @@ export default function CardRecommendationList({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto mt-8">
+    <div className="w-full max-w-2xl mx-auto mt-8">
       {/* Main Container with Glass-morphism */}
       <div className="relative">
         {/* Blue glow effect - adjacent to primary teal */}
