@@ -80,9 +80,15 @@ export async function readCardsFromBlob(): Promise<CardDatabase | null> {
       return null;
     }
 
-    console.log('[Blob] Fetching blob data...');
-    const response = await fetch(blobUrl, {
+    // Add cache-busting query param to bypass CDN caching
+    const cacheBustUrl = `${blobUrl}?t=${Date.now()}`;
+    console.log(`[Blob] Fetching blob data from: ${cacheBustUrl}`);
+    const response = await fetch(cacheBustUrl, {
       cache: 'no-store', // Always get fresh data
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+      },
     });
 
     if (!response.ok) {
