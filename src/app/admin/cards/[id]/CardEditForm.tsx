@@ -198,7 +198,16 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
         return;
       }
 
+      // Update local state with the saved card data
+      if (data.card) {
+        setCard(data.card);
+      }
+
       setSuccess('Card saved successfully!');
+
+      // Refresh the router cache to ensure fresh data on navigation
+      router.refresh();
+
       if (isNew && data.card?.id) {
         router.push(`/admin/cards/${data.card.id}`);
       }
