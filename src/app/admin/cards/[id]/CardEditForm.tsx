@@ -1195,6 +1195,51 @@ function RuleEditor({
             />
           </div>
 
+          {/* Conditions Section */}
+          <div className="border-t border-border pt-4 mt-4">
+            <h4 className="text-sm font-semibold text-foreground mb-3">Conditions (optional)</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Min Transaction Amount (HKD)
+                </label>
+                <input
+                  type="number"
+                  value={rule.conditions?.minAmount || ''}
+                  onChange={(e) =>
+                    update({
+                      conditions: {
+                        ...rule.conditions,
+                        minAmount: e.target.value ? parseFloat(e.target.value) : undefined,
+                      },
+                    })
+                  }
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="e.g., 500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Max Reward Cap (per month)
+                </label>
+                <input
+                  type="number"
+                  value={rule.maxRewardCap || ''}
+                  onChange={(e) =>
+                    update({
+                      maxRewardCap: e.target.value ? parseFloat(e.target.value) : undefined,
+                    })
+                  }
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="e.g., 100"
+                />
+                <p className="text-xs text-foreground-muted mt-1">
+                  Max reward amount from this rule per month
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">
