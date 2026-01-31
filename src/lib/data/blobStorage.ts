@@ -35,30 +35,23 @@ export function isBlobConfigured(): boolean {
  */
 async function getCardsBlobUrl(): Promise<string | null> {
   try {
-    const { blobs } = await list({ prefix: CARDS_BLOB_NAME });
+    // List ALL blobs (prefix filter appears unreliable)
+    const { blobs } = await list();
 
     // Debug: log what blobs we found
-    console.log(`[Blob] Listed ${blobs.length} blobs with prefix "${CARDS_BLOB_NAME}":`,
+    console.log(`[Blob] Listed ${blobs.length} total blobs:`,
       blobs.map(b => ({ pathname: b.pathname, url: b.url.substring(0, 50) + '...' }))
     );
 
-    // Try exact match first
-    let cardsBlob = blobs.find(b => b.pathname === CARDS_BLOB_NAME);
-
-    // If not found, try matching just the filename (in case there's a folder prefix)
-    if (!cardsBlob) {
-      cardsBlob = blobs.find(b => b.pathname.endsWith(CARDS_BLOB_NAME));
-      if (cardsBlob) {
-        console.log(`[Blob] Found blob with pathname "${cardsBlob.pathname}" (partial match)`);
-      }
-    }
+    // Find by exact pathname match
+    const cardsBlob = blobs.find(b => b.pathname === CARDS_BLOB_NAME);
 
     if (!cardsBlob) {
-      console.log(`[Blob] No blob found matching "${CARDS_BLOB_NAME}"`);
+      console.log(`[Blob] No blob found with pathname "${CARDS_BLOB_NAME}"`);
       return null;
     }
 
-    console.log(`[Blob] Using blob URL: ${cardsBlob.url}`);
+    console.log(`[Blob] Found cards blob - URL: ${cardsBlob.url}`);
     return cardsBlob.url;
   } catch (error) {
     console.error('[Blob] Failed to list blobs:', error);
