@@ -35,6 +35,9 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiState, setAIState] = useState<AIParseState>({ isLoading: false });
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isCategoryExpanded, setIsCategoryExpanded] = useState(true);
+  const [isMerchantsExpanded, setIsMerchantsExpanded] = useState(false);
+  const [showCategoryError, setShowCategoryError] = useState(false);
 
   const MAX_INPUT_LENGTH = 80;
 
@@ -188,6 +191,15 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
     if (!input.trim()) return;
 
+    // Check if category is selected (mandatory)
+    const hasCategory = selectedCategory || (parseResult?.transaction?.category);
+    if (!hasCategory) {
+      setShowCategoryError(true);
+      setIsCategoryExpanded(true); // Expand category section to show options
+      return;
+    }
+    setShowCategoryError(false);
+
     setIsProcessing(true);
     setAIState({ isLoading: false });
 
@@ -209,46 +221,10 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
         };
       }
 
-      // If no category detected and we have an amount, try AI parsing
-      if (!result.transaction.category && result.confidence.amount > 0) {
-        setAIState({ isLoading: true });
-
-        const aiResult = await parseActivityWithAI(input);
-
-        if (aiResult.error) {
-          setAIState({
-            isLoading: false,
-            error: aiResult.error,
-            rateLimitSeconds: aiResult.rateLimitSeconds,
-          });
-          setIsProcessing(false);
-          return;
-        }
-
-        if (aiResult.category) {
-          // Update the result with AI-detected category
-          result = {
-            ...result,
-            transaction: {
-              ...result.transaction,
-              category: aiResult.category,
-            },
-            confidence: {
-              ...result.confidence,
-              category: 0.7, // AI-detected category has medium-high confidence
-            },
-          };
-          setAIState({
-            isLoading: false,
-            detectedCategory: aiResult.category,
-          });
-        }
-      }
-
       await onSubmit(result, selectedRewardType);
     } catch (error) {
       console.error('Parse error:', error);
-      setAIState({ isLoading: false, error: 'Something went wrong. Please try again.' });
+      setAIState({ isLoading: false, error: t('moreContextNeeded') });
     } finally {
       setIsProcessing(false);
     }
@@ -282,55 +258,105 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
         </div>
       </div>
 
-      {/* Category Selector */}
+      {/* Category Selector - Collapsible */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-text-secondary mb-3">
-          {t('categoryLabel')}
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {(Object.keys(TRANSACTION_CATEGORIES) as TransactionCategory[]).map((cat) => {
-            const catInfo = TRANSACTION_CATEGORIES[cat];
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelectedCategory(selectedCategory === cat ? undefined : cat)}
-                className={`px-3 py-2 rounded-lg border text-sm transition-all ${
-                  selectedCategory === cat
-                    ? 'bg-accent-purple/10 border-accent-purple text-accent-purple'
-                    : 'bg-input-bg border-border text-text-primary hover:border-accent-purple/50 hover:bg-accent-purple/5'
-                }`}
-              >
-                <span className="mr-1">{catInfo.icon}</span>
-                {tCategories(cat)}
-              </button>
-            );
-          })}
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsCategoryExpanded(!isCategoryExpanded)}
+          className="w-full flex items-center justify-between text-sm font-medium text-text-secondary mb-3 hover:text-text-primary transition-colors"
+        >
+          <span className="flex items-center gap-2">
+            {t('categoryLabel')}
+            <span className="text-red-500">*</span>
+            {selectedCategory && (
+              <span className="px-2 py-0.5 rounded-full bg-accent-purple/10 text-accent-purple text-xs">
+                {tCategories(selectedCategory)}
+              </span>
+            )}
+          </span>
+          <svg
+            className={`w-4 h-4 transition-transform ${isCategoryExpanded ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {showCategoryError && !selectedCategory && (
+          <p className="text-xs text-red-500 mb-2">{t('categoryRequired')}</p>
+        )}
+        {isCategoryExpanded && (
+          <div className="flex flex-wrap gap-2">
+            {(Object.keys(TRANSACTION_CATEGORIES) as TransactionCategory[]).map((cat) => {
+              const catInfo = TRANSACTION_CATEGORIES[cat];
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory(selectedCategory === cat ? undefined : cat);
+                    setShowCategoryError(false);
+                  }}
+                  className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+                    selectedCategory === cat
+                      ? 'bg-accent-purple/10 border-accent-purple text-accent-purple'
+                      : 'bg-input-bg border-border text-text-primary hover:border-accent-purple/50 hover:bg-accent-purple/5'
+                  }`}
+                >
+                  <span className="mr-1">{catInfo.icon}</span>
+                  {tCategories(cat)}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      {/* Quick Tags */}
+      {/* Quick Tags - Collapsible */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-text-secondary mb-3">
-          {t('quickTagsLabel')}
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {quickTags.map((tag) => (
-            <button
-              key={tag.key}
-              type="button"
-              onClick={() => handleQuickTag(tag.label)}
-              className={`px-3 py-2 rounded-lg border text-sm transition-all ${
-                selectedMerchantTag === tag.label
-                  ? 'bg-primary/10 border-primary text-primary'
-                  : 'bg-input-bg border-border text-text-primary hover:border-primary/50 hover:bg-primary/5'
-              }`}
-            >
-              <span className="mr-1">{tag.icon}</span>
-              {tag.label}
-            </button>
-          ))}
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsMerchantsExpanded(!isMerchantsExpanded)}
+          className="w-full flex items-center justify-between text-sm font-medium text-text-secondary mb-3 hover:text-text-primary transition-colors"
+        >
+          <span className="flex items-center gap-2">
+            {t('quickTagsLabel')}
+            <span className="text-text-tertiary text-xs">({t('optional')})</span>
+            {selectedMerchantTag && (
+              <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs">
+                {selectedMerchantTag}
+              </span>
+            )}
+          </span>
+          <svg
+            className={`w-4 h-4 transition-transform ${isMerchantsExpanded ? 'rotate-180' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        {isMerchantsExpanded && (
+          <div className="flex flex-wrap gap-2">
+            {quickTags.map((tag) => (
+              <button
+                key={tag.key}
+                type="button"
+                onClick={() => handleQuickTag(tag.label)}
+                className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+                  selectedMerchantTag === tag.label
+                    ? 'bg-primary/10 border-primary text-primary'
+                    : 'bg-input-bg border-border text-text-primary hover:border-primary/50 hover:bg-primary/5'
+                }`}
+              >
+                <span className="mr-1">{tag.icon}</span>
+                {tag.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Main Input Form */}
