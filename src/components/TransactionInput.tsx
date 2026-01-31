@@ -97,7 +97,7 @@ function Dropdown<T extends string>({ label, value, options, onChange, required,
               <button
                 type="button"
                 onClick={() => { onChange(undefined); setIsOpen(false); }}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-text-tertiary hover:bg-white/10 transition-colors"
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-white/10 transition-colors"
               >
                 Clear selection
               </button>
@@ -110,8 +110,8 @@ function Dropdown<T extends string>({ label, value, options, onChange, required,
                 className={`
                   w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors
                   ${value === option.key
-                    ? 'bg-primary/20 text-primary'
-                    : 'text-text-primary hover:bg-white/10'
+                    ? 'bg-primary/25 text-primary'
+                    : 'text-gray-100 hover:bg-white/10'
                   }
                 `}
               >
