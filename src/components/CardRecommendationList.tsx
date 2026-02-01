@@ -263,9 +263,7 @@ export default function CardRecommendationList({
                         {card.name}
                       </h4>
                       {isTopRecommended && (
-                        <span className="px-2 py-0.5 bg-gradient-to-r from-primary/20 to-primary/10 text-primary text-[10px] sm:text-xs font-semibold rounded-full whitespace-nowrap">
-                          {t('recommended')}
-                        </span>
+                        <span className="text-base" title={t('recommended')}>🌟</span>
                       )}
                     </div>
                     <p className="text-xs sm:text-sm text-text-secondary mb-2">
