@@ -413,7 +413,7 @@ export function formatReward(calculation: RewardCalculation, card?: CreditCard):
 
   switch (rewardUnit) {
     case 'cash':
-      return `$${rewardAmount.toFixed(2)}`;
+      return `$${Math.round(rewardAmount)}`;
     case 'miles':
     case 'points': {
       const programName = getRewardUnitName(rewardUnit, card);

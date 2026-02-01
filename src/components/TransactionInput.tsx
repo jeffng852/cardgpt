@@ -270,6 +270,15 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     }
   }, [selectedCategory, input]);
 
+  // Auto-sync category dropdown when parser detects category with high confidence
+  useEffect(() => {
+    if (parseResult?.transaction.category &&
+        !selectedCategory &&
+        parseResult.confidence.category >= 0.8) {
+      setSelectedCategory(parseResult.transaction.category as TransactionCategory);
+    }
+  }, [parseResult?.transaction.category, parseResult?.confidence.category, selectedCategory]);
+
   // Update input when merchant is selected - replace previous merchant instead of appending
   useEffect(() => {
     if (selectedMerchant) {

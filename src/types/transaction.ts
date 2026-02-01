@@ -39,7 +39,7 @@ export const TRANSACTION_CATEGORIES: Record<TransactionCategory, { label: string
   financial: { label: 'Financial Services', label_zh: '金融服務/保險', icon: '🏦' },
   government: { label: 'Government', label_zh: '政府', icon: '🏛️' },
   'digital-wallet': { label: 'Digital Wallet', label_zh: '電子錢包', icon: '📱' },
-  clothing: { label: 'Clothing', label_zh: '衣著', icon: '👕' },
+  clothing: { label: 'Clothing', label_zh: '時裝', icon: '👕' },
   others: { label: 'Others', label_zh: '其他', icon: '📦' },
 };
 

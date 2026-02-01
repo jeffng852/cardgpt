@@ -33,7 +33,6 @@ export const CATEGORY_MERCHANTS: Record<TransactionCategory, MerchantInfo[]> = {
     { id: 'openrice', label: 'OpenRice' },
     { id: 'pacific-coffee', label: 'Pacific Coffee' },
     { id: 'starbucks', label: 'Starbucks' },
-    { id: 'sushiro', label: 'Sushiro' },
   ],
   'online': [
     { id: 'amazon', label: 'Amazon' },
@@ -81,8 +80,6 @@ export const CATEGORY_MERCHANTS: Record<TransactionCategory, MerchantInfo[]> = {
     { id: 'wechat-pay', label: 'WeChat Pay' },
   ],
   'clothing': [
-    { id: 'adidas', label: 'Adidas' },
-    { id: 'decathlon', label: 'Decathlon' },
     { id: 'gap', label: 'Gap' },
     { id: 'giordano', label: 'Giordano' },
     { id: 'h-m', label: 'H&M' },

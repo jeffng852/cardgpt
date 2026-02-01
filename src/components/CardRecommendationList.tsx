@@ -129,10 +129,26 @@ export default function CardRecommendationList({
   // Format amount based on reward unit, using program name when available
   const formatAmount = (amount: number, unit: string, card?: CreditCard) => {
     if (unit === 'cash') {
-      return `$${amount.toFixed(2)}`;
+      return `$${Math.round(amount)}`;
     }
     const unitName = getRewardUnitName(unit, card);
     return `${Math.round(amount)} ${unitName}`;
+  };
+
+  // Format rate display - different format for miles vs cash/points
+  const formatRateDisplay = (rate: number, rewardUnit: string) => {
+    if (rewardUnit === 'miles') {
+      // Convert rate to HK$ = miles format
+      // e.g., rate 0.04 means 4% which is $1 = 4 miles (actually HK$25 = 1 mile)
+      const milesPerDollar = rate * 100;
+      if (milesPerDollar >= 1) {
+        return `HK$1 = ${milesPerDollar % 1 === 0 ? milesPerDollar.toFixed(0) : milesPerDollar.toFixed(1)} miles`;
+      } else {
+        const dollarsPerMile = Math.round(1 / milesPerDollar);
+        return `HK$${dollarsPerMile} = 1 mile`;
+      }
+    }
+    return formatRate(rate);
   };
 
   return (
@@ -268,7 +284,7 @@ export default function CardRecommendationList({
                           key={idx}
                           className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-transform duration-200 hover:scale-105 ${getTagStyle(contribution)}`}
                         >
-                          {getTagLabel(contribution)} {formatRate(contribution.rate)}
+                          {getTagLabel(contribution)} {formatRateDisplay(contribution.rate, calculation.rewardUnit)}
                         </span>
                       ))}
                     </div>
@@ -483,7 +499,7 @@ export default function CardRecommendationList({
 
                   {/* Fees Section - Stacked on mobile */}
                   <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
-                    <span className="font-medium">{t('breakdown.fees')}:</span>
+                    <span className="font-medium">{t('breakdown.fees')}</span>
                     <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-wrap">
                       <span>
                         {t('annualFee')}: {' '}

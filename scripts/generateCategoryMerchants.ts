@@ -218,9 +218,23 @@ function main() {
     others: ['watsons', 'mannings', 'ikea'],
   };
 
+  // Track globally assigned merchants to prevent duplicates across categories
+  const globallyAssigned = new Set<string>();
+
+  // First pass: collect all merchants from cards.json (they get priority)
+  for (const merchantSet of Object.values(categoryMerchants)) {
+    for (const merchant of merchantSet) {
+      globallyAssigned.add(merchant);
+    }
+  }
+
+  // Second pass: add popular merchants only if not already assigned
   for (const [category, merchants] of Object.entries(popularByCategory)) {
     for (const merchant of merchants) {
-      categoryMerchants[category].add(merchant);
+      if (!globallyAssigned.has(merchant)) {
+        categoryMerchants[category].add(merchant);
+        globallyAssigned.add(merchant);
+      }
     }
   }
 
