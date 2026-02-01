@@ -138,15 +138,10 @@ export default function CardRecommendationList({
   // Format rate display - different format for miles vs cash/points
   const formatRateDisplay = (rate: number, rewardUnit: string) => {
     if (rewardUnit === 'miles') {
-      // Convert rate to HK$ = miles format
-      // e.g., rate 0.04 means 4% which is $1 = 4 miles (actually HK$25 = 1 mile)
-      const milesPerDollar = rate * 100;
-      if (milesPerDollar >= 1) {
-        return `HK$1 = ${milesPerDollar % 1 === 0 ? milesPerDollar.toFixed(0) : milesPerDollar.toFixed(1)} miles`;
-      } else {
-        const dollarsPerMile = Math.round(1 / milesPerDollar);
-        return `HK$${dollarsPerMile} = 1 mile`;
-      }
+      // Always use "HK$X = 1 mile" format to match rule descriptions
+      // rate 0.20 means 0.2 miles per dollar = HK$5 = 1 mile
+      const dollarsPerMile = Math.round(1 / rate);
+      return `HK$${dollarsPerMile} = 1 mile`;
     }
     return formatRate(rate);
   };
@@ -418,7 +413,7 @@ export default function CardRecommendationList({
                             {/* Rate & Amount - Vertical on mobile */}
                             <div className="flex flex-col sm:flex-row items-end sm:items-center gap-0.5 sm:gap-3 flex-shrink-0">
                               <span className="text-[10px] sm:text-xs font-medium text-text-tertiary tabular-nums">
-                                {formatRate(contribution.rate)}
+                                {formatRateDisplay(contribution.rate, calculation.rewardUnit)}
                               </span>
                               <span className="text-xs sm:text-sm font-bold text-primary tabular-nums">
                                 {formatAmount(contribution.amount, calculation.rewardUnit, card)}
@@ -432,7 +427,7 @@ export default function CardRecommendationList({
                           <span className="text-xs sm:text-sm font-semibold text-text-primary">{t('breakdown.total')}</span>
                           <div className="flex items-center gap-2 sm:gap-3">
                             <span className="text-xs sm:text-sm font-semibold text-text-primary tabular-nums">
-                              {formatRate(calculation.effectiveRate)}
+                              {formatRateDisplay(calculation.effectiveRate, calculation.rewardUnit)}
                             </span>
                             <span className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent tabular-nums">
                               {formatReward(calculation, card)}
