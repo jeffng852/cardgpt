@@ -22,6 +22,7 @@ export type TransactionCategory =
   | 'financial'           // Insurance, loan payments (AIA, Prudential)
   | 'government'          // Tax, fines, license fees
   | 'digital-wallet'      // Octopus, PayMe, AlipayHK
+  | 'clothing'            // Apparel, fashion: UNIQLO, Zara, H&M
   | 'others';             // Everything else
 
 /**
@@ -38,6 +39,7 @@ export const TRANSACTION_CATEGORIES: Record<TransactionCategory, { label: string
   financial: { label: 'Financial Services', label_zh: '金融服務/保險', icon: '🏦' },
   government: { label: 'Government', label_zh: '政府', icon: '🏛️' },
   'digital-wallet': { label: 'Digital Wallet', label_zh: '電子錢包', icon: '📱' },
+  clothing: { label: 'Clothing', label_zh: '衣著', icon: '👕' },
   others: { label: 'Others', label_zh: '其他', icon: '📦' },
 };
 

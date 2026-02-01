@@ -84,6 +84,11 @@ const CATEGORY_KEYWORDS: Record<string, { en: string[]; zh: string[] }> = {
     en: ['octopus', 'payme', 'alipay', 'wechat pay', 'fps', 'tap and go', 'digital wallet', 'e-wallet', 'mobile payment'],
     zh: ['八達通', '增值', '轉數快', '電子錢包', '支付寶', '微信支付'],
   },
+  // Clothing
+  clothing: {
+    en: ['clothing', 'apparel', 'clothes', 'fashion', 'shirt', 'pants', 'dress', 'shoes', 'jacket', 'coat', 'boutique', 'sportswear', 'sneakers', 'jeans'],
+    zh: ['衣服', '衣著', '服裝', '時裝', '買衫', '購衣', '鞋', '外套'],
+  },
 };
 
 /**
@@ -170,6 +175,27 @@ const MERCHANT_KEYWORDS: Record<string, { aliases: string[]; category: string }>
   'alipay-hk': { aliases: ['alipay hk', 'alipayhk', '支付寶香港'], category: 'digital-wallet' },
   'wechat-pay': { aliases: ['wechat pay', 'wechatpay', '微信支付'], category: 'digital-wallet' },
   'tap-go': { aliases: ['tap & go', 'tap and go', 'tapngo', '拍住賞'], category: 'digital-wallet' },
+
+  // === CLOTHING ===
+  'uniqlo': { aliases: ['uniqlo', '優衣庫'], category: 'clothing' },
+  'zara': { aliases: ['zara'], category: 'clothing' },
+  'h-m': { aliases: ['h&m', 'h and m', 'hm', 'h & m'], category: 'clothing' },
+  'adidas': { aliases: ['adidas', '愛迪達'], category: 'clothing' },
+  'nike': { aliases: ['nike', '耐克'], category: 'clothing' },
+  'decathlon': { aliases: ['decathlon', '迪卡儂'], category: 'clothing' },
+  'puma': { aliases: ['puma'], category: 'clothing' },
+  'giordano': { aliases: ['giordano', '佐丹奴'], category: 'clothing' },
+  'bossini': { aliases: ['bossini', '堡獅龍'], category: 'clothing' },
+  'i-t': { aliases: ['i.t', 'i.t.', 'izzue', 'it'], category: 'clothing' },
+  'cotton-on': { aliases: ['cotton on', 'cotton:on'], category: 'clothing' },
+  'gap': { aliases: ['gap'], category: 'clothing' },
+  'levis': { aliases: ["levi's", 'levis', "levi"], category: 'clothing' },
+  'new-balance': { aliases: ['new balance', 'nb'], category: 'clothing' },
+  'under-armour': { aliases: ['under armour', 'ua'], category: 'clothing' },
+
+  // === GROCERIES (Additional - user specified) ===
+  'muji': { aliases: ['muji', '無印良品', '無印'], category: 'groceries' },
+  'marks-spencer': { aliases: ['marks & spencer', 'm&s', 'marks and spencer', 'marks spencer'], category: 'groceries' },
 
   // === OTHERS (RETAIL) ===
   'watsons': { aliases: ['watsons', 'watson', '屈臣氏'], category: 'others' },

@@ -46,7 +46,7 @@ const emptyRule: Partial<RewardRule> = {
   categories: ['all'],
 };
 
-// Admin category options - 11 simplified categories plus 'all'
+// Admin category options - 12 simplified categories plus 'all'
 const ADMIN_CATEGORIES = [
   { value: 'all', label: 'All Categories' },
   { value: 'groceries', label: 'Groceries / Supermarket' },
@@ -59,6 +59,7 @@ const ADMIN_CATEGORIES = [
   { value: 'financial', label: 'Financial Services' },
   { value: 'government', label: 'Government' },
   { value: 'digital-wallet', label: 'Digital Wallet' },
+  { value: 'clothing', label: 'Clothing' },
   { value: 'others', label: 'Others' },
 ] as const;
 

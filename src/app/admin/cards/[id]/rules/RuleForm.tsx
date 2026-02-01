@@ -10,7 +10,7 @@ interface RuleFormProps {
   ruleIndex: number | null; // null = new rule
 }
 
-// 11 simplified categories matching TransactionCategory type
+// 12 simplified categories matching TransactionCategory type
 const CATEGORIES = [
   { value: 'groceries', label: 'Groceries / Supermarket' },
   { value: 'dining', label: 'Dining' },
@@ -22,6 +22,7 @@ const CATEGORIES = [
   { value: 'financial', label: 'Financial Services' },
   { value: 'government', label: 'Government' },
   { value: 'digital-wallet', label: 'Digital Wallet' },
+  { value: 'clothing', label: 'Clothing' },
   { value: 'others', label: 'Others' },
 ] as const;
 

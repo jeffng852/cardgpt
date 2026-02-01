@@ -52,6 +52,9 @@ const CATEGORY_MAPPING: Record<string, string> = {
   'tax': 'government',
   'digital-wallet': 'digital-wallet',
   'ewallet': 'digital-wallet',
+  'clothing': 'clothing',
+  'apparel': 'clothing',
+  'fashion': 'clothing',
   'retail': 'others',
   'entertainment': 'others',
   'all': 'others', // General merchants go to 'others'
@@ -96,13 +99,26 @@ const MERCHANT_DISPLAY_NAMES: Record<string, string> = {
   // Retail
   'watsons': 'Watsons',
   'mannings': 'Mannings',
-  'decathlon': 'Decathlon',
   'ikea': 'IKEA',
-  'muji': 'MUJI',
+  'muji': 'MUJI',  // User: categorize as groceries
+  'marks-spencer': 'Marks & Spencer',  // User: categorize as groceries
+  // Clothing
   'uniqlo': 'UNIQLO',
+  'zara': 'Zara',
+  'h-m': 'H&M',
   'adidas': 'Adidas',
+  'nike': 'Nike',
+  'decathlon': 'Decathlon',
   'puma': 'Puma',
   'fila': 'Fila',
+  'giordano': 'Giordano',
+  'bossini': 'Bossini',
+  'i-t': 'i.t',
+  'cotton-on': 'Cotton On',
+  'gap': 'Gap',
+  'levis': "Levi's",
+  'new-balance': 'New Balance',
+  'under-armour': 'Under Armour',
   // Utilities
   'clp': 'CLP',
   'hk-electric': 'HK Electric',
@@ -161,6 +177,7 @@ function main() {
     financial: new Set(),
     government: new Set(),
     'digital-wallet': new Set(),
+    clothing: new Set(),
     others: new Set(),
   };
 
@@ -187,7 +204,7 @@ function main() {
 
   // Add popular merchants that might not be in rules
   const popularByCategory: Record<string, string[]> = {
-    groceries: ['wellcome', 'parknshop', '759-store', '7-eleven', 'circle-k'],
+    groceries: ['wellcome', 'parknshop', '759-store', '7-eleven', 'circle-k', 'muji', 'marks-spencer'],
     dining: ['mcdonalds', 'sushiro', 'starbucks', 'pacific-coffee', 'openrice', 'foodpanda', 'deliveroo'],
     online: ['amazon', 'taobao', 'hktvmall', 'netflix', 'spotify', 'apple'],
     travel: ['cathay-pacific', 'klook', 'agoda'],
@@ -197,7 +214,8 @@ function main() {
     financial: ['aia', 'prudential', 'manulife'],
     government: [],
     'digital-wallet': ['octopus', 'payme', 'alipay-hk', 'wechat-pay'],
-    others: ['watsons', 'mannings', 'ikea', 'muji', 'uniqlo', 'decathlon'],
+    clothing: ['uniqlo', 'zara', 'h-m', 'adidas', 'nike', 'decathlon', 'giordano', 'gap', 'levis'],
+    others: ['watsons', 'mannings', 'ikea'],
   };
 
   for (const [category, merchants] of Object.entries(popularByCategory)) {

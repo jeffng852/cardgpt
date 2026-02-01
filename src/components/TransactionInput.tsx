@@ -22,6 +22,7 @@ const CategoryIcon = ({ category, className = "w-4 h-4" }: { category: Transacti
     financial: <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>,
     government: <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z" /></svg>,
     'digital-wallet': <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>,
+    clothing: <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>,
     others: <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>,
   };
   return icons[category];
@@ -169,6 +170,7 @@ interface AIParseState {
 
 export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const t = useTranslations('input');
+  const tErrors = useTranslations('errors');
   const tCategories = useTranslations('categories');
   const tRewardTypes = useTranslations('rewardTypes');
   const [input, setInput] = useState('');
@@ -180,6 +182,8 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiState, setAIState] = useState<AIParseState>({ isLoading: false });
   const [showCategoryError, setShowCategoryError] = useState(false);
+  const [showAmountError, setShowAmountError] = useState(false);
+  const [prevMerchantLabel, setPrevMerchantLabel] = useState<string | undefined>();
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -266,12 +270,21 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
     }
   }, [selectedCategory, input]);
 
-  // Update input when merchant is selected
+  // Update input when merchant is selected - replace previous merchant instead of appending
   useEffect(() => {
     if (selectedMerchant) {
       const merchantLabel = merchantOptions.find(m => m.key === selectedMerchant)?.label;
-      if (merchantLabel && !input.includes(merchantLabel)) {
-        const newInput = input ? `${input} ${merchantLabel}` : merchantLabel;
+      if (merchantLabel) {
+        let newInput = input;
+        // Remove previous merchant if exists
+        if (prevMerchantLabel && newInput.includes(prevMerchantLabel)) {
+          newInput = newInput.replace(prevMerchantLabel, '').replace(/\s+/g, ' ').trim();
+        }
+        // Append new merchant if not already present
+        if (!newInput.includes(merchantLabel)) {
+          newInput = newInput ? `${newInput} ${merchantLabel}` : merchantLabel;
+        }
+        setPrevMerchantLabel(merchantLabel);
         handleInputChange(newInput);
       }
     }
@@ -288,6 +301,15 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
       return;
     }
     setShowCategoryError(false);
+
+    // Validate amount - must be a positive number
+    const amountMatch = input.match(/\$?\s*([0-9,]+(?:\.[0-9]+)?)/);
+    const amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, '')) : 0;
+    if (!amount || amount <= 0) {
+      setShowAmountError(true);
+      return;
+    }
+    setShowAmountError(false);
 
     setIsProcessing(true);
     setAIState({ isLoading: false });
@@ -389,6 +411,14 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                   </svg>
                   {t('categoryRequired')}
+                </p>
+              )}
+              {showAmountError && (
+                <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                  </svg>
+                  {tErrors('invalidInput')}
                 </p>
               )}
             </div>
