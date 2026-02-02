@@ -357,7 +357,7 @@ export default function CardRecommendationList({
                                 <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded ${getTagStyle(contribution)}`}>
                                   {getTagLabel(contribution)}
                                 </span>
-                                <span className="text-xs sm:text-sm text-text-secondary line-clamp-2 sm:truncate">
+                                <span className="text-xs sm:text-sm text-text-secondary truncate">
                                   {getDescription(contribution)}
                                 </span>
                               </div>
@@ -458,34 +458,34 @@ export default function CardRecommendationList({
                     </div>
                   )}
 
-                  {/* Alerts Section - Expiry & Action Required (Compact) */}
+                  {/* Alerts Section - Compact inline with solid backgrounds */}
                   {ruleBreakdown.some(c => c.validUntil || c.actionRequired) && (
-                    <div className="mb-4 sm:mb-5 flex flex-wrap gap-1.5 sm:gap-2">
+                    <div className="mb-4 sm:mb-5 flex flex-wrap items-center gap-2 text-[10px] sm:text-xs">
                       {ruleBreakdown
                         .filter(c => c.validUntil)
                         .map((c, idx) => (
-                          <div
+                          <span
                             key={`expiry-${idx}`}
-                            className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500 text-white font-medium"
                           >
-                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-[10px] sm:text-xs font-medium">{t('breakdown.offerExpires')}: {c.validUntil}</span>
-                          </div>
+                            {t('breakdown.offerExpires')}: {c.validUntil}
+                          </span>
                         ))}
                       {ruleBreakdown
                         .filter(c => c.actionRequired)
                         .map((c, idx) => (
-                          <div
+                          <span
                             key={`action-${idx}`}
-                            className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300"
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500 text-white font-medium"
                           >
-                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-[10px] sm:text-xs font-medium">{getActionRequired(c)}</span>
-                          </div>
+                            {getActionRequired(c)}
+                          </span>
                         ))}
                     </div>
                   )}
