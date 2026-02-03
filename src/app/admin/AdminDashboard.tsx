@@ -277,7 +277,7 @@ export default function AdminDashboard() {
           <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-background border-b border-border text-xs font-medium text-foreground-muted uppercase tracking-wide">
             <button
               onClick={() => handleSort('name')}
-              className="col-span-4 text-left hover:text-foreground flex items-center gap-1"
+              className="col-span-3 text-left hover:text-foreground flex items-center gap-1"
             >
               Card Name
               {sortField === 'name' && (
@@ -294,7 +294,16 @@ export default function AdminDashboard() {
               )}
             </button>
             <div className="col-span-2 text-left">Rewards</div>
-            <div className="col-span-2 text-left">Status</div>
+            <button
+              onClick={() => handleSort('lastUpdated')}
+              className="col-span-2 text-left hover:text-foreground flex items-center gap-1"
+            >
+              Last Updated
+              {sortField === 'lastUpdated' && (
+                <span>{sortDirection === 'asc' ? '↑' : '↓'}</span>
+              )}
+            </button>
+            <div className="col-span-1 text-left">Status</div>
             <div className="col-span-2 text-right">Actions</div>
           </div>
 
@@ -320,26 +329,35 @@ function CardRow({ card, onRefresh }: { card: CreditCard; onRefresh: () => void 
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!confirm(`Are you sure you want to deactivate "${card.name}"?`)) {
+    if (!confirm(`Are you sure you want to permanently delete "${card.name}"? This action cannot be undone.`)) {
       return;
     }
 
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/admin/cards/${card.id}`, {
+      const response = await fetch(`/api/admin/cards/${card.id}?hard=true`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
         onRefresh();
       } else {
-        alert('Failed to deactivate card');
+        alert('Failed to delete card');
       }
     } catch {
       alert('Network error');
     } finally {
       setIsDeleting(false);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
   };
 
   const rewardSummary = useMemo(() => {
@@ -371,6 +389,9 @@ function CardRow({ card, onRefresh }: { card: CreditCard; onRefresh: () => void 
         <p className="text-sm text-foreground-muted">
           {card.issuer} &middot; {card.rewards.length} rules ({rewardSummary})
         </p>
+        <p className="text-xs text-foreground-muted">
+          Updated: {card.lastUpdated ? formatDate(card.lastUpdated) : '-'}
+        </p>
         <div className="flex gap-2 mt-2">
           <button
             onClick={() => router.push(`/admin/cards/${card.id}`)}
@@ -390,7 +411,7 @@ function CardRow({ card, onRefresh }: { card: CreditCard; onRefresh: () => void 
 
       {/* Desktop Layout */}
       <div className="hidden md:grid grid-cols-12 gap-4 items-center">
-        <div className="col-span-4">
+        <div className="col-span-3">
           <h3 className="font-medium text-foreground">{card.name}</h3>
           <p className="text-xs text-foreground-muted mt-0.5">{card.id}</p>
         </div>
@@ -401,7 +422,10 @@ function CardRow({ card, onRefresh }: { card: CreditCard; onRefresh: () => void 
           </span>
           <span className="text-xs text-foreground-muted ml-1">({rewardSummary})</span>
         </div>
-        <div className="col-span-2 flex items-center gap-2">
+        <div className="col-span-2 text-sm text-foreground-muted">
+          {card.lastUpdated ? formatDate(card.lastUpdated) : '-'}
+        </div>
+        <div className="col-span-1 flex items-center gap-1">
           {card.isActive ? (
             <span className="px-2 py-0.5 text-xs bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400 rounded">
               Active

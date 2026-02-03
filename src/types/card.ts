@@ -122,11 +122,8 @@ export interface RewardRule {
   /** Excluded specific merchants */
   excludedMerchants?: string[];
 
-  /** Maximum spending amount eligible for this rate per month (e.g., first $10,000) */
-  monthlySpendingCap?: number;
-
-  /** Fallback rate after monthly cap is reached */
-  fallbackRate?: number;
+  /** Maximum reward amount that can be earned from this rule per month */
+  maxRewardCap?: number;
 
   // ===== Phase 1: Temporal Validity Fields =====
 

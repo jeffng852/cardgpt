@@ -10,20 +10,21 @@ interface RuleFormProps {
   ruleIndex: number | null; // null = new rule
 }
 
+// 12 simplified categories matching TransactionCategory type
 const CATEGORIES = [
-  'dining',
-  'travel',
-  'online-shopping',
-  'retail',
-  'supermarket',
-  'entertainment',
-  'transport',
-  'utilities',
-  'insurance',
-  'education',
-  'medical',
-  'government',
-];
+  { value: 'groceries', label: 'Groceries / Supermarket' },
+  { value: 'dining', label: 'Dining' },
+  { value: 'online', label: 'Online / Subscription' },
+  { value: 'travel', label: 'Travel' },
+  { value: 'transport', label: 'Local Transport' },
+  { value: 'overseas', label: 'Overseas Spending' },
+  { value: 'utilities', label: 'Utilities / Bills' },
+  { value: 'financial', label: 'Financial Services' },
+  { value: 'government', label: 'Government' },
+  { value: 'digital-wallet', label: 'Digital Wallet' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'others', label: 'Others' },
+] as const;
 
 const PAYMENT_TYPES: PaymentType[] = ['online', 'offline', 'contactless', 'recurring'];
 const CURRENCIES: Currency[] = ['HKD', 'USD', 'CNY', 'JPY', 'EUR', 'GBP', 'SGD', 'AUD', 'CAD', 'TWD'];
@@ -100,7 +101,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
 
         // Expand sections if they have data
         if (existingRule.conditions) setShowConditions(true);
-        if (existingRule.monthlySpendingCap) setShowCaps(true);
+        if (existingRule.maxRewardCap) setShowCaps(true);
         if (existingRule.sourceUrl || existingRule.notes) setShowSource(true);
       } else {
         // New rule - generate ID
@@ -301,13 +302,17 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               <label className="block text-sm font-medium text-foreground mb-1">
                 Description (English) *
               </label>
-              <textarea
+              <input
+                type="text"
+                maxLength={80}
                 value={rule.description}
                 onChange={(e) => updateRule({ description: e.target.value })}
-                rows={2}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., 4% cashback on all dining transactions"
               />
+              <span className={`text-xs mt-1 block ${(rule.description?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {rule.description?.length || 0}/80
+              </span>
             </div>
 
             {/* Description Chinese */}
@@ -315,16 +320,20 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               <label className="block text-sm font-medium text-foreground mb-1">
                 Description (繁體中文)
               </label>
-              <textarea
+              <input
+                type="text"
+                maxLength={40}
                 value={rule.description_zh || ''}
                 onChange={(e) => updateRule({ description_zh: e.target.value || undefined })}
-                rows={2}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="例如：所有餐飲交易可享4%現金回贈"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                留空則顯示英文 (Falls back to English if empty)
-              </p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                <span className={`${(rule.description_zh?.length || 0) > 32 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.description_zh?.length || 0}/40
+                </span>
+              </div>
             </div>
 
             {/* Rate and Unit */}
@@ -408,18 +417,28 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                 <label className="block text-sm font-medium text-foreground mb-2">
                   Select Categories
                 </label>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {CATEGORIES.map((category) => (
-                    <label key={category} className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={(rule.categories as string[])?.includes(category) || false}
-                        onChange={() => handleCategoryToggle(category)}
-                        className="rounded border-border"
-                      />
-                      <span className="text-sm text-foreground capitalize">{category}</span>
-                    </label>
-                  ))}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {CATEGORIES.map((cat) => {
+                    const isSelected = (rule.categories as string[])?.includes(cat.value) || false;
+                    return (
+                      <label
+                        key={cat.value}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
+                          isSelected
+                            ? 'bg-primary/10 border-primary text-primary'
+                            : 'border-border hover:bg-background-secondary'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => handleCategoryToggle(cat.value)}
+                          className="rounded border-border text-primary focus:ring-primary"
+                        />
+                        <span className="text-sm">{cat.label}</span>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -609,60 +628,36 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
           )}
         </section>
 
-        {/* Spending Caps Section (Collapsible) */}
+        {/* Reward Caps Section (Collapsible) */}
         <section className="bg-background-secondary rounded-xl border border-border mb-6">
           <button
             onClick={() => setShowCaps(!showCaps)}
             className="w-full px-6 py-4 flex justify-between items-center text-left"
           >
-            <h2 className="text-lg font-semibold text-foreground">Spending Caps</h2>
+            <h2 className="text-lg font-semibold text-foreground">Reward Caps</h2>
             <span className="text-foreground-muted">{showCaps ? '−' : '+'}</span>
           </button>
 
           {showCaps && (
             <div className="px-6 pb-6 space-y-4 border-t border-border pt-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Monthly Spending Cap (HKD)
-                  </label>
-                  <input
-                    type="number"
-                    value={rule.monthlySpendingCap || ''}
-                    onChange={(e) =>
-                      updateRule({
-                        monthlySpendingCap: e.target.value ? parseFloat(e.target.value) : undefined,
-                      })
-                    }
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                    placeholder="e.g., 10000"
-                  />
-                  <p className="text-xs text-foreground-muted mt-1">
-                    This rate applies to the first X dollars of monthly spending
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">
-                    Fallback Rate (after cap)
-                  </label>
-                  <input
-                    type="number"
-                    step="0.0001"
-                    value={rule.fallbackRate || ''}
-                    onChange={(e) =>
-                      updateRule({
-                        fallbackRate: e.target.value ? parseFloat(e.target.value) : undefined,
-                      })
-                    }
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
-                    placeholder="0.01 for 1%"
-                    disabled={!rule.monthlySpendingCap}
-                  />
-                  <p className="text-xs text-foreground-muted mt-1">
-                    {rule.fallbackRate ? `= ${(rule.fallbackRate * 100).toFixed(2)}%` : 'Set cap first'}
-                  </p>
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">
+                  Max Reward Cap (per month)
+                </label>
+                <input
+                  type="number"
+                  value={rule.maxRewardCap || ''}
+                  onChange={(e) =>
+                    updateRule({
+                      maxRewardCap: e.target.value ? parseFloat(e.target.value) : undefined,
+                    })
+                  }
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+                  placeholder="e.g., 100"
+                />
+                <p className="text-xs text-foreground-muted mt-1">
+                  Maximum reward amount that can be earned from this rule per month
+                </p>
               </div>
             </div>
           )}
@@ -717,14 +712,18 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
+                maxLength={80}
                 value={rule.actionRequired || ''}
                 onChange={(e) => updateRule({ actionRequired: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., Register online, Activate in app"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                Action user must take to activate this promotional reward
-              </p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">Action user must take to activate this promotional reward</span>
+                <span className={`${(rule.actionRequired?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.actionRequired?.length || 0}/80
+                </span>
+              </div>
             </div>
 
             {/* Action Required Chinese */}
@@ -734,14 +733,18 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
+                maxLength={45}
                 value={rule.actionRequired_zh || ''}
                 onChange={(e) => updateRule({ actionRequired_zh: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="例如：需網上登記、需於應用程式啟用"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                留空則顯示英文 (Falls back to English if empty)
-              </p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                <span className={`${(rule.actionRequired_zh?.length || 0) > 36 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.actionRequired_zh?.length || 0}/45
+                </span>
+              </div>
             </div>
           </div>
         </section>
@@ -781,12 +784,16 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                   Notes (English)
                 </label>
                 <textarea
+                  maxLength={200}
                   value={rule.notes || ''}
                   onChange={(e) => updateRule({ notes: e.target.value || undefined })}
                   rows={3}
                   className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                   placeholder="Any special conditions, caveats, or edge cases..."
                 />
+                <span className={`text-xs mt-1 block text-right ${(rule.notes?.length || 0) > 160 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.notes?.length || 0}/200
+                </span>
               </div>
 
               <div>
@@ -794,15 +801,19 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                   Notes (繁體中文)
                 </label>
                 <textarea
+                  maxLength={120}
                   value={rule.notes_zh || ''}
                   onChange={(e) => updateRule({ notes_zh: e.target.value || undefined })}
                   rows={3}
                   className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                   placeholder="任何特殊條件、注意事項或邊緣情況..."
                 />
-                <p className="text-xs text-foreground-muted mt-1">
-                  留空則顯示英文 (Falls back to English if empty)
-                </p>
+                <div className="flex justify-between text-xs mt-1">
+                  <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                  <span className={`${(rule.notes_zh?.length || 0) > 96 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                    {rule.notes_zh?.length || 0}/120
+                  </span>
+                </div>
               </div>
             </div>
           )}

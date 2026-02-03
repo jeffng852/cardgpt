@@ -156,8 +156,7 @@
           "conditions": {
             "minMonthlySpending": 4000
           },
-          "monthlySpendingCap": 5000,
-          "fallbackRate": 0.0056,
+          "maxRewardCap": 250,
           "specificMerchants": [
             "759-store",
             "china-mobile",
@@ -214,8 +213,7 @@
           "conditions": {
             "minMonthlySpending": 15000
           },
-          "monthlySpendingCap": 5000,
-          "fallbackRate": 0.012,
+          "maxRewardCap": 250,
           "specificMerchants": [
             "759-store",
             "china-mobile",
@@ -683,8 +681,7 @@
           "priority": "specific",
           "isCumulative": false,
           "description": "8% RewardCash at designated merchants (first HK$1,250/month)",
-          "monthlySpendingCap": 1250,
-          "fallbackRate": 0.004,
+          "maxRewardCap": 100,
           "categories": [
             "tamjai-samgor",
             "tamjai-yunnan",
@@ -710,8 +707,7 @@
           "conditions": {
             "paymentType": "online"
           },
-          "monthlySpendingCap": 10000,
-          "fallbackRate": 0.004,
+          "maxRewardCap": 400,
           "categories": [
             "online"
           ],
@@ -865,7 +861,6 @@
           "categories": [
             "online-shopping"
           ],
-          "fallbackRate": 0.004,
           "isPromotional": false,
           "conditions": {
             "paymentType": null,
@@ -892,7 +887,6 @@
             "Tram",
             "Star Ferry"
           ],
-          "fallbackRate": 0.004,
           "isPromotional": false,
           "conditions": {
             "paymentType": null,
@@ -917,7 +911,6 @@
             "Fila",
             "Tokyo Lifestyle"
           ],
-          "fallbackRate": 0.004,
           "isPromotional": false,
           "conditions": {
             "paymentType": null,
