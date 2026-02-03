@@ -400,27 +400,28 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
                 {/* Merchant Autocomplete Dropdown */}
                 {showMerchantSuggestions && filteredMerchants.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden">
-                    {filteredMerchants.map((merchant, idx) => (
-                      <button
-                        key={merchant.id}
-                        type="button"
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                          const amountMatch = input.match(/\$?\s*[\d,\.]+/);
-                          const amount = amountMatch ? amountMatch[0] : '';
-                          handleInputChange(`${amount} ${merchant.label}`.trim());
-                          setShowMerchantSuggestions(false);
-                        }}
-                        className={`w-full px-4 py-3 text-left hover:bg-white/5 flex items-center gap-3 transition-colors
-                          ${idx !== filteredMerchants.length - 1 ? 'border-b border-white/5' : ''}`}
-                      >
-                        <svg className="w-4 h-4 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <span className="text-text-primary">{merchant.label}</span>
-                      </button>
-                    ))}
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-[#1e1e1e] border border-white/20 rounded-xl shadow-2xl shadow-black/50 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="p-1.5">
+                      {filteredMerchants.map((merchant) => (
+                        <button
+                          key={merchant.id}
+                          type="button"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            const amountMatch = input.match(/\$?\s*[\d,\.]+/);
+                            const amount = amountMatch ? amountMatch[0] : '';
+                            handleInputChange(`${amount} ${merchant.label}`.trim());
+                            setShowMerchantSuggestions(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-300 hover:bg-white/10 transition-colors"
+                        >
+                          <svg className="w-4 h-4 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                          <span>{merchant.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
