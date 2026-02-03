@@ -25,6 +25,7 @@ export default function CardRecommendationList({
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [filterRewardType, setFilterRewardType] = useState<'all' | 'cash' | 'miles' | 'points'>('all');
   const [expandedCapRuleId, setExpandedCapRuleId] = useState<string | null>(null);
+  const [expandedFeesCardId, setExpandedFeesCardId] = useState<string | null>(null);
 
   // Locale-aware text helpers - use Chinese if available, fallback to English
   const getDescription = (contribution: RuleContribution) =>
@@ -353,8 +354,8 @@ export default function CardRecommendationList({
 
                             {/* Rule Info - Stacked on mobile */}
                             <div className="flex-1 min-w-0">
-                              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                                <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded ${getTagStyle(contribution)}`}>
+                              <div className="flex flex-col gap-0.5">
+                                <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded w-fit ${getTagStyle(contribution)}`}>
                                   {getTagLabel(contribution)}
                                 </span>
                                 <span className="text-xs sm:text-sm text-text-secondary truncate">
@@ -458,9 +459,9 @@ export default function CardRecommendationList({
                     </div>
                   )}
 
-                  {/* Alerts Section - Compact inline with solid backgrounds */}
+                  {/* Alerts Section - Left-aligned with solid backgrounds */}
                   {ruleBreakdown.some(c => c.validUntil || c.actionRequired) && (
-                    <div className="mb-4 sm:mb-5 flex flex-wrap items-center gap-2 text-[10px] sm:text-xs">
+                    <div className="mb-4 sm:mb-5 flex flex-col items-start gap-1.5 text-[10px] sm:text-xs">
                       {ruleBreakdown
                         .filter(c => c.validUntil)
                         .map((c, idx) => (
@@ -490,48 +491,49 @@ export default function CardRecommendationList({
                     </div>
                   )}
 
-                  {/* Fees Section - Stacked on mobile */}
-                  <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
-                    <span className="font-medium">{t('breakdown.fees')}</span>
-                    <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-wrap">
-                      <span>
-                        {t('annualFee')}: {' '}
-                        <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
-                          {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
-                        </span>
-                      </span>
-                      {card.fees.foreignTransactionFeeRate !== undefined && (
-                        <>
-                          <span className="hidden sm:inline text-border">•</span>
-                          <span>
-                            {t('breakdown.fxFee')}: {' '}
-                            <span className={card.fees.foreignTransactionFeeRate > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
-                              {card.fees.foreignTransactionFeeRate > 0 ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
-                            </span>
+                  {/* Fees Section - Collapsible */}
+                  <div className="mb-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedFeesCardId(expandedFeesCardId === card.id ? null : card.id);
+                      }}
+                      className="flex items-center gap-1 text-[9px] sm:text-[10px] text-text-tertiary hover:text-text-secondary transition-colors"
+                    >
+                      <span className="font-medium uppercase tracking-wide">{t('breakdown.fees')}</span>
+                      <svg
+                        className={`w-3 h-3 transition-transform ${expandedFeesCardId === card.id ? 'rotate-180' : ''}`}
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {expandedFeesCardId === card.id && (
+                      <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] sm:text-[10px] text-text-tertiary">
+                        <span>
+                          {t('annualFee')}: {' '}
+                          <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
+                            {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
                           </span>
-                        </>
-                      )}
-                      {card.fees.redemptionFee !== undefined && (
-                        <>
-                          <span className="hidden sm:inline text-border">•</span>
+                        </span>
+                        <span>
+                          {t('breakdown.fxFee')}: {' '}
+                          <span className={card.fees.foreignTransactionFeeRate && card.fees.foreignTransactionFeeRate > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
+                            {card.fees.foreignTransactionFeeRate ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
+                          </span>
+                        </span>
+                        {card.fees.redemptionFee !== undefined && (
                           <span>
                             {t('breakdown.redemptionFee')}: {' '}
-                            <span className={card.fees.redemptionFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
+                            <span className={card.fees.redemptionFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
                               {card.fees.redemptionFee > 0 ? `$${card.fees.redemptionFee}` : t('free')}
                             </span>
                           </span>
-                        </>
-                      )}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-
-                  {/* Min Income Requirement - Compact */}
-                  {card.minIncomeRequirement && (
-                    <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
-                      <span className="font-medium">{t('breakdown.minIncome')}:</span>{' '}
-                      <span className="text-text-secondary">HKD ${card.minIncomeRequirement.toLocaleString()} {t('breakdown.perYear')}</span>
-                    </div>
-                  )}
 
                   {/* Apply Button */}
                   {card.applyUrl && (
