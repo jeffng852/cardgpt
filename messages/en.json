@@ -125,6 +125,7 @@
     "rewardTypeLabel": "Preferred Reward Type (Optional)",
     "categoryLabel": "Spending Category",
     "categoryRequired": "Please select a spending category",
+    "unableToIdentifyCategory": "Unable to identify spending category. Please select the closest category to proceed.",
     "rewardsPlaceholder": "Rewards",
     "quickTagsLabel": "Popular Merchants",
     "selectCategoryFirst": "Select Spending Category first",

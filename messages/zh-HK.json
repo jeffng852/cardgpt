@@ -125,6 +125,7 @@
     "rewardTypeLabel": "想要嘅獎賞類型（可選）",
     "categoryLabel": "消費類別",
     "categoryRequired": "請選擇消費類別",
+    "unableToIdentifyCategory": "未能識別消費類別，請選擇最接近的類別繼續。",
     "rewardsPlaceholder": "獎賞",
     "quickTagsLabel": "熱門商戶",
     "selectCategoryFirst": "請先選擇消費類別",
