@@ -304,14 +304,14 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
-                maxLength={100}
+                maxLength={80}
                 value={rule.description}
                 onChange={(e) => updateRule({ description: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., 4% cashback on all dining transactions"
               />
-              <span className={`text-xs mt-1 block ${(rule.description?.length || 0) > 80 ? 'text-amber-500' : 'text-foreground-muted'}`}>
-                {rule.description?.length || 0}/100
+              <span className={`text-xs mt-1 block ${(rule.description?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {rule.description?.length || 0}/80
               </span>
             </div>
 
@@ -322,7 +322,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
-                maxLength={50}
+                maxLength={40}
                 value={rule.description_zh || ''}
                 onChange={(e) => updateRule({ description_zh: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -330,8 +330,8 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               />
               <div className="flex justify-between text-xs mt-1">
                 <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
-                <span className={`${(rule.description_zh?.length || 0) > 40 ? 'text-amber-500' : 'text-foreground-muted'}`}>
-                  {rule.description_zh?.length || 0}/50
+                <span className={`${(rule.description_zh?.length || 0) > 32 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.description_zh?.length || 0}/40
                 </span>
               </div>
             </div>
@@ -712,7 +712,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
-                maxLength={150}
+                maxLength={80}
                 value={rule.actionRequired || ''}
                 onChange={(e) => updateRule({ actionRequired: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -720,8 +720,8 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               />
               <div className="flex justify-between text-xs mt-1">
                 <span className="text-foreground-muted">Action user must take to activate this promotional reward</span>
-                <span className={`${(rule.actionRequired?.length || 0) > 120 ? 'text-amber-500' : 'text-foreground-muted'}`}>
-                  {rule.actionRequired?.length || 0}/150
+                <span className={`${(rule.actionRequired?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.actionRequired?.length || 0}/80
                 </span>
               </div>
             </div>
@@ -733,7 +733,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
-                maxLength={80}
+                maxLength={45}
                 value={rule.actionRequired_zh || ''}
                 onChange={(e) => updateRule({ actionRequired_zh: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -741,8 +741,8 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               />
               <div className="flex justify-between text-xs mt-1">
                 <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
-                <span className={`${(rule.actionRequired_zh?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
-                  {rule.actionRequired_zh?.length || 0}/80
+                <span className={`${(rule.actionRequired_zh?.length || 0) > 36 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.actionRequired_zh?.length || 0}/45
                 </span>
               </div>
             </div>

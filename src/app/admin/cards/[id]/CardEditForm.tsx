@@ -1103,14 +1103,14 @@ function RuleEditor({
               <label className="block text-sm font-medium text-foreground mb-1">Description (English) *</label>
               <input
                 type="text"
-                maxLength={100}
+                maxLength={80}
                 value={rule.description || ''}
                 onChange={(e) => update({ description: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., 4% cashback on supermarkets"
               />
-              <span className={`text-xs mt-1 ${(rule.description?.length || 0) > 80 ? 'text-amber-500' : 'text-foreground-muted'}`}>
-                {rule.description?.length || 0}/100
+              <span className={`text-xs mt-1 ${(rule.description?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {rule.description?.length || 0}/80
               </span>
             </div>
 
@@ -1118,7 +1118,7 @@ function RuleEditor({
               <label className="block text-sm font-medium text-foreground mb-1">Description (繁體中文)</label>
               <input
                 type="text"
-                maxLength={50}
+                maxLength={40}
                 value={rule.description_zh || ''}
                 onChange={(e) => update({ description_zh: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
@@ -1126,8 +1126,8 @@ function RuleEditor({
               />
               <div className="flex justify-between text-xs mt-1">
                 <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
-                <span className={`${(rule.description_zh?.length || 0) > 40 ? 'text-amber-500' : 'text-foreground-muted'}`}>
-                  {rule.description_zh?.length || 0}/50
+                <span className={`${(rule.description_zh?.length || 0) > 32 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.description_zh?.length || 0}/40
                 </span>
               </div>
             </div>
