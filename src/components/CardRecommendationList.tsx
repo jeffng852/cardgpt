@@ -512,21 +512,21 @@ export default function CardRecommendationList({
                     {expandedFeesCardId === card.id && (
                       <div className="mt-2 grid grid-cols-3 gap-2 text-[9px] sm:text-[10px]">
                         {/* Annual Fee Card */}
-                        <div className="px-2 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800/50 text-center">
+                        <div className="px-2 py-1.5 rounded-md bg-transparent border border-border text-center">
                           <div className="text-text-tertiary">{t('annualFee')}</div>
                           <div className={card.fees.annualFee > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
                             {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
                           </div>
                         </div>
                         {/* FX Fee Card */}
-                        <div className="px-2 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800/50 text-center">
+                        <div className="px-2 py-1.5 rounded-md bg-transparent border border-border text-center">
                           <div className="text-text-tertiary">{t('breakdown.fxFee')}</div>
                           <div className={card.fees.foreignTransactionFeeRate && card.fees.foreignTransactionFeeRate > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
                             {card.fees.foreignTransactionFeeRate ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
                           </div>
                         </div>
                         {/* Redemption Fee Card */}
-                        <div className="px-2 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800/50 text-center">
+                        <div className="px-2 py-1.5 rounded-md bg-transparent border border-border text-center">
                           <div className="text-text-tertiary">{t('breakdown.redemptionFee')}</div>
                           <div className={card.fees.redemptionFee && card.fees.redemptionFee > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
                             {card.fees.redemptionFee ? `$${card.fees.redemptionFee}` : t('free')}
