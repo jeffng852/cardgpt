@@ -120,7 +120,7 @@
     "cathay-pacific": "國泰航空"
   },
   "input": {
-    "placeholder": "例如：買Pokemon卡 5000 或 婚禮場地訂金 8000",
+    "placeholder": "例如：麥當勞 $50 或 HKTVmall $700 或 酒店婚禮訂金 $300000",
     "submit": "搵最適合你既卡",
     "rewardTypeLabel": "想要嘅獎賞類型（可選）",
     "categoryLabel": "消費類別",

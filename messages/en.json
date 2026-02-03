@@ -120,7 +120,7 @@
     "cathay-pacific": "Cathay Pacific"
   },
   "input": {
-    "placeholder": "e.g., Buy Pokemon Cards 5000 or Wedding deposit 8000",
+    "placeholder": "E.g., Mcdonalds $50 or HKTV Mall $700 or Hotel wedding deposit $300000",
     "submit": "Find The Right Card",
     "rewardTypeLabel": "Preferred Reward Type (Optional)",
     "categoryLabel": "Spending Category",
