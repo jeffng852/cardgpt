@@ -467,12 +467,12 @@ export default function CardRecommendationList({
                         .map((c, idx) => (
                           <span
                             key={`expiry-${idx}`}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500 text-white font-medium"
+                            className="inline-flex items-start gap-1.5 px-2 py-1.5 rounded-md bg-amber-500 text-white font-medium text-left"
                           >
-                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            {t('breakdown.offerExpires')}: {c.validUntil}
+                            <span>{t('breakdown.offerExpires')}: {c.validUntil}</span>
                           </span>
                         ))}
                       {ruleBreakdown
@@ -480,12 +480,12 @@ export default function CardRecommendationList({
                         .map((c, idx) => (
                           <span
                             key={`action-${idx}`}
-                            className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-500 text-white font-medium"
+                            className="inline-flex items-start gap-1.5 px-2 py-1.5 rounded-md bg-amber-500 text-white font-medium text-left"
                           >
-                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            {getActionRequired(c)}
+                            <span>{getActionRequired(c)}</span>
                           </span>
                         ))}
                     </div>
@@ -510,27 +510,28 @@ export default function CardRecommendationList({
                     </button>
 
                     {expandedFeesCardId === card.id && (
-                      <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[9px] sm:text-[10px] text-text-tertiary">
-                        <span>
-                          {t('annualFee')}: {' '}
-                          <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
+                      <div className="mt-2 grid grid-cols-3 gap-2 text-[9px] sm:text-[10px]">
+                        {/* Annual Fee Card */}
+                        <div className="px-2 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800/50 text-center">
+                          <div className="text-text-tertiary">{t('annualFee')}</div>
+                          <div className={card.fees.annualFee > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
                             {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
-                          </span>
-                        </span>
-                        <span>
-                          {t('breakdown.fxFee')}: {' '}
-                          <span className={card.fees.foreignTransactionFeeRate && card.fees.foreignTransactionFeeRate > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
+                          </div>
+                        </div>
+                        {/* FX Fee Card */}
+                        <div className="px-2 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800/50 text-center">
+                          <div className="text-text-tertiary">{t('breakdown.fxFee')}</div>
+                          <div className={card.fees.foreignTransactionFeeRate && card.fees.foreignTransactionFeeRate > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
                             {card.fees.foreignTransactionFeeRate ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
-                          </span>
-                        </span>
-                        {card.fees.redemptionFee !== undefined && (
-                          <span>
-                            {t('breakdown.redemptionFee')}: {' '}
-                            <span className={card.fees.redemptionFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-medium'}>
-                              {card.fees.redemptionFee > 0 ? `$${card.fees.redemptionFee}` : t('free')}
-                            </span>
-                          </span>
-                        )}
+                          </div>
+                        </div>
+                        {/* Redemption Fee Card */}
+                        <div className="px-2 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800/50 text-center">
+                          <div className="text-text-tertiary">{t('breakdown.redemptionFee')}</div>
+                          <div className={card.fees.redemptionFee && card.fees.redemptionFee > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
+                            {card.fees.redemptionFee ? `$${card.fees.redemptionFee}` : t('free')}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
