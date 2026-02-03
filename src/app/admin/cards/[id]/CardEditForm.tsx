@@ -531,21 +531,29 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
               <label className="block text-sm font-medium text-foreground mb-1">Card Name *</label>
               <input
                 type="text"
+                maxLength={60}
                 value={card.name || ''}
                 onChange={(e) => updateCard({ name: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., HSBC Red Credit Card"
               />
+              <span className={`text-xs mt-1 ${(card.name?.length || 0) > 48 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {card.name?.length || 0}/60
+              </span>
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">Issuer *</label>
               <input
                 type="text"
+                maxLength={40}
                 value={card.issuer || ''}
                 onChange={(e) => updateCard({ issuer: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., HSBC"
               />
+              <span className={`text-xs mt-1 ${(card.issuer?.length || 0) > 32 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {card.issuer?.length || 0}/40
+              </span>
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">Network</label>
@@ -1095,23 +1103,33 @@ function RuleEditor({
               <label className="block text-sm font-medium text-foreground mb-1">Description (English) *</label>
               <input
                 type="text"
+                maxLength={100}
                 value={rule.description || ''}
                 onChange={(e) => update({ description: e.target.value })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., 4% cashback on supermarkets"
               />
+              <span className={`text-xs mt-1 ${(rule.description?.length || 0) > 80 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {rule.description?.length || 0}/100
+              </span>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-1">Description (繁體中文)</label>
               <input
                 type="text"
+                maxLength={50}
                 value={rule.description_zh || ''}
                 onChange={(e) => update({ description_zh: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="例如：超市消費可享4%現金回贈"
               />
-              <p className="text-xs text-foreground-muted mt-1">留空則顯示英文 (Falls back to English if empty)</p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                <span className={`${(rule.description_zh?.length || 0) > 40 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.description_zh?.length || 0}/50
+                </span>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">

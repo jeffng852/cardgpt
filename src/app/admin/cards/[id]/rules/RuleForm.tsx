@@ -302,13 +302,17 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               <label className="block text-sm font-medium text-foreground mb-1">
                 Description (English) *
               </label>
-              <textarea
+              <input
+                type="text"
+                maxLength={100}
                 value={rule.description}
                 onChange={(e) => updateRule({ description: e.target.value })}
-                rows={2}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., 4% cashback on all dining transactions"
               />
+              <span className={`text-xs mt-1 block ${(rule.description?.length || 0) > 80 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                {rule.description?.length || 0}/100
+              </span>
             </div>
 
             {/* Description Chinese */}
@@ -316,16 +320,20 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               <label className="block text-sm font-medium text-foreground mb-1">
                 Description (繁體中文)
               </label>
-              <textarea
+              <input
+                type="text"
+                maxLength={50}
                 value={rule.description_zh || ''}
                 onChange={(e) => updateRule({ description_zh: e.target.value || undefined })}
-                rows={2}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="例如：所有餐飲交易可享4%現金回贈"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                留空則顯示英文 (Falls back to English if empty)
-              </p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                <span className={`${(rule.description_zh?.length || 0) > 40 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.description_zh?.length || 0}/50
+                </span>
+              </div>
             </div>
 
             {/* Rate and Unit */}
@@ -704,14 +712,18 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
+                maxLength={150}
                 value={rule.actionRequired || ''}
                 onChange={(e) => updateRule({ actionRequired: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="e.g., Register online, Activate in app"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                Action user must take to activate this promotional reward
-              </p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">Action user must take to activate this promotional reward</span>
+                <span className={`${(rule.actionRequired?.length || 0) > 120 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.actionRequired?.length || 0}/150
+                </span>
+              </div>
             </div>
 
             {/* Action Required Chinese */}
@@ -721,14 +733,18 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
               </label>
               <input
                 type="text"
+                maxLength={80}
                 value={rule.actionRequired_zh || ''}
                 onChange={(e) => updateRule({ actionRequired_zh: e.target.value || undefined })}
                 className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                 placeholder="例如：需網上登記、需於應用程式啟用"
               />
-              <p className="text-xs text-foreground-muted mt-1">
-                留空則顯示英文 (Falls back to English if empty)
-              </p>
+              <div className="flex justify-between text-xs mt-1">
+                <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                <span className={`${(rule.actionRequired_zh?.length || 0) > 64 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.actionRequired_zh?.length || 0}/80
+                </span>
+              </div>
             </div>
           </div>
         </section>
@@ -768,12 +784,16 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                   Notes (English)
                 </label>
                 <textarea
+                  maxLength={200}
                   value={rule.notes || ''}
                   onChange={(e) => updateRule({ notes: e.target.value || undefined })}
                   rows={3}
                   className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                   placeholder="Any special conditions, caveats, or edge cases..."
                 />
+                <span className={`text-xs mt-1 block text-right ${(rule.notes?.length || 0) > 160 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                  {rule.notes?.length || 0}/200
+                </span>
               </div>
 
               <div>
@@ -781,15 +801,19 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                   Notes (繁體中文)
                 </label>
                 <textarea
+                  maxLength={120}
                   value={rule.notes_zh || ''}
                   onChange={(e) => updateRule({ notes_zh: e.target.value || undefined })}
                   rows={3}
                   className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
                   placeholder="任何特殊條件、注意事項或邊緣情況..."
                 />
-                <p className="text-xs text-foreground-muted mt-1">
-                  留空則顯示英文 (Falls back to English if empty)
-                </p>
+                <div className="flex justify-between text-xs mt-1">
+                  <span className="text-foreground-muted">留空則顯示英文 (Falls back to English if empty)</span>
+                  <span className={`${(rule.notes_zh?.length || 0) > 96 ? 'text-amber-500' : 'text-foreground-muted'}`}>
+                    {rule.notes_zh?.length || 0}/120
+                  </span>
+                </div>
               </div>
             </div>
           )}

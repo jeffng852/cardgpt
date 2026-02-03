@@ -354,8 +354,8 @@ export default function CardRecommendationList({
 
                             {/* Rule Info - Stacked on mobile */}
                             <div className="flex-1 min-w-0">
-                              <div className="flex flex-col gap-0.5">
-                                <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded w-fit ${getTagStyle(contribution)}`}>
+                              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                                <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded ${getTagStyle(contribution)}`}>
                                   {getTagLabel(contribution)}
                                 </span>
                                 <span className="text-xs sm:text-sm text-text-secondary truncate">
