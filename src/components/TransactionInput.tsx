@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { parseTransaction } from '@/lib/parser/transactionParser';
 import type { ParseResult } from '@/lib/parser/transactionParser';
 import { TRANSACTION_CATEGORIES, type TransactionCategory } from '@/types/transaction';
-import { getMerchantsForCategory } from '@/data/categoryMerchants';
+import { getMerchantsForCategory, getAllMerchants } from '@/data/categoryMerchants';
 
 type RewardType = 'cash' | 'miles' | 'points';
 
@@ -184,6 +184,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
   const [showCategoryError, setShowCategoryError] = useState(false);
   const [showAmountError, setShowAmountError] = useState(false);
   const [prevMerchantLabel, setPrevMerchantLabel] = useState<string | undefined>();
+  const [showMerchantSuggestions, setShowMerchantSuggestions] = useState(false);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -210,6 +211,22 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
         label: merchant.label,
       }))
     : [];
+
+  // Filtered merchants for autocomplete suggestions
+  const filteredMerchants = useMemo(() => {
+    if (!input.trim()) return [];
+    // Extract text portion (not amount) for merchant matching
+    const textPart = input.replace(/[\$\d,\.]+/g, '').trim();
+    if (textPart.length < 1) return [];
+
+    const query = textPart.toLowerCase();
+    return getAllMerchants()
+      .filter(m =>
+        m.label.toLowerCase().includes(query) ||
+        m.id.toLowerCase().includes(query)
+      )
+      .slice(0, 10);
+  }, [input]);
 
   const handleInputChange = (value: string) => {
     if (value.length > MAX_INPUT_LENGTH) {
@@ -353,28 +370,58 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
           <form onSubmit={handleSubmit}>
             {/* Input Area */}
             <div className="p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20">
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
-                  </svg>
+              <div className="relative">
+                <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20">
+                    <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
+                    </svg>
+                  </div>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => handleInputChange(e.target.value)}
+                    onFocus={() => setShowMerchantSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowMerchantSuggestions(false), 150)}
+                    placeholder={t('placeholder')}
+                    maxLength={MAX_INPUT_LENGTH}
+                    className="flex-1 bg-transparent text-lg text-text-primary placeholder:text-text-tertiary/50 focus:outline-none font-medium"
+                    autoFocus
+                  />
+                  {input.length > 0 && (
+                    <span className={`text-xs tabular-nums px-2 py-1 rounded-md ${
+                      input.length >= MAX_INPUT_LENGTH ? 'bg-amber-500/20 text-amber-400' : 'bg-white/5 text-text-tertiary'
+                    }`}>
+                      {input.length}/{MAX_INPUT_LENGTH}
+                    </span>
+                  )}
                 </div>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  placeholder={t('placeholder')}
-                  maxLength={MAX_INPUT_LENGTH}
-                  className="flex-1 bg-transparent text-lg text-text-primary placeholder:text-text-tertiary/50 focus:outline-none font-medium"
-                  autoFocus
-                />
-                {input.length > 0 && (
-                  <span className={`text-xs tabular-nums px-2 py-1 rounded-md ${
-                    input.length >= MAX_INPUT_LENGTH ? 'bg-amber-500/20 text-amber-400' : 'bg-white/5 text-text-tertiary'
-                  }`}>
-                    {input.length}/{MAX_INPUT_LENGTH}
-                  </span>
+
+                {/* Merchant Autocomplete Dropdown */}
+                {showMerchantSuggestions && filteredMerchants.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-surface border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden">
+                    {filteredMerchants.map((merchant, idx) => (
+                      <button
+                        key={merchant.id}
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          const amountMatch = input.match(/\$?\s*[\d,\.]+/);
+                          const amount = amountMatch ? amountMatch[0] : '';
+                          handleInputChange(`${amount} ${merchant.label}`.trim());
+                          setShowMerchantSuggestions(false);
+                        }}
+                        className={`w-full px-4 py-3 text-left hover:bg-white/5 flex items-center gap-3 transition-colors
+                          ${idx !== filteredMerchants.length - 1 ? 'border-b border-white/5' : ''}`}
+                      >
+                        <svg className="w-4 h-4 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span className="text-text-primary">{merchant.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
