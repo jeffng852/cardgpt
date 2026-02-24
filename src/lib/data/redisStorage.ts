@@ -6,9 +6,10 @@
  *
  * Setup:
  * 1. Create Upstash Redis via Vercel Marketplace
- * 2. Environment variables are auto-added:
- *    - UPSTASH_REDIS_REST_URL
- *    - UPSTASH_REDIS_REST_TOKEN
+ * 2. Environment variables are auto-added (e.g.):
+ *    - REAL_STORAGE_KV_REST_API_URL
+ *    - REAL_STORAGE_KV_REST_API_TOKEN
+ *    Also supports: KV_REST_API_URL/TOKEN, UPSTASH_REDIS_REST_URL/TOKEN
  */
 
 import { Redis } from '@upstash/redis';
@@ -21,9 +22,15 @@ let redis: Redis | null = null;
 
 function getRedis(): Redis {
   if (!redis) {
-    // Support both Upstash direct and Vercel KV variable names
-    const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+    // Support Vercel Marketplace integration (REAL_STORAGE_*), generic KV, and direct Upstash names
+    const url =
+      process.env.REAL_STORAGE_KV_REST_API_URL ||
+      process.env.KV_REST_API_URL ||
+      process.env.UPSTASH_REDIS_REST_URL;
+    const token =
+      process.env.REAL_STORAGE_KV_REST_API_TOKEN ||
+      process.env.KV_REST_API_TOKEN ||
+      process.env.UPSTASH_REDIS_REST_TOKEN;
 
     redis = new Redis({ url: url!, token: token! });
   }
@@ -41,8 +48,14 @@ export function isProductionEnvironment(): boolean {
  * Check if Redis storage is configured
  */
 export function isRedisConfigured(): boolean {
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url =
+    process.env.REAL_STORAGE_KV_REST_API_URL ||
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL;
+  const token =
+    process.env.REAL_STORAGE_KV_REST_API_TOKEN ||
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN;
   return !!(url && token);
 }
 

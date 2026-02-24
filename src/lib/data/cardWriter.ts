@@ -74,7 +74,7 @@ async function writeCardsData(database: CardDatabase): Promise<CardDatabase> {
     if (!isRedisConfigured()) {
       throw new Error(
         'Cannot save changes: Upstash Redis is not configured. ' +
-        'Please add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.'
+        'Please add REAL_STORAGE_KV_REST_API_URL and REAL_STORAGE_KV_REST_API_TOKEN via Vercel Marketplace.'
       );
     }
 
