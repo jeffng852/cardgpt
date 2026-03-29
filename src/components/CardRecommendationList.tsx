@@ -24,6 +24,8 @@ export default function CardRecommendationList({
   const isZh = locale === 'zh-HK';
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
   const [filterRewardType, setFilterRewardType] = useState<'all' | 'cash' | 'miles' | 'points'>('all');
+  const [expandedCapRuleId, setExpandedCapRuleId] = useState<string | null>(null);
+  const [expandedFeesCardId, setExpandedFeesCardId] = useState<string | null>(null);
 
   // Locale-aware text helpers - use Chinese if available, fallback to English
   const getDescription = (contribution: RuleContribution) =>
@@ -34,13 +36,19 @@ export default function CardRecommendationList({
 
   if (isLoading) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-8 p-8 bg-surface border border-border rounded-2xl">
-        <div className="flex items-center justify-center gap-3">
-          <svg className="animate-spin h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          <span className="text-text-secondary">{t('loading')}</span>
+      <div className="w-full max-w-2xl mx-auto mt-8">
+        <div className="relative">
+          {/* Blue glow effect */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
+          <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 p-8">
+            <div className="flex items-center justify-center gap-3">
+              <svg className="animate-spin h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              <span className="text-text-secondary">{t('loading')}</span>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -48,18 +56,24 @@ export default function CardRecommendationList({
 
   if (!recommendations || recommendations.length === 0) {
     return (
-      <div className="w-full max-w-3xl mx-auto mt-8 p-8 bg-surface border border-border rounded-2xl text-center">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-text-tertiary/10 mb-4">
-          <svg className="w-8 h-8 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      <div className="w-full max-w-2xl mx-auto mt-8">
+        <div className="relative">
+          {/* Blue glow effect */}
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
+          <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-500/10 mb-4">
+              <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-text-primary mb-2">
+              {t('noResults')}
+            </h3>
+            <p className="text-sm text-text-secondary">
+              {t('noResultsHint')}
+            </p>
+          </div>
         </div>
-        <h3 className="text-lg font-semibold text-text-primary mb-2">
-          {t('noResults')}
-        </h3>
-        <p className="text-sm text-text-secondary">
-          {t('noResultsHint')}
-        </p>
       </div>
     );
   }
@@ -116,91 +130,108 @@ export default function CardRecommendationList({
   // Format amount based on reward unit, using program name when available
   const formatAmount = (amount: number, unit: string, card?: CreditCard) => {
     if (unit === 'cash') {
-      return `$${amount.toFixed(2)}`;
+      return `$${Math.round(amount)}`;
     }
     const unitName = getRewardUnitName(unit, card);
     return `${Math.round(amount)} ${unitName}`;
   };
 
+  // Format rate display - different format for miles vs cash/points
+  const formatRateDisplay = (rate: number, rewardUnit: string) => {
+    if (rewardUnit === 'miles') {
+      // Always use "HK$X = 1 mile" format to match rule descriptions
+      // rate 0.20 means 0.2 miles per dollar = HK$5 = 1 mile
+      const dollarsPerMile = Math.round(1 / rate);
+      return `HK$${dollarsPerMile} = 1 mile`;
+    }
+    return formatRate(rate);
+  };
+
   return (
-    <div className="w-full max-w-3xl mx-auto mt-8">
-      {/* Filter Tabs */}
-      {availableRewardTypes.size > 1 && (
-        <div className="mb-6 flex gap-2 border-b border-border">
-          <button
-            onClick={() => setFilterRewardType('all')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-              filterRewardType === 'all'
-                ? 'border-primary text-primary'
-                : 'border-transparent text-text-secondary hover:text-text-primary'
-            }`}
-          >
-            {t('allCards')} ({recommendations.length})
-          </button>
-          {availableRewardTypes.has('cash') && (
-            <button
-              onClick={() => setFilterRewardType('cash')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-                filterRewardType === 'cash'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {t('cashBack')} ({recommendations.filter(r => r.calculation.rewardUnit === 'cash').length})
-            </button>
-          )}
-          {availableRewardTypes.has('miles') && (
-            <button
-              onClick={() => setFilterRewardType('miles')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-                filterRewardType === 'miles'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {tRewardTypes('miles')} ({recommendations.filter(r => r.calculation.rewardUnit === 'miles').length})
-            </button>
-          )}
-          {availableRewardTypes.has('points') && (
-            <button
-              onClick={() => setFilterRewardType('points')}
-              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
-                filterRewardType === 'points'
-                  ? 'border-primary text-primary'
-                  : 'border-transparent text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              {tRewardTypes('points')} ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
-            </button>
-          )}
-        </div>
-      )}
+    <div className="w-full max-w-2xl mx-auto mt-8">
+      {/* Main Container with Glass-morphism */}
+      <div className="relative">
+        {/* Blue glow effect - adjacent to primary teal */}
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500/20 via-indigo-500/10 to-blue-500/20 rounded-3xl blur-lg opacity-50" />
 
-      {/* Results Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-text-primary">
-          {t('found')} {filteredRecommendations.length} {filteredRecommendations.length === 1 ? t('card') : t('cards')}
-        </h3>
-      </div>
+        <div className="relative bg-surface/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl shadow-black/20 p-4 sm:p-6">
+          {/* Filter Tabs - Pill Style */}
+          {availableRewardTypes.size > 1 && (
+            <div className="mb-6 flex flex-wrap gap-2 p-3 bg-blue-500/5 rounded-xl border border-blue-500/10">
+              <button
+                onClick={() => setFilterRewardType('all')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                  filterRewardType === 'all'
+                    ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                    : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                }`}
+              >
+                {t('allCards')} ({recommendations.length})
+              </button>
+              {availableRewardTypes.has('cash') && (
+                <button
+                  onClick={() => setFilterRewardType('cash')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterRewardType === 'cash'
+                      ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                  }`}
+                >
+                  {t('cashBack')} ({recommendations.filter(r => r.calculation.rewardUnit === 'cash').length})
+                </button>
+              )}
+              {availableRewardTypes.has('miles') && (
+                <button
+                  onClick={() => setFilterRewardType('miles')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterRewardType === 'miles'
+                      ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                  }`}
+                >
+                  {tRewardTypes('miles')} ({recommendations.filter(r => r.calculation.rewardUnit === 'miles').length})
+                </button>
+              )}
+              {availableRewardTypes.has('points') && (
+                <button
+                  onClick={() => setFilterRewardType('points')}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    filterRewardType === 'points'
+                      ? 'bg-blue-500/15 text-blue-400 border border-blue-500/30'
+                      : 'bg-white/10 text-text-secondary border border-white/10 hover:bg-white/15 hover:text-text-primary'
+                  }`}
+                >
+                  {tRewardTypes('points')} ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
+                </button>
+              )}
+            </div>
+          )}
 
-      {/* Card List */}
-      <div className="space-y-4">
-        {filteredRecommendations.map((recommendation, index) => {
-          const isExpanded = expandedCardId === recommendation.card.id;
-          const isTopRecommended = index === 0;
-          const { calculation, card } = recommendation;
-          const ruleBreakdown = calculation.ruleBreakdown || [];
-          const totalAmount = ruleBreakdown.reduce((sum, c) => sum + c.amount, 0) || calculation.rewardAmount;
+          {/* Results Header */}
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-text-primary">
+              {t('found')} {filteredRecommendations.length} {filteredRecommendations.length === 1 ? t('card') : t('cards')}
+            </h3>
+          </div>
 
-          return (
-            <div
-              key={card.id}
-              className={`bg-surface rounded-2xl transition-all duration-300 ease-out overflow-hidden ${
-                isTopRecommended
-                  ? 'ring-2 ring-primary shadow-lg shadow-primary/10'
-                  : 'ring-1 ring-border hover:ring-primary/40 hover:shadow-md'
-              }`}
-            >
+          {/* Card List */}
+          <div className="space-y-4">
+            {filteredRecommendations.map((recommendation, index) => {
+              const isExpanded = expandedCardId === recommendation.card.id;
+              const isTopRecommended = index === 0;
+              const { calculation, card } = recommendation;
+              const ruleBreakdown = calculation.ruleBreakdown || [];
+              const totalAmount = ruleBreakdown.reduce((sum, c) => sum + c.amount, 0) || calculation.rewardAmount;
+
+              return (
+                <div
+                  key={card.id}
+                  className={`rounded-2xl transition-all duration-300 ease-out overflow-hidden ${
+                    isTopRecommended
+                      ? 'bg-surface/95 backdrop-blur-sm border border-primary/30 shadow-lg shadow-primary/10'
+                      : 'bg-surface/80 backdrop-blur-sm border border-white/10 hover:border-blue-500/30 hover:shadow-md'
+                  }`}
+                >
               {/* Preview Layer - Clickable to expand */}
               <button
                 onClick={() => toggleExpand(card.id)}
@@ -233,9 +264,7 @@ export default function CardRecommendationList({
                         {card.name}
                       </h4>
                       {isTopRecommended && (
-                        <span className="px-2 py-0.5 bg-gradient-to-r from-primary/20 to-primary/10 text-primary text-[10px] sm:text-xs font-semibold rounded-full whitespace-nowrap">
-                          {t('recommended')}
-                        </span>
+                        <span className="text-base" title={t('recommended')}>🌟</span>
                       )}
                     </div>
                     <p className="text-xs sm:text-sm text-text-secondary mb-2">
@@ -249,7 +278,7 @@ export default function CardRecommendationList({
                           key={idx}
                           className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-transform duration-200 hover:scale-105 ${getTagStyle(contribution)}`}
                         >
-                          {getTagLabel(contribution)} {formatRate(contribution.rate)}
+                          {getTagLabel(contribution)} {formatRateDisplay(contribution.rate, calculation.rewardUnit)}
                         </span>
                       ))}
                     </div>
@@ -329,14 +358,53 @@ export default function CardRecommendationList({
                                 <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-semibold rounded ${getTagStyle(contribution)}`}>
                                   {getTagLabel(contribution)}
                                 </span>
-                                <span className="text-xs sm:text-sm text-text-secondary line-clamp-2 sm:truncate">
+                                <span className="text-xs sm:text-sm text-text-secondary truncate">
                                   {getDescription(contribution)}
                                 </span>
                               </div>
-                              {/* Cap info inline */}
-                              {contribution.monthlySpendingCap && (
-                                <div className="mt-0.5 sm:mt-1 text-[9px] sm:text-[10px] text-text-tertiary">
-                                  {t('breakdown.cap')}: ${contribution.monthlySpendingCap.toLocaleString()}/{t('breakdown.month')}
+                              {/* Capped reward explainer */}
+                              {contribution.wasCapped && contribution.maxRewardCap && (
+                                <div className="mt-1">
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setExpandedCapRuleId(
+                                        expandedCapRuleId === contribution.ruleId ? null : contribution.ruleId
+                                      );
+                                    }}
+                                    className="flex items-center gap-1 text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors"
+                                  >
+                                    <svg
+                                      className="w-3.5 h-3.5 flex-shrink-0"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                      />
+                                    </svg>
+                                    <span>{t('breakdown.rewardCapped')}</span>
+                                    <svg
+                                      className={`w-3 h-3 transition-transform ${expandedCapRuleId === contribution.ruleId ? 'rotate-180' : ''}`}
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                  </button>
+                                  {expandedCapRuleId === contribution.ruleId && (
+                                    <div className="mt-1.5 p-2 text-[10px] sm:text-xs text-text-secondary bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                                      {t('breakdown.cappedExplainer', {
+                                        cap: formatAmount(contribution.maxRewardCap, calculation.rewardUnit, card),
+                                        original: formatAmount(contribution.originalAmount || 0, calculation.rewardUnit, card)
+                                      })}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
@@ -344,7 +412,7 @@ export default function CardRecommendationList({
                             {/* Rate & Amount - Vertical on mobile */}
                             <div className="flex flex-col sm:flex-row items-end sm:items-center gap-0.5 sm:gap-3 flex-shrink-0">
                               <span className="text-[10px] sm:text-xs font-medium text-text-tertiary tabular-nums">
-                                {formatRate(contribution.rate)}
+                                {formatRateDisplay(contribution.rate, calculation.rewardUnit)}
                               </span>
                               <span className="text-xs sm:text-sm font-bold text-primary tabular-nums">
                                 {formatAmount(contribution.amount, calculation.rewardUnit, card)}
@@ -358,91 +426,115 @@ export default function CardRecommendationList({
                           <span className="text-xs sm:text-sm font-semibold text-text-primary">{t('breakdown.total')}</span>
                           <div className="flex items-center gap-2 sm:gap-3">
                             <span className="text-xs sm:text-sm font-semibold text-text-primary tabular-nums">
-                              {formatRate(calculation.effectiveRate)}
+                              {formatRateDisplay(calculation.effectiveRate, calculation.rewardUnit)}
                             </span>
                             <span className="text-base sm:text-lg font-bold bg-gradient-to-r from-primary to-emerald-500 bg-clip-text text-transparent tabular-nums">
                               {formatReward(calculation, card)}
                             </span>
                           </div>
                         </div>
+
+                        {/* Upgrade Hints - Show skipped rules due to minAmount */}
+                        {calculation.skippedRules && calculation.skippedRules.length > 0 && (
+                          <div className="mt-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                            <div className="flex items-center gap-1.5 mb-2">
+                              <svg className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                              </svg>
+                              <span className="text-[10px] sm:text-xs font-semibold text-blue-700 dark:text-blue-300">
+                                {t('breakdown.upgradeAvailable')}
+                              </span>
+                            </div>
+                            {calculation.skippedRules.map((skipped, idx) => (
+                              <div key={`skipped-${idx}`} className="text-[10px] sm:text-xs text-blue-600 dark:text-blue-400">
+                                {t('breakdown.upgradeHint', {
+                                  rate: formatRate(skipped.rate),
+                                  minAmount: skipped.threshold?.toLocaleString() || '0'
+                                })}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
 
-                  {/* Alerts Section - Expiry & Action Required (Compact) */}
+                  {/* Alerts Section - Left-aligned with solid backgrounds */}
                   {ruleBreakdown.some(c => c.validUntil || c.actionRequired) && (
-                    <div className="mb-4 sm:mb-5 flex flex-wrap gap-1.5 sm:gap-2">
+                    <div className="mb-4 sm:mb-5 flex flex-col items-start gap-1.5 text-[10px] sm:text-xs">
                       {ruleBreakdown
                         .filter(c => c.validUntil)
                         .map((c, idx) => (
-                          <div
+                          <span
                             key={`expiry-${idx}`}
-                            className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300"
+                            className="inline-flex items-start gap-1.5 px-2 py-1.5 rounded-md bg-amber-500 text-white font-medium text-left"
                           >
-                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-[10px] sm:text-xs font-medium">{t('breakdown.offerExpires')}: {c.validUntil}</span>
-                          </div>
+                            <span>{t('breakdown.offerExpires')}: {c.validUntil}</span>
+                          </span>
                         ))}
                       {ruleBreakdown
                         .filter(c => c.actionRequired)
                         .map((c, idx) => (
-                          <div
+                          <span
                             key={`action-${idx}`}
-                            className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md sm:rounded-lg bg-sky-50 dark:bg-sky-900/20 text-sky-700 dark:text-sky-300"
+                            className="inline-flex items-start gap-1.5 px-2 py-1.5 rounded-md bg-amber-500 text-white font-medium text-left"
                           >
-                            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-3 h-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <span className="text-[10px] sm:text-xs font-medium line-clamp-1">{getActionRequired(c)}</span>
-                          </div>
+                            <span>{getActionRequired(c)}</span>
+                          </span>
                         ))}
                     </div>
                   )}
 
-                  {/* Fees Section - Stacked on mobile */}
-                  <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
-                    <span className="font-medium">{t('breakdown.fees')}:</span>
-                    <div className="mt-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 flex-wrap">
-                      <span>
-                        {t('annualFee')}: {' '}
-                        <span className={card.fees.annualFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
-                          {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
-                        </span>
-                      </span>
-                      {card.fees.foreignTransactionFeeRate !== undefined && (
-                        <>
-                          <span className="hidden sm:inline text-border">•</span>
-                          <span>
-                            {t('breakdown.fxFee')}: {' '}
-                            <span className={card.fees.foreignTransactionFeeRate > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
-                              {card.fees.foreignTransactionFeeRate > 0 ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
-                            </span>
-                          </span>
-                        </>
-                      )}
-                      {card.fees.redemptionFee !== undefined && (
-                        <>
-                          <span className="hidden sm:inline text-border">•</span>
-                          <span>
-                            {t('breakdown.redemptionFee')}: {' '}
-                            <span className={card.fees.redemptionFee > 0 ? 'text-text-secondary' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
-                              {card.fees.redemptionFee > 0 ? `$${card.fees.redemptionFee}` : t('free')}
-                            </span>
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
+                  {/* Fees Section - Collapsible */}
+                  <div className="mb-3">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedFeesCardId(expandedFeesCardId === card.id ? null : card.id);
+                      }}
+                      className="flex items-center gap-1 text-[9px] sm:text-[10px] text-text-tertiary hover:text-text-secondary transition-colors"
+                    >
+                      <span className="font-medium uppercase tracking-wide">{t('breakdown.fees')}</span>
+                      <svg
+                        className={`w-3 h-3 transition-transform ${expandedFeesCardId === card.id ? 'rotate-180' : ''}`}
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
 
-                  {/* Min Income Requirement - Compact */}
-                  {card.minIncomeRequirement && (
-                    <div className="mb-4 sm:mb-5 text-[10px] sm:text-xs text-text-tertiary">
-                      <span className="font-medium">{t('breakdown.minIncome')}:</span>{' '}
-                      <span className="text-text-secondary">HKD ${card.minIncomeRequirement.toLocaleString()} {t('breakdown.perYear')}</span>
-                    </div>
-                  )}
+                    {expandedFeesCardId === card.id && (
+                      <div className="mt-2 grid grid-cols-3 gap-2 text-[9px] sm:text-[10px]">
+                        {/* Annual Fee Card */}
+                        <div className="px-2 py-1.5 rounded-md bg-transparent border border-border text-center">
+                          <div className="text-text-tertiary">{t('annualFee')}</div>
+                          <div className={card.fees.annualFee > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
+                            {card.fees.annualFee > 0 ? `$${card.fees.annualFee.toLocaleString()}` : t('free')}
+                          </div>
+                        </div>
+                        {/* FX Fee Card */}
+                        <div className="px-2 py-1.5 rounded-md bg-transparent border border-border text-center">
+                          <div className="text-text-tertiary">{t('breakdown.fxFee')}</div>
+                          <div className={card.fees.foreignTransactionFeeRate && card.fees.foreignTransactionFeeRate > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
+                            {card.fees.foreignTransactionFeeRate ? `${(card.fees.foreignTransactionFeeRate * 100).toFixed(1)}%` : t('free')}
+                          </div>
+                        </div>
+                        {/* Redemption Fee Card */}
+                        <div className="px-2 py-1.5 rounded-md bg-transparent border border-border text-center">
+                          <div className="text-text-tertiary">{t('breakdown.redemptionFee')}</div>
+                          <div className={card.fees.redemptionFee && card.fees.redemptionFee > 0 ? 'font-medium text-text-primary' : 'font-medium text-emerald-600 dark:text-emerald-400'}>
+                            {card.fees.redemptionFee ? `$${card.fees.redemptionFee}` : t('free')}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                   {/* Apply Button */}
                   {card.applyUrl && (
@@ -465,7 +557,9 @@ export default function CardRecommendationList({
               </div>
             </div>
           );
-        })}
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

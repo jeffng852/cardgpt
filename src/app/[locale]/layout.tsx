@@ -1,16 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import { routing } from '@/i18n/routing';
 import { notFound } from 'next/navigation';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ThemeFavicon } from '@/components/ThemeFavicon';
 import "../globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Inter - Clean geometric sans-serif similar to FK Grotesk
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -81,7 +83,7 @@ export default async function LocaleLayout({
         <meta name="apple-mobile-web-app-title" content="CardGPT" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
