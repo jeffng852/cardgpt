@@ -51,20 +51,23 @@
 **GitHub remote is live:** https://github.com/jeffng852/cardgpt
 **Linear project:** [CardGPT](https://linear.app/thirdvisor/project/cardgpt-a6eee6b146ee) · team Thirdvisor (`THI`)
 
-> **⚠ Setup gap — assume auto-transitions do NOT work until proven otherwise.**
-> The Linear↔GitHub integration is **unconfirmed** for this repo. Checked 2026-07-15: THI-71 (Done)
-> has no attachments and its state history runs Backlog → Todo → Done with no In Progress/In Review
-> step — consistent with manual moves. **This is suggestive, not conclusive**: the repo has only one
-> PR in its entire history (`#1`), so nearly all work went straight to `main` and would show no PR
-> attachment regardless. **The real test is the next PR** — open it with `Closes THI-XXX` and watch
-> whether the issue auto-links and moves.
+> **⚠ Linear issue-mirroring lands on the WRONG repo — known, team-level, not fixable per-project.**
+> Confirmed here 2026-07-15: THI-233 mirrored to `polytracker#155`, THI-236 to `polytracker#159`.
+> Linear's GitHub **Issue Sync** is bound to one default repo for the whole Thirdvisor team, so every
+> CardGPT Linear issue spawns a stray GitHub issue on `jeffng852/polytracker`. There is no per-project
+> routing. **Decision: leave it** — mirrors auto-close when the Linear issue hits Done. Don't hand-close
+> an *active* issue's mirror; that marks the Linear issue Done.
 >
-> To enable: Linear → Settings → Integrations → GitHub → add `jeffng852/cardgpt`. **Only the user can
-> do this step.** Until it's confirmed, attach PR links and move issue status manually via the Linear
-> MCP — and treat it as a gap to close, not the steady state.
+> **Consequence to keep in mind:** the mirror carries the issue's **full body** into polytracker. That's
+> tolerable only because polytracker is private. Combined with the public-repo rule above, security
+> specifics for CardGPT live in Linear + a private mirror — never here.
 >
-> Known quirk on a sibling project: Linear issue-mirroring has created GitHub issues on the *wrong*
-> repo (polytracker). If mirroring is enabled here, verify where issues actually land.
+> **PR↔issue auto-linking is a separate half and is unconfirmed for this repo.** THI-71 (Done) has no
+> PR attachment and went Backlog → Todo → Done with no In Progress/In Review step. But this repo has
+> only one PR in its entire history (`#1`), so nearly all work bypassed PRs and would look identical
+> either way. **The next PR is the real test** — open it with `Closes THI-XXX` and watch. On the
+> sibling auto-refresher project this half works fine, so it likely works here too. Until confirmed,
+> attach PR links and move status manually via the Linear MCP.
 
 ### Standard PR Flow (mandatory)
 1. **CTO** creates (or locates) the **Linear issue first** in *Todo* via the Linear MCP, then branches with Linear's suggested name `jeffreyn/thi-XXX-...`
