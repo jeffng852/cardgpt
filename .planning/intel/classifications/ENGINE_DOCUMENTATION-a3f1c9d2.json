@@ -1,0 +1,33 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/ENGINE_DOCUMENTATION.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT Recommendation Engine Documentation",
+  "summary": "Developer guide to CardGPT's recommendation engine: reward calculation, card ranking, matching logic, utility functions, integration patterns, and future enhancements.",
+  "scope": [
+    "recommendation engine",
+    "calculateReward",
+    "recommendCards",
+    "reward rules",
+    "transaction matching",
+    "monthly spending caps",
+    "card ranking and tie-breaking",
+    "RecommendationPreferences",
+    "utility/formatting functions",
+    "React and API route integration",
+    "credit cards"
+  ],
+  "cross_refs": [
+    "SCHEMA_DESIGN.md",
+    "src/lib/engine/calculateReward.ts",
+    "src/lib/engine/recommendCards.ts",
+    "src/lib/engine/index.ts",
+    "src/lib/engine/example.ts",
+    "src/lib/engine/__tests__/engine.test.ts",
+    "app/api/recommend/route.ts"
+  ],
+  "locked": false,
+  "precedence": 6,
+  "notes": ""
+}

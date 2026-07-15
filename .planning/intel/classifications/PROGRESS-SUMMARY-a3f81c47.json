@@ -1,0 +1,32 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/PROGRESS_SUMMARY.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT Development Progress Summary",
+  "summary": "Point-in-time development log (dated 2026-01-21) recording completed CardGPT phases, ticket status, technical decisions, and planned next steps.",
+  "scope": [
+    "CardGPT project overview",
+    "Next.js 15 App Router setup",
+    "next-intl bilingual EN/zh-HK support",
+    "TypeScript type definitions",
+    "card data schema and cards.json (10 HK cards, 36 reward rules)",
+    "ChatGPT-inspired color system",
+    "reward calculation engine (priority + cumulative)",
+    "card ranking and recommendation logic",
+    "NLP transaction parser",
+    "landing page, TransactionInput, CardRecommendationList components",
+    "Linear tickets THI-6 through THI-22"
+  ],
+  "cross_refs": [
+    "CARD_RESEARCH_SUMMARY.md",
+    "SCHEMA_DESIGN.md",
+    "COLOR_SYSTEM.md",
+    "ENGINE_DOCUMENTATION.md",
+    "PARSER_DOCUMENTATION.md",
+    "PROGRESS_SUMMARY.md"
+  ],
+  "locked": false,
+  "precedence": 15,
+  "notes": "HISTORICAL SNAPSHOT — dated 2026-01-21, ~6 months stale as of ingest. Every state claim (phase completion, 12/17 tickets = 71%, file line counts, git commit SHAs ee47240/91c95d2/5af655a etc., 27 commits, 'THI-18 next') describes the repo AT THAT DATE, not current state. Downstream consumers must verify against git log / filesystem before treating any claim as current. Contains a 'Technical Decisions' section (priority+cumulative rewards, monthly caps, no backend for MVP, TS strict mode, Tailwind v4) with ADR-like rationale, but these are retrospective summaries in a progress log, not standalone ADRs with status fields — decisions here are UNVERIFIED context, not locked. Manifest declared DOC with precedence 15; classification honors manifest without heuristic override. Content signals independently agree: prose/log structure, no user stories, no API contracts, no ADR status markers."
+}

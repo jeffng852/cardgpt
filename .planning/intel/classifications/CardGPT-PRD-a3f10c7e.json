@@ -1,0 +1,25 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/CardGPT PRD.md",
+  "type": "PRD",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT PRD",
+  "summary": "Product requirements for a free Hong Kong web tool recommending the best credit card(s) to maximize rewards for a described spending transaction.",
+  "scope": [
+    "credit card rewards data curation",
+    "reward parameters (reward %, fees, merchant type, payment type, currency, reward unit, caps, day of week)",
+    "recommendation and tie-breaking optimization logic",
+    "multi-card split recommendations",
+    "no-login desktop web UI",
+    "rewards category and merchant tags",
+    "NLP transaction text input",
+    "bilingual English/Chinese with language switch",
+    "ranked results with estimated rewards, fees, and Apply Here CTA",
+    "light/dark mode and typing animation",
+    "future monetization (subscription + token limits)"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 0,
+  "notes": ""
+}

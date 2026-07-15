@@ -1,0 +1,28 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/CARD_IMAGE_AUTOMATION.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Card Image Automation Guide",
+  "summary": "Operational guide for adding credit card images to CardGPT via the add-card-images automation script, with naming rules, coverage status, and troubleshooting.",
+  "scope": [
+    "card image automation script",
+    "card_image/ source folder",
+    "public/cards/ served images",
+    "src/lib/cardImages.ts mapping",
+    "src/data/cards.json card IDs",
+    "npm run add-card-images",
+    "image format and sizing guidelines",
+    "card image coverage reporting"
+  ],
+  "cross_refs": [
+    "src/data/cards.json",
+    "src/lib/cardImages.ts",
+    "scripts/add-card-images.sh",
+    "package.json",
+    "card_image/README.md"
+  ],
+  "locked": false,
+  "precedence": 9,
+  "notes": ""
+}

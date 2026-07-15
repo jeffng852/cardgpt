@@ -1,0 +1,31 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/DEVELOPMENT.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Development Workflow",
+  "summary": "Developer runbook covering the local dev cycle, health-check script, npm scripts, troubleshooting steps, and protected critical files.",
+  "scope": [
+    "development workflow",
+    "health check script",
+    "npm scripts",
+    "troubleshooting runbook",
+    "critical file protection",
+    "Next.js configuration",
+    "node_modules dependencies"
+  ],
+  "cross_refs": [
+    "src/app/[locale]/page.tsx",
+    "src/app/[locale]/layout.tsx",
+    "src/middleware.ts",
+    "src/i18n/routing.ts",
+    "package.json",
+    "tsconfig.json",
+    ".npmrc",
+    "next.config.js",
+    "scripts/health-check.js"
+  ],
+  "locked": false,
+  "precedence": 11,
+  "notes": ""
+}

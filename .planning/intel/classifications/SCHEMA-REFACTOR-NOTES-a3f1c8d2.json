@@ -1,0 +1,33 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/SCHEMA_REFACTOR_NOTES.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Schema Refactoring Notes",
+  "summary": "Defines the hierarchical RewardRule/Transaction schema separating broad categories from specific merchants, with matching priority logic and backward compatibility.",
+  "scope": [
+    "RewardRule interface",
+    "Transaction interface",
+    "categories field",
+    "specificMerchants field",
+    "merchantTypes (deprecated)",
+    "reward matching engine",
+    "card data migration",
+    "merchant taxonomy",
+    "MCC codes",
+    "NLP parser inputs"
+  ],
+  "cross_refs": [
+    "src/types/card.ts",
+    "src/types/transaction.ts",
+    "src/types/index.ts",
+    "src/lib/engine/calculateReward.ts",
+    "src/lib/engine/example.ts",
+    "src/data/cards.json",
+    "src/data/merchants.json",
+    "scripts/migrate-schema.ts"
+  ],
+  "locked": false,
+  "precedence": 2,
+  "notes": ""
+}

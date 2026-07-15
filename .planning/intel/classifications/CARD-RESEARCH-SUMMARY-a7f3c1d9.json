@@ -1,0 +1,26 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/CARD_RESEARCH_SUMMARY.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Card Research Summary - 10 Hong Kong Credit Cards",
+  "summary": "Research notes on reward structures, caps, and conversion rates for 10 Hong Kong credit cards, assessing each against the reward schema.",
+  "scope": [
+    "CitiBank Cash Back Card",
+    "Standard Chartered Smart Credit Card",
+    "Standard Chartered Simply Cash Visa Card",
+    "Standard Chartered Cathay Mastercard (Standard, Priority Banking, Priority Private)",
+    "HSBC EveryMile Credit Card",
+    "HSBC Red Credit Card",
+    "DBS Black World Mastercard",
+    "Hang Seng enJoy Visa Platinum Card",
+    "reward schema",
+    "RewardCap interface",
+    "reward units (cash, miles, points)",
+    "conversion rates"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 8,
+  "notes": "Manifest declared DOC; accepted as authoritative. Content includes a RewardCap TypeScript interface and a proposed monthlySpendingCap field, which carry a secondary SPEC signal the synthesizer may want to treat as a technical constraint."
+}

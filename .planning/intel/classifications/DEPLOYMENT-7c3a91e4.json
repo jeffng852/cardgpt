@@ -1,0 +1,30 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/DEPLOYMENT.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT - Production Deployment Guide",
+  "summary": "Operational runbook for deploying the CardGPT Next.js MVP to Vercel, covering build steps, testing flows, monitoring, rollback, and post-MVP TODOs.",
+  "scope": [
+    "Vercel deployment",
+    "Next.js production build",
+    "GitHub repository setup",
+    "environment variables",
+    "performance/Lighthouse checklist",
+    "Vercel Analytics",
+    "Google Analytics",
+    "rollback procedure",
+    "build troubleshooting",
+    "MVP known limitations",
+    "post-deployment TODO backlog"
+  ],
+  "cross_refs": [
+    ".env.example",
+    ".env.local",
+    "package.json",
+    "layout.tsx"
+  ],
+  "locked": false,
+  "precedence": 12,
+  "notes": ""
+}

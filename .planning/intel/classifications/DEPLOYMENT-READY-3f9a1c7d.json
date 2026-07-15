@@ -1,0 +1,31 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/DEPLOYMENT_READY.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT - Deployment Ready Summary",
+  "summary": "Point-in-time session log (2026-01-25) summarizing completed Chinese i18n work, prior bug fixes, manual testing steps, and a deployment checklist for CardGPT v1.0.",
+  "scope": [
+    "Chinese language support (next-intl)",
+    "messages/en.json",
+    "messages/zh-HK.json",
+    "CardRecommendationList component",
+    "TransactionInput component",
+    "LanguageSwitcher component",
+    "transactionParser merchant keywords",
+    "health check system",
+    "deployment checklist (Vercel)",
+    "card images automation"
+  ],
+  "cross_refs": [
+    "messages/en.json",
+    "messages/zh-HK.json",
+    "src/components/CardRecommendationList.tsx",
+    "src/components/TransactionInput.tsx",
+    "src/components/LanguageSwitcher.tsx",
+    "src/lib/parser/transactionParser.ts"
+  ],
+  "locked": false,
+  "precedence": 14,
+  "notes": "HISTORICAL SNAPSHOT — dated 2026-01-25, ~6 months stale as of ingest. Every state claim (THI-23/26/27/28/29/32 'complete', THI-33/34 'remaining', 10/10 card images, 45+ translation keys, 'production-ready') describes the repo as of Jan 2026, NOT current state; verify against git log before relying on any of it. Also references a stale project path (/Users/jeffreyng/Desktop/CODE STUDIO/CardGPT) that differs from the current repo root (/Users/jeffreyng/cardgpt). Type taken from MANIFEST_TYPE=DOC; content signals independently agree (runbook/checklist prose, no decisions or requirements)."
+}

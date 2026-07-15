@@ -1,0 +1,26 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/SCHEMA_DESIGN.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Card Data Schema Design",
+  "summary": "Defines the credit-card reward rule data schema, priority/cumulative semantics, conditions, exclusions, caps, and the reward calculation algorithm.",
+  "scope": [
+    "card data schema",
+    "reward rules",
+    "rule priority (base/bonus/premium)",
+    "isCumulative flag",
+    "rule conditions (currency, paymentType, minAmount, minMonthlySpending, geographic)",
+    "merchant types and excludedMerchants",
+    "rewardCap",
+    "calculateReward algorithm",
+    "Citi Cash Back Card example",
+    "flat-rate, tiered, and rotating-category card patterns"
+  ],
+  "cross_refs": [
+    "src/data/examples/citi-cash-back-card.json"
+  ],
+  "locked": false,
+  "precedence": 1,
+  "notes": ""
+}

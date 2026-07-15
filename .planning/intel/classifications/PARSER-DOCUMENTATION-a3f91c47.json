@@ -1,0 +1,30 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/PARSER_DOCUMENTATION.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Transaction Parser Documentation",
+  "summary": "Usage guide and API reference for the bilingual (EN/zh-Hant) transaction parser that converts natural language input into structured Transaction objects with confidence scores.",
+  "scope": [
+    "transaction parser",
+    "transactionParser.ts",
+    "amount extraction",
+    "currency detection",
+    "category detection",
+    "merchant detection",
+    "payment type detection",
+    "confidence scoring",
+    "recommendation engine integration",
+    "parser API reference"
+  ],
+  "cross_refs": [
+    "src/lib/parser/transactionParser.ts",
+    "src/lib/parser/__tests__/transactionParser.test.ts",
+    "src/lib/parser/example.ts",
+    "src/lib/engine",
+    "src/lib/data/loadCards"
+  ],
+  "locked": false,
+  "precedence": 7,
+  "notes": "Manifest declared DOC (authoritative). Content carries some SPEC-like signals (API reference, pattern/keyword tables, confidence formula) that a synthesizer may want to mine for technical constraints."
+}

@@ -1,0 +1,23 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/README.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT",
+  "summary": "Repository README introducing CardGPT, a Hong Kong credit card rewards optimizer, covering tech stack, setup commands, project structure, and commit conventions.",
+  "scope": [
+    "CardGPT app",
+    "credit card rewards optimizer",
+    "Next.js 15 App Router",
+    "Tailwind CSS v4",
+    "TypeScript",
+    "Vercel deployment",
+    "next-intl i18n (English + Traditional Chinese)",
+    "project directory structure",
+    "Linear-based development workflow"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 13,
+  "notes": ""
+}

@@ -1,0 +1,79 @@
+# CardGPT — ingest manifest for /gsd-ingest-docs (THI-233)
+#
+# Why a manifest: CardGPT's planning docs live at repo root with ad-hoc names
+# ("CardGPT PRD.md", SCHEMA_DESIGN.md, ...). None match the directory conventions
+# auto-discovery looks for (docs/adr/, PRD-*.md, SPEC-*.md), so the heuristic
+# scan would find only docs/ARCHITECTURE.md and silently miss the real intent.
+#
+# Precedence: lower = higher precedence. The default engine order is
+# ADR > SPEC > PRD > DOC, but CardGPT has no ADRs and the PRD is the canonical
+# statement of product intent, so it is pinned to 0 — above the SPECs.
+# The tail (14-16) are historical session logs: they record what *was* done at a
+# point in time, are likely stale, and must never override current intent.
+# GitHub main is ground truth over any claim in these docs.
+
+docs:
+  # --- Product intent (canonical) ---
+  - path: CardGPT PRD.md
+    type: PRD
+    precedence: 0
+
+  # --- Design contracts / specs ---
+  # SCHEMA_REFACTOR_NOTES supersedes SCHEMA_DESIGN's merchant model: it replaces
+  # `merchantTypes` (which conflated categories like "restaurant" with merchants
+  # like "mcdonalds") with `categories` + `specificMerchants`. The code agrees —
+  # card.ts retains `merchantTypes?` only as a deprecated backward-compat branch.
+  # Ranking the successor below the doc it supersedes was an error in the first
+  # draft of this manifest (WARNING-003); the successor now outranks it.
+  - path: SCHEMA_REFACTOR_NOTES.md
+    type: SPEC
+    precedence: 1
+  - path: SCHEMA_DESIGN.md
+    type: SPEC
+    precedence: 2
+  - path: docs/ARCHITECTURE.md
+    type: SPEC
+    precedence: 3
+  - path: LANDING_PAGE_REDESIGN.md
+    type: SPEC
+    precedence: 4
+  - path: COLOR_SYSTEM.md
+    type: SPEC
+    precedence: 5
+
+  # --- Reference documentation (describes implemented behaviour) ---
+  - path: ENGINE_DOCUMENTATION.md
+    type: DOC
+    precedence: 6
+  - path: PARSER_DOCUMENTATION.md
+    type: DOC
+    precedence: 7
+  - path: CARD_RESEARCH_SUMMARY.md
+    type: DOC
+    precedence: 8
+  - path: CARD_IMAGE_AUTOMATION.md
+    type: DOC
+    precedence: 9
+  - path: DARK_MODE_IMPLEMENTATION.md
+    type: DOC
+    precedence: 10
+  - path: DEVELOPMENT.md
+    type: DOC
+    precedence: 11
+  - path: DEPLOYMENT.md
+    type: DOC
+    precedence: 12
+  - path: README.md
+    type: DOC
+    precedence: 13
+
+  # --- Historical logs (lowest precedence; stale by construction) ---
+  - path: DEPLOYMENT_READY.md
+    type: DOC
+    precedence: 14
+  - path: PROGRESS_SUMMARY.md
+    type: DOC
+    precedence: 15
+  - path: SESSION_SUMMARY.md
+    type: DOC
+    precedence: 16

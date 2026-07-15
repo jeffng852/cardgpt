@@ -1,0 +1,25 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/COLOR_SYSTEM.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT Color System",
+  "summary": "Defines CardGPT's ChatGPT-inspired design token palette for light and dark modes, with Tailwind usage contracts, hierarchy rules, and accessibility requirements.",
+  "scope": [
+    "color tokens",
+    "light mode palette",
+    "dark mode palette",
+    "Tailwind CSS v4 theme",
+    "CSS custom properties",
+    "globals.css",
+    "prefers-color-scheme dark mode",
+    "WCAG AA contrast",
+    "component background/foreground/border/primary/card/state utilities"
+  ],
+  "cross_refs": [
+    "globals.css"
+  ],
+  "locked": false,
+  "precedence": 5,
+  "notes": ""
+}

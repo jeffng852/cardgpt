@@ -1,0 +1,33 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/docs/ARCHITECTURE.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "CardGPT System Architecture",
+  "summary": "Technical architecture of the CardGPT Next.js app: data layer, NLP parser, reward engine, server/client split, performance targets, and deployment.",
+  "scope": [
+    "Next.js 14 app",
+    "Vercel Blob storage",
+    "cardRepository sync/async data access",
+    "NLP transaction parser",
+    "reward calculation engine",
+    "recommendCards ranking",
+    "admin CRUD API routes",
+    "server/client component split",
+    "force-dynamic rendering",
+    "environment detection",
+    "TypeScript type contracts",
+    "performance characteristics",
+    "security / API key handling",
+    "internationalization (en, zh-HK)",
+    "Vercel deployment"
+  ],
+  "cross_refs": [
+    "../CardGPT PRD.md",
+    "../../CLAUDE.md",
+    "docs/ARCHITECTURE.md"
+  ],
+  "locked": false,
+  "precedence": 3,
+  "notes": ""
+}

@@ -1,0 +1,34 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/DARK_MODE_IMPLEMENTATION.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Dark Mode & Typing Animation Implementation - Complete",
+  "summary": "Retrospective implementation report for CardGPT dark mode toggle and animated bilingual typing tagline, covering components, translations, testing checklist, and acceptance criteria.",
+  "scope": [
+    "dark mode toggle",
+    "next-themes",
+    "ThemeProvider",
+    "DarkModeToggle",
+    "TypingAnimation",
+    "animated tagline",
+    "i18n translations",
+    "messages/en.json",
+    "messages/zh-HK.json",
+    "HowItWorks component",
+    "landing page hero"
+  ],
+  "cross_refs": [
+    "src/components/ThemeProvider.tsx",
+    "src/components/DarkModeToggle.tsx",
+    "src/components/TypingAnimation.tsx",
+    "src/components/HowItWorks.tsx",
+    "src/app/[locale]/layout.tsx",
+    "src/app/[locale]/page.tsx",
+    "messages/en.json",
+    "messages/zh-HK.json"
+  ],
+  "locked": false,
+  "precedence": 10,
+  "notes": ""
+}

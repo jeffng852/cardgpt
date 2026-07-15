@@ -1,0 +1,38 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/SESSION_SUMMARY.md",
+  "type": "DOC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Session Summary - CardGPT Testing & Fixes",
+  "summary": "Historical point-in-time work log dated 2026-01-22 recording bug fixes, Chinese i18n rollout, card-image automation, and health-check tooling for CardGPT.",
+  "scope": [
+    "transactionParser.ts currency detection",
+    "merchant tag selection (TransactionInput.tsx)",
+    "confidence score removal",
+    "category matching scoring",
+    "LanguageSwitcher / next-intl i18n",
+    "messages/en.json and messages/zh-HK.json translations",
+    "card image automation (cardImages.ts, scripts/add-card-images.sh)",
+    "scripts/health-check.js and npm scripts",
+    "next.config.js next-intl plugin"
+  ],
+  "cross_refs": [
+    "DEVELOPMENT.md",
+    "CARD_IMAGE_AUTOMATION.md",
+    "next.config.js",
+    "package.json",
+    ".npmrc",
+    "scripts/health-check.js",
+    "scripts/add-card-images.sh",
+    "src/lib/parser/transactionParser.ts",
+    "src/lib/cardImages.ts",
+    "src/components/TransactionInput.tsx",
+    "src/components/CardRecommendationList.tsx",
+    "src/components/LanguageSwitcher.tsx",
+    "messages/en.json",
+    "messages/zh-HK.json"
+  ],
+  "locked": false,
+  "precedence": 16,
+  "notes": "HISTORICAL SNAPSHOT (2026-01-22), likely stale. Every state claim in this doc — 100% card image coverage, 100% Chinese translation coverage, HKD default currency, single-select merchant tags, health-check wired into npm dev/build, THI-23/26/27/28/29/32 done, THI-33/34 outstanding, 'ready for deployment' with uncommitted changes — must be treated as a claim about the system AS OF that date, not current state. Verify against git log / working tree before relying on any of it. Type set by MANIFEST_TYPE=DOC; content independently corroborates DOC (prose status log, no decisions/requirements/contracts)."
+}

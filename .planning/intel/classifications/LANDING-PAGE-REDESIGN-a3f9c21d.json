@@ -1,0 +1,36 @@
+{
+  "source_path": "/Users/jeffreyng/cardgpt/LANDING_PAGE_REDESIGN.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "Landing Page Redesign - Complete",
+  "summary": "Implementation record of the CardGPT landing page v2.0 redesign: brand palette, floating-cards animation, How It Works section, stats, footer, and PWA setup.",
+  "scope": [
+    "landing page",
+    "brand color palette",
+    "globals.css accent colors",
+    "FloatingCards.tsx animation",
+    "HowItWorks.tsx section",
+    "hero section",
+    "features grid",
+    "social proof stats",
+    "footer",
+    "PWA manifest.json",
+    "layout.tsx meta tags",
+    "responsive breakpoints",
+    "accessibility (prefers-reduced-motion, WCAG AA)",
+    "performance targets"
+  ],
+  "cross_refs": [
+    "src/components/FloatingCards.tsx",
+    "src/components/HowItWorks.tsx",
+    "public/manifest.json",
+    "src/app/globals.css",
+    "src/app/[locale]/page.tsx",
+    "src/app/[locale]/layout.tsx",
+    "LANDING_PAGE_REDESIGN.md"
+  ],
+  "locked": false,
+  "precedence": 4,
+  "notes": "Manifest declared SPEC; accepted as authoritative. Content is a completed-implementation report with concrete design tokens, breakpoints, PWA manifest fields, and performance/accessibility criteria, which is consistent with SPEC-style technical constraints, though its retrospective 'what was built' framing also carries DOC characteristics."
+}
