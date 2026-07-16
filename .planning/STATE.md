@@ -1,3 +1,18 @@
+---
+gsd_state_version: 1.0
+milestone: v1.1
+milestone_name: Card Directory & Crypto Expansion
+status: planning
+last_updated: "2026-07-16T18:13:19.427Z"
+last_activity: 2026-07-16
+progress:
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
+---
+
 # CardGPT — State
 
 **Updated:** 2026-07-15
@@ -16,18 +31,10 @@ milestone framing deliberately deferred to a later session.
 
 ## Current Position
 
-**Phase:** None active — Phases 1-5 are retrospective and already shipped
-**Plan:** None
-**Status:** As-built capture complete. Awaiting decisions on open questions.
-
-```
-Phases 1-5 (as-built, shipped)  [##########] 100%
-Milestone (undefined)           [----------]  n/a
-```
-
-**This is not a greenfield project.** 87 commits on main, live on Vercel (`hkg1`), last code
-activity 2026-02-24. Do not plan the building of features that shipped six months ago —
-read `ROADMAP.md`'s framing block before planning anything.
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-07-16 — Milestone v1.1 started
 
 ## Accumulated Context
 
@@ -37,6 +44,7 @@ read `ROADMAP.md`'s framing block before planning anything.
   in scope for GSD**. Consequently the PRD is canonical-but-incomplete (needs a v2 covering
   admin + Redis), and **CAND-003 "No Backend for MVP" is retired, not promoted** — 12 API
   routes contradict it.
+
 - **Zero ADRs exist.** CAND-001…CAND-007 are unlocked candidates. Nothing is locked.
   See `PROJECT.md` → Decisions.
 
@@ -58,6 +66,7 @@ Four intel claims did not survive verification against code. Recorded in
 - **WARNING-002 was factually wrong** — it claimed *zero* cards populate `rewardCap`;
   **3 of 11 do**. The dead-schema conclusion survives and sharpens: `rewardCap` is
   *write-only* — populated and read by nothing.
+
 - **Two "unconfirmed" items resolved to deviations**, not unknowns: the typing cadence is
   10s vs. the PRD's 60s, and the tie-break chain has no reward-unit-class step.
 
@@ -82,8 +91,10 @@ OPEN-009 landing NFRs unverified · OPEN-010 `dayOfWeek` dead path · OPEN-011 d
 1. 🔴 **OPEN-003 — harden admin auth. Start here.** Highest severity, confirmed live against
    production. See [THI-236](https://linear.app/thirdvisor/issue/THI-236) (Urgent) for the
    specifics — deliberately withheld from `.planning/` because this repo is public.
+
 2. **OPEN-004 — promote CAND-006 (Redis) and CAND-007 (admin panel) to real ADRs.** They
    have no doc source at all; they exist only in git. Clearest early GSD win.
+
 3. **OPEN-002 — decide the cap contract.** Unblocks the only unbuilt PRD requirement.
 
 ## Session Continuity
