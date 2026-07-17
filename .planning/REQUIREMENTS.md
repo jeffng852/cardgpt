@@ -336,3 +336,29 @@ tier (THI-41).
 
 **Coverage:** 23 requirements. 22 mapped to delivered phases; 1 (PUB-007) explicitly in
 Backlog as unbuilt and blocked. No orphans.
+---
+
+## Milestone v1.1 — Traceability (Card Directory & Crypto Expansion)
+
+Phase mapping for the 14 forward requirements. Filled by the roadmapper 2026-07-17 from
+`ROADMAP.md` Phases 6–11. Every v1.1 requirement maps to exactly one phase.
+
+| Req | Phase | Status |
+|-----|-------|--------|
+| CRY-01 | Phase 6 | Pending |
+| CRY-02 | Phase 6 | Pending |
+| CRY-03 | Phase 6 | Pending |
+| TECH-02 | Phase 6 | Pending |
+| CRY-04 | Phase 7 | Pending |
+| CRY-05 | Phase 7 | Pending |
+| TECH-01 | Phase 7 | Pending |
+| AFF-01 | Phase 8 | Pending |
+| AFF-02 | Phase 8 | Pending |
+| DIR-01 | Phase 9 | Pending |
+| DIR-02 | Phase 9 | Pending |
+| DIR-03 | Phase 9 | Pending |
+| RES-01 | Phase 10 | Pending |
+| UI-01 | Phase 11 | Pending |
+
+**v1.1 coverage:** 14 / 14 requirements mapped to exactly one phase (6–11). No orphans, no
+duplicates. (The as-built PUB-*/ADM-* traceability above is unchanged.)
