@@ -236,6 +236,76 @@ these are reverse-engineered from the shipped system.
 
 ---
 
+## Milestone v1.1 — Card Directory & Crypto Expansion (forward — NOT BUILT)
+
+New requirements for v1.1. Unlike the as-built PUB-*/ADM-* above, these are **work to do**.
+Grounded in `.planning/research/SUMMARY.md`. Traceability (phase mapping) is filled by the roadmap.
+
+### Crypto card support (CRY)
+
+- [ ] **CRY-01** — A card carries a `cardType` (`credit | crypto | prepaid`), required; the 11
+  existing cards are backfilled to `credit` in **both** `cards.json` and Redis (prod truth).
+- [ ] **CRY-02** — The reward model can express a crypto reward: `RewardUnit` supports `crypto`
+  with a named asset (via the `rewardPrograms` pattern). All hardcoded three-unit sites are
+  updated — no runtime crash in `groupByRewardUnit` or the unit formatters.
+- [ ] **CRY-03** — The reward model can express staking/holding-gated crypto tiers
+  (`RewardCondition.minStaking {amount, asset}`), **valued at the base un-staked tier by
+  default** (must not inherit the `minMonthlySpending` "assume met" no-op).
+- [ ] **CRY-04** — Crypto rewards are valued in HKD-equivalent so they rank by net value beside
+  fiat cards. A missing/zero/stale rate **fails safe and visibly** ("value unavailable / as of
+  <time>"), never silently ranking a card #1. **Regression: with identity fiat rates, the
+  existing 11-card rankings are byte-identical.**
+- [ ] **CRY-05** — `hkEligible` gates recommendation inclusion, enforced **fail-closed inside
+  `recommendCards()`**; the recommender never suggests a card an HK resident can't obtain. The
+  directory still shows all cards.
+
+### Card directory / Data page (DIR)
+
+- [ ] **DIR-01** — A visitor can browse **all** cards on a Data page — filter (type/issuer),
+  sort, search, and a card-detail view. Read-only; no engine call.
+- [ ] **DIR-02** — Directory entries are labeled with provenance + last-verified + HK-availability
+  so the accepted lower-accuracy bulk data (DEC-DATA-001) never reads as authoritative.
+- [ ] **DIR-03** — A recommendation result deep-links to that card's Data-page detail view.
+
+### Affiliate monetization (AFF)
+
+- [ ] **AFF-01** — The "Apply" CTA uses affiliate/referral links where available (populate the
+  existing `applyUrl`), rendered `rel="sponsored nofollow noopener"`.
+- [ ] **AFF-02** — A bilingual affiliate/advertiser disclosure appears clearly **before** the CTA;
+  ranking is **never** reordered by affiliate presence; "recommendable" is decoupled from "has
+  `applyUrl`" (fix the current `loadCards` drop of cards without one).
+
+### Research page (RES)
+
+- [ ] **RES-01** — A bilingual Research page exists with a ranking-methodology explainer ("how
+  CardGPT ranks") and at least one crypto explainer.
+
+### UI / theme (UI)
+
+- [ ] **UI-01** — A ranked.plus-inspired theme refresh across Home, Data, and Research (Tailwind
+  v4 tokens + next-themes), preserving existing function. (THI-176)
+
+### Tech / quality (TECH)
+
+- [ ] **TECH-01** — A test runner (`vitest`, dev-only) is installed, covering the new valuation
+  logic including the "existing 11-card rankings unchanged" regression guard. (OPEN-008)
+- [ ] **TECH-02** — The write-only dead `RewardCap` schema is retired (OPEN-002) — removed, with
+  its 3 populated card usages migrated to the live per-rule cap model.
+
+### Deferred to a future milestone
+
+Side-by-side card compare · `fundingOptions` display · cap-period handling for weekly-capped
+crypto cards · additional Research articles · live crypto price feeds · full miles↔cash
+normalization.
+
+### Out of scope (v1.1)
+
+Static S/A/B tiers or any global ranking · ranking by affiliate commission · full country
+geo-matrix · user accounts / portfolio · CMS or blog engine for Research · Pro / subscription
+tier (THI-41).
+
+---
+
 ## Traceability
 
 | Req | Phase | Status |
