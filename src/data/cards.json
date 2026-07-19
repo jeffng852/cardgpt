@@ -2,6 +2,7 @@
   "cards": [
     {
       "id": "citi-cash-back",
+      "cardType": "credit",
       "name": "Citi Cash Back Card",
       "issuer": "Citibank",
       "network": "Mastercard",
@@ -133,6 +134,7 @@
     },
     {
       "id": "sc-smart",
+      "cardType": "credit",
       "name": "Standard Chartered Smart Credit Card",
       "issuer": "Standard Chartered",
       "network": "Mastercard",
@@ -275,6 +277,7 @@
     },
     {
       "id": "sc-simply-cash",
+      "cardType": "credit",
       "name": "Standard Chartered Simply Cash Visa Card",
       "issuer": "Standard Chartered",
       "network": "Visa",
@@ -328,6 +331,7 @@
     },
     {
       "id": "sc-cathay-standard",
+      "cardType": "credit",
       "name": "Standard Chartered Cathay Mastercard",
       "issuer": "Standard Chartered",
       "network": "Mastercard",
@@ -416,6 +420,7 @@
     },
     {
       "id": "sc-cathay-priority-banking",
+      "cardType": "credit",
       "name": "Standard Chartered Cathay Mastercard - Priority Banking",
       "issuer": "Standard Chartered",
       "network": "Mastercard",
@@ -505,6 +510,7 @@
     },
     {
       "id": "sc-cathay-priority-private",
+      "cardType": "credit",
       "name": "Standard Chartered Cathay Mastercard - Priority Private",
       "issuer": "Standard Chartered",
       "network": "Mastercard",
@@ -594,6 +600,7 @@
     },
     {
       "id": "hsbc-everymile",
+      "cardType": "credit",
       "name": "HSBC EveryMile Credit Card",
       "issuer": "HSBC",
       "network": "Mastercard",
@@ -663,6 +670,7 @@
     },
     {
       "id": "hsbc-red",
+      "cardType": "credit",
       "name": "HSBC Red Credit Card",
       "issuer": "HSBC",
       "network": "Mastercard",
@@ -736,6 +744,7 @@
     },
     {
       "id": "dbs-black-world",
+      "cardType": "credit",
       "name": "DBS Black World Mastercard",
       "issuer": "DBS",
       "network": "Mastercard",
@@ -799,6 +808,7 @@
     },
     {
       "id": "hang-seng-enjoy",
+      "cardType": "credit",
       "name": "Hang Seng enJoy Visa Platinum Card",
       "issuer": "Hang Seng Bank",
       "network": "Visa",
@@ -850,6 +860,7 @@
     },
     {
       "id": "sim-card",
+      "cardType": "credit",
       "name": "sim Credit Card",
       "issuer": "United Asia Finance Limited",
       "applyUrl": "",
