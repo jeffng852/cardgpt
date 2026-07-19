@@ -33,7 +33,8 @@ in the user's language, without login, in under a second.
 Phase: 6 of 11 (first of 6 in milestone v1.1) — Schema, Crypto Type Fan-out & Backfills
 Plan: 5 plans (06-01…06-05) across 4 waves — verified (plan-checker: PASSED, 0 blockers/warnings)
 Status: Ready to execute Phase 6
-Last activity: 2026-07-19 — Phase 6 planned (research + discuss skipped; CRY-01/02/03 + TECH-02 covered)
+Linear: milestone "Phase 6: Schema, Crypto Type Fan-out & Backfills" (first mapped v1.1 milestone) · issues THI-252 (06-01 schema), THI-253 (06-02/03/04 fan-out+RewardCap), THI-254 (06-05 prod Redis, High, human-gated) — all Todo, blocking chain 252→253→254
+Last activity: 2026-07-19 — Phase 6 planned (research + discuss skipped; CRY-01/02/03 + TECH-02 covered) + Linear milestone/issues wired
 
 Progress: [░░░░░░░░░░] 0% (0 of 6 v1.1 phases planned+executed; Phase 6 plans ready)
 
