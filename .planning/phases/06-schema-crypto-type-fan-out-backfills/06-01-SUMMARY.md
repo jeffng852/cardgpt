@@ -123,6 +123,12 @@ None - no external service configuration required.
 - 06-04 still owns retiring the `rewardCap` data blocks in `cards.json` (only the type layer was cleaned here).
 - 06-02/06-03 own the full reward-unit fan-out; see the scope note above so they don't duplicate the minimal compile fix.
 
+## Self-Check: PASSED
+- SUMMARY.md exists on disk.
+- All task commits verified in git log: fa2d946, 6fbd895, de64117, 576b445.
+- `npx tsc --noEmit` exit 0; `npm run build` exit 0.
+- `grep -c "\"cardType\": \"credit\"" src/data/cards.json` = 11; `grep -c "interface RewardCap" src/types/card.ts` = 0; `grep -c "RewardCap" src/types/index.ts` = 0.
+
 ---
 *Phase: 06-schema-crypto-type-fan-out-backfills*
 *Completed: 2026-07-19*
