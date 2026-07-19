@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
-status: planning
-last_updated: "2026-07-17T00:00:00.000Z"
-last_activity: 2026-07-17
+status: executing
+last_updated: "2026-07-19T00:00:00.000Z"
+last_activity: 2026-07-19
 progress:
   total_phases: 6
   completed_phases: 0
-  total_plans: 0
+  total_plans: 5
   completed_plans: 0
   percent: 0
 ---
@@ -26,16 +26,16 @@ See: .planning/PROJECT.md (updated 2026-07-16)
 in the user's language, without login, in under a second.
 
 **Current focus:** Milestone **v1.1 — Card Directory & Crypto Expansion**. Roadmap written
-(Phases 6–11 appended; Phases 1–5 are as-built/COMPLETE). Ready to plan **Phase 6**.
+(Phases 6–11 appended; Phases 1–5 are as-built/COMPLETE). **Phase 6 planned** — 5 plans across 4 waves, ready to execute.
 
 ## Current Position
 
 Phase: 6 of 11 (first of 6 in milestone v1.1) — Schema, Crypto Type Fan-out & Backfills
-Plan: — (none yet)
-Status: Ready to plan Phase 6
-Last activity: 2026-07-17 — v1.1 roadmap created; 14/14 requirements mapped to Phases 6–11
+Plan: 5 plans (06-01…06-05) across 4 waves — verified (plan-checker: PASSED, 0 blockers/warnings)
+Status: Ready to execute Phase 6
+Last activity: 2026-07-19 — Phase 6 planned (research + discuss skipped; CRY-01/02/03 + TECH-02 covered)
 
-Progress: [░░░░░░░░░░] 0% (0 of 6 v1.1 phases)
+Progress: [░░░░░░░░░░] 0% (0 of 6 v1.1 phases planned+executed; Phase 6 plans ready)
 
 ## Accumulated Context
 
