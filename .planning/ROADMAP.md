@@ -169,7 +169,12 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   2. A card's rewards can be expressed in a `crypto` reward unit with a named asset (e.g. USDC/CRO via the `rewardPrograms` pattern), and every surface that formats or groups reward units renders crypto without a runtime crash — the `groupByRewardUnit` undefined-key path is fixed and hand-audited across all 8 fan-out sites (CRY-02)
   3. Crypto reward tiers can express a staking/holding gate via `RewardCondition.minStaking {amount, asset}`, and a card carries an `hkEligible` flag in the schema (CRY-03 + the `hkEligible` field the Phase 7 gate reads)
   4. The write-only dead `RewardCap` schema is removed; the 3 cards that populated it (`citi-cash-back`, `sc-smart`, `sc-simply-cash`) are migrated to the live per-rule cap model, with byte-identical recommender output for those cards (TECH-02)
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 06-01-PLAN.md — Schema reshape (cardType, crypto RewardUnit + asset, minStaking, hkEligible; RewardCap interface removed) + local cardType backfill [wave 1]
+- [ ] 06-02-PLAN.md — Reward-unit fan-out: engine/data/AI (groupByRewardUnit crash fix, validators, formatters) + validateCard requires cardType [wave 2]
+- [ ] 06-03-PLAN.md — Reward-unit fan-out: public UI + admin forms + admin cardType control [wave 2]
+- [ ] 06-04-PLAN.md — RewardCap data retirement (corpus/template/example/README) + byte-identical recommender guard [wave 3]
+- [ ] 06-05-PLAN.md — Merge-aware production Redis cardType backfill (autonomous:false, read-back verified) [wave 4]
 
 ### Phase 7: Crypto→HKD Valuation Engine & `hkEligible` Gate
 **Goal**: Crypto cards rank by real HKD-equivalent net value beside fiat cards, unobtainable cards never surface as recommendations, and the new engine math is test-covered — **without changing any existing fiat ranking**
@@ -235,7 +240,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 6. Schema, Crypto Type Fan-out & Backfills | 0/TBD | Not started | - |
+| 6. Schema, Crypto Type Fan-out & Backfills | 0/5 | Not started | - |
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 0/TBD | Not started | - |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 0/TBD | Not started | - |
 | 9. Data Page (Card Directory) | 0/TBD | Not started | - |
