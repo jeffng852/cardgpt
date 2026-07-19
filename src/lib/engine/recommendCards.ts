@@ -5,7 +5,7 @@
  * tie-breaking logic as defined in the PRD
  */
 
-import type { CreditCard } from '@/types/card';
+import type { CreditCard, RewardUnit } from '@/types/card';
 import type { Transaction } from '@/types/transaction';
 import type { CardRecommendation, RecommendationResult } from '@/types/recommendation';
 import { calculateReward, calculateNetValue } from './calculateReward';
@@ -14,8 +14,8 @@ import { calculateReward, calculateNetValue } from './calculateReward';
  * User preferences for card recommendations
  */
 export interface RecommendationPreferences {
-  /** Preferred reward units (cash, miles, points) */
-  preferredRewardUnits?: Array<'cash' | 'miles' | 'points'>;
+  /** Preferred reward units (cash, miles, points, crypto) */
+  preferredRewardUnits?: Array<RewardUnit>;
 
   /** Minimum acceptable reward rate (as decimal, e.g., 0.01 = 1%) */
   minRewardRate?: number;
@@ -172,11 +172,12 @@ export function filterByRewardUnit(
  */
 export function groupByRewardUnit(
   result: RecommendationResult
-): Record<'cash' | 'miles' | 'points', CardRecommendation[]> {
-  const grouped: Record<'cash' | 'miles' | 'points', CardRecommendation[]> = {
+): Record<RewardUnit, CardRecommendation[]> {
+  const grouped: Record<RewardUnit, CardRecommendation[]> = {
     cash: [],
     miles: [],
-    points: []
+    points: [],
+    crypto: []
   };
 
   for (const rec of result.recommendations) {
