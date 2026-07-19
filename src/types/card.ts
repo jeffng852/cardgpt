@@ -5,7 +5,15 @@
  */
 
 /** Supported reward units */
-export type RewardUnit = 'cash' | 'miles' | 'points';
+export type RewardUnit = 'cash' | 'miles' | 'points' | 'crypto';
+
+/**
+ * Category of card product.
+ * - credit: a conventional credit card (all 11 existing HK cards)
+ * - crypto: a card whose rewards are paid in a crypto asset
+ * - prepaid: a stored-value / prepaid card
+ */
+export type CardType = 'credit' | 'crypto' | 'prepaid';
 
 /** Payment types */
 export type PaymentType = 'online' | 'offline' | 'contactless' | 'recurring';
@@ -51,6 +59,18 @@ export interface RewardCondition {
 
   /** Minimum monthly spending to unlock this reward tier */
   minMonthlySpending?: number;
+
+  /**
+   * Staking / holding gate for a crypto reward tier: the minimum `amount` of
+   * `asset` a user must stake (or hold) to unlock this tier.
+   *
+   * NOTE (Phase 7 valuation): unlike `minMonthlySpending`, this gate must NOT be
+   * treated as "assume met". A tier with `minStaking` is valued at the base
+   * un-staked tier by default; the fail-closed recommendation gate and the
+   * un-staked valuation default are implemented in Phase 7, NOT here. This is a
+   * schema field only — no engine logic reads it in Phase 6.
+   */
+  minStaking?: { amount: number; asset: string };
 
   /** Geographic restrictions */
   geographic?: GeographicRestriction;
@@ -227,26 +247,9 @@ export interface RewardPrograms {
 
   /** Points program details (e.g., Yuu, MoneyBack) */
   points?: RewardProgramInfo;
-}
 
-/**
- * Reward cap limits
- */
-export interface RewardCap {
-  /** Maximum reward amount per month */
-  monthlyLimit?: number;
-
-  /** Maximum reward amount per year */
-  yearlyLimit?: number;
-
-  /** Unit of the cap limit */
-  unit: RewardUnit;
-
-  /** Minimum amount to trigger redemption */
-  redemptionThreshold?: number;
-
-  /** Current accumulated rewards (for tracking, optional) */
-  currentAccumulated?: number;
+  /** Crypto reward asset details (e.g., name "USD Coin", shortName "USDC") */
+  crypto?: RewardProgramInfo;
 }
 
 /**
@@ -262,6 +265,12 @@ export interface CreditCard {
   /** Issuing bank */
   issuer: string;
 
+  /**
+   * Category of card product (credit | crypto | prepaid).
+   * Required: a card missing a type is a TypeScript error (CRY-01).
+   */
+  cardType: CardType;
+
   /** Image URL for card visual */
   imageUrl?: string;
 
@@ -273,9 +282,6 @@ export interface CreditCard {
 
   /** Fee structure */
   fees: FeeStructure;
-
-  /** Reward caps (optional) */
-  rewardCap?: RewardCap;
 
   /** Card network (Visa, Mastercard, etc.) */
   network?: string;
@@ -313,4 +319,11 @@ export interface CreditCard {
    * Used to display specific program names (e.g., "Asia Miles" instead of "miles")
    */
   rewardPrograms?: RewardPrograms;
+
+  /**
+   * Whether this card is available to Hong Kong residents.
+   * Schema field only in Phase 6; the fail-closed recommendation gate that
+   * consumes it is implemented in Phase 7.
+   */
+  hkEligible?: boolean;
 }
