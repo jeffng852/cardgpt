@@ -5,13 +5,13 @@
 // Card types
 export type {
   RewardUnit,
+  CardType,
   PaymentType,
   Currency,
   DayOfWeek,
   RewardCondition,
   RewardRule,
   FeeStructure,
-  RewardCap,
   CreditCard,
 } from './card';
 
