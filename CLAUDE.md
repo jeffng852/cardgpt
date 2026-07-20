@@ -62,12 +62,13 @@
 > tolerable only because polytracker is private. Combined with the public-repo rule above, security
 > specifics for CardGPT live in Linear + a private mirror — never here.
 >
-> **PR↔issue auto-linking is a separate half and is unconfirmed for this repo.** THI-71 (Done) has no
-> PR attachment and went Backlog → Todo → Done with no In Progress/In Review step. But this repo has
-> only one PR in its entire history (`#1`), so nearly all work bypassed PRs and would look identical
-> either way. **The next PR is the real test** — open it with `Closes THI-XXX` and watch. On the
-> sibling auto-refresher project this half works fine, so it likely works here too. Until confirmed,
-> attach PR links and move status manually via the Linear MCP.
+> **PR↔issue auto-linking is CONFIRMED WORKING for this repo (2026-07-20, PR #3 / THI-252).** PR #3
+> was opened with `Closes THI-252`; on squash-merge to `main`, Linear **auto-transitioned THI-252 to
+> Done** at the exact merge timestamp (stateHistory: Todo → In Progress → In Review → Done, `completedAt`
+> == merge time). So the `Closes THI-XXX` → auto-close half works. You still **manually move Todo → In
+> Progress → In Review** and attach the PR link via the Linear MCP during the flow (those are not
+> auto-driven); only the final merge→Done transition is automatic. The earlier ambiguity (THI-71 had no
+> PR) is resolved — PR #3 is the definitive test and it passed.
 
 ### Standard PR Flow (mandatory)
 1. **CTO** creates (or locates) the **Linear issue first** in *Todo* via the Linear MCP, then branches with Linear's suggested name `jeffreyn/thi-XXX-...`
