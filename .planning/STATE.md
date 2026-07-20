@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 status: executing
-last_updated: "2026-07-19T00:00:00.000Z"
-last_activity: 2026-07-19
+last_updated: "2026-07-20T00:00:00.000Z"
+last_activity: 2026-07-20
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 20
 ---
 
 # CardGPT — State
@@ -31,12 +31,12 @@ in the user's language, without login, in under a second.
 ## Current Position
 
 Phase: 6 of 11 (first of 6 in milestone v1.1) — Schema, Crypto Type Fan-out & Backfills
-Plan: 5 plans (06-01…06-05) across 4 waves — verified (plan-checker: PASSED, 0 blockers/warnings)
-Status: Ready to execute Phase 6
-Linear: milestone "Phase 6: Schema, Crypto Type Fan-out & Backfills" (first mapped v1.1 milestone) · issues THI-252 (06-01 schema), THI-253 (06-02/03/04 fan-out+RewardCap), THI-254 (06-05 prod Redis, High, human-gated) — all Todo, blocking chain 252→253→254
-Last activity: 2026-07-19 — Phase 6 planned (research + discuss skipped; CRY-01/02/03 + TECH-02 covered) + Linear milestone/issues wired
+Plan: 06-01 ✅ merged (PR #3 → main f233706, prod-deployed, healthy) · 06-02/03/04 next (THI-253) · 06-05 human-gated (THI-254)
+Status: Executing Phase 6 — Wave 1 done (1/5 plans). Paused per issue-by-issue flow: awaiting THI-253 kickoff.
+Linear: milestone "Phase 6…" · THI-252 (06-01 schema) **Done** (auto-transitioned on PR #3 merge — Linear↔GitHub integration CONFIRMED working) · THI-253 (06-02/03/04 fan-out+RewardCap) Todo · THI-254 (06-05 prod Redis, High, human-gated) Todo · chain 252✅→253→254
+Last activity: 2026-07-20 — 06-01 executed on branch, QA-Karen APPROVED, PR #3 squash-merged + deployed (Ops-Grace: home 200, admin gated); THI-252 auto-closed
 
-Progress: [░░░░░░░░░░] 0% (0 of 6 v1.1 phases planned+executed; Phase 6 plans ready)
+Progress: [██░░░░░░░░] 20% of Phase 6 (1 of 5 plans) · Phase 6 in progress (0 of 6 v1.1 phases complete)
 
 ## Accumulated Context
 

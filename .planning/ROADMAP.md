@@ -188,10 +188,10 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   3. Crypto reward tiers can express a staking/holding gate via `RewardCondition.minStaking {amount, asset}`, and a card carries an `hkEligible` flag in the schema (CRY-03 + the `hkEligible` field the Phase 7 gate reads)
   4. The write-only dead `RewardCap` schema is removed; the 3 cards that populated it (`citi-cash-back`, `sc-smart`, `sc-simply-cash`) are migrated to the live per-rule cap model, with byte-identical recommender output for those cards (TECH-02)
 
-**Plans**: 5 plans
+**Plans**: 1/5 plans executed
 **Wave 1**
 
-- [ ] 06-01-PLAN.md — Schema reshape (cardType, crypto RewardUnit + asset, minStaking, hkEligible; RewardCap interface removed) + local cardType backfill [wave 1]
+- [x] 06-01-PLAN.md — Schema reshape (cardType, crypto RewardUnit + asset, minStaking, hkEligible; RewardCap interface removed) + local cardType backfill [wave 1]
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -285,7 +285,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 6. Schema, Crypto Type Fan-out & Backfills | 0/5 | Not started | - |
+| 6. Schema, Crypto Type Fan-out & Backfills | 1/5 | In Progress|  |
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 0/TBD | Not started | - |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 0/TBD | Not started | - |
 | 9. Data Page (Card Directory) | 0/TBD | Not started | - |
