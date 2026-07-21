@@ -45,7 +45,7 @@ For each reward rule, extract:
 1. description - A clear, human-readable description of the reward IN ENGLISH
 2. description_zh - The description in TRADITIONAL CHINESE (繁體中文). If the source document is in Chinese, translate it to proper Traditional Chinese. If the source is in English, provide a natural Traditional Chinese translation.
 3. rewardRate - The reward rate as a decimal (e.g., 0.04 for 4%)
-4. rewardUnit - One of: "cash", "miles", "points"
+4. rewardUnit - One of: "cash", "miles", "points", "crypto"
 5. priority - One of: "base", "bonus", "specific"
    - "base": Foundation rate that applies to all eligible transactions
    - "bonus": Additional reward that stacks on top of base rate (cumulative)
@@ -78,7 +78,7 @@ Respond ONLY with valid JSON in this exact format:
       "description": "string - English description",
       "description_zh": "string - Traditional Chinese description",
       "rewardRate": number,
-      "rewardUnit": "cash" | "miles" | "points",
+      "rewardUnit": "cash" | "miles" | "points" | "crypto",
       "priority": "base" | "bonus" | "specific",
       "categories": ["string"],
       "specificMerchants": ["string"] | null,
@@ -334,7 +334,7 @@ function parseAIResponse(content: string): ExtractionResult {
 }
 
 function validateRewardUnit(unit: unknown): RewardUnit {
-  if (unit === 'cash' || unit === 'miles' || unit === 'points') {
+  if (unit === 'cash' || unit === 'miles' || unit === 'points' || unit === 'crypto') {
     return unit;
   }
   return 'cash';
