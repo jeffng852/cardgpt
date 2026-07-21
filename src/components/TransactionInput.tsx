@@ -4,8 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { parseTransaction } from '@/lib/parser/transactionParser';
 import type { ParseResult } from '@/lib/parser/transactionParser';
+import type { RewardUnit } from '@/types/card';
 
-type RewardType = 'cash' | 'miles' | 'points';
+// Reward preference union — sourced from the shared RewardUnit type so it can
+// never desync from the engine (now includes 'crypto').
+type RewardType = RewardUnit;
 
 interface TransactionInputProps {
   onSubmit: (result: ParseResult, rewardType?: RewardType) => void;
@@ -224,6 +227,7 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               {type === 'cash' && '💵'}
               {type === 'miles' && '✈️'}
               {type === 'points' && '⭐'}
+              {type === 'crypto' && '🪙'}
               <span className="ml-2">{tRewardTypes(type)}</span>
             </button>
           ))}

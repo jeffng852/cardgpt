@@ -79,7 +79,8 @@
   "rewardTypes": {
     "cash": "Cash",
     "miles": "Miles",
-    "points": "Points"
+    "points": "Points",
+    "crypto": "Crypto"
   },
   "categories": {
     "cashback": "Cash Back",

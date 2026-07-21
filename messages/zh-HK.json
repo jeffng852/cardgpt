@@ -79,7 +79,8 @@
   "rewardTypes": {
     "cash": "現金",
     "miles": "里數",
-    "points": "積分"
+    "points": "積分",
+    "crypto": "加密貨幣"
   },
   "categories": {
     "cashback": "現金回贈",

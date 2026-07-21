@@ -6,7 +6,7 @@ import Image from 'next/image';
 import type { CardRecommendation } from '@/types/recommendation';
 import type { RuleContribution } from '@/types/recommendation';
 import { formatReward, getRewardUnitName } from '@/lib/engine/calculateReward';
-import type { CreditCard } from '@/types/card';
+import type { CreditCard, RewardUnit } from '@/types/card';
 import { getCardImageUrl, hasCardImage } from '@/lib/cardImages';
 
 interface CardRecommendationListProps {
@@ -23,7 +23,7 @@ export default function CardRecommendationList({
   const locale = useLocale();
   const isZh = locale === 'zh-HK';
   const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
-  const [filterRewardType, setFilterRewardType] = useState<'all' | 'cash' | 'miles' | 'points'>('all');
+  const [filterRewardType, setFilterRewardType] = useState<'all' | RewardUnit>('all');
 
   // Locale-aware text helpers - use Chinese if available, fallback to English
   const getDescription = (contribution: RuleContribution) =>
@@ -171,6 +171,18 @@ export default function CardRecommendationList({
               }`}
             >
               {tRewardTypes('points')} ({recommendations.filter(r => r.calculation.rewardUnit === 'points').length})
+            </button>
+          )}
+          {availableRewardTypes.has('crypto') && (
+            <button
+              onClick={() => setFilterRewardType('crypto')}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
+                filterRewardType === 'crypto'
+                  ? 'border-primary text-primary'
+                  : 'border-transparent text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              {tRewardTypes('crypto')} ({recommendations.filter(r => r.calculation.rewardUnit === 'crypto').length})
             </button>
           )}
         </div>
