@@ -145,6 +145,13 @@ export function validateCard(card: Partial<CreditCard>): string[] {
     errors.push('Issuer is required and must be a non-empty string');
   }
 
+  // cardType is required (CRY-01 SC1: a card missing a type fails validation).
+  // Enforced on create/update only — read paths (loadCards/getAllCardsAsync)
+  // are NOT gated, so legacy Redis cards read before the 06-05 backfill still load.
+  if (!card.cardType || !['credit', 'crypto', 'prepaid'].includes(card.cardType)) {
+    errors.push('Card type is required and must be credit, crypto, or prepaid');
+  }
+
   // applyUrl is optional, but if provided must be a valid URL
   if (card.applyUrl && typeof card.applyUrl === 'string' && card.applyUrl.trim() !== '') {
     if (!isValidUrl(card.applyUrl)) {
@@ -191,8 +198,8 @@ export function validateRewardRule(rule: Partial<RewardRule>): string[] {
     errors.push('Reward rate must be a non-negative number');
   }
 
-  if (!rule.rewardUnit || !['cash', 'miles', 'points'].includes(rule.rewardUnit)) {
-    errors.push('Reward unit must be cash, miles, or points');
+  if (!rule.rewardUnit || !['cash', 'miles', 'points', 'crypto'].includes(rule.rewardUnit)) {
+    errors.push('Reward unit must be cash, miles, points, or crypto');
   }
 
   if (!rule.priority || !['base', 'bonus', 'specific'].includes(rule.priority)) {
