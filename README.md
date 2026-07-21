@@ -8,7 +8,7 @@ CardGPT helps users maximize credit card rewards by recommending the best card(s
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS v4
 - **Language**: TypeScript
 - **Deployment**: Vercel

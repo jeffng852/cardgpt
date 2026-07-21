@@ -5,8 +5,9 @@
 > and [`.planning/ROADMAP.md`](.planning/ROADMAP.md).
 >
 > **CardGPT was migrated onto GSD on 2026-07-15** (THI-233) after ~6 months off-process.
-> `.planning/` is an **as-built capture**, not a plan: all 5 phases are retrospective and
-> COMPLETE. **No milestone is defined yet.**
+> Phases 1–5 in `.planning/` are a retrospective **as-built capture** (shipped before GSD, all
+> COMPLETE). **Milestone v1.1 — Card Directory & Crypto Expansion (Phases 6–11) is now defined**
+> and forward work has begun: Phase 6 (schema foundation) shipped to `main` (THI-252, PR #3).
 
 ## 🔴 This repository is PUBLIC
 
@@ -124,9 +125,10 @@
 
 The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4215519c`).
 
-> **Not yet mapped.** The 5 phases in `.planning/ROADMAP.md` are retrospective — they describe work
-> that shipped before GSD existed here, so they were **not** mirrored as Linear milestones. Start
-> mirroring at the first *real* milestone, once one is defined.
+> **Phases 1–5 are retrospective** — they describe work that shipped before GSD existed here, so they
+> were **not** mirrored as Linear milestones. Mirroring now starts at the first *real* milestone,
+> **v1.1 — Card Directory & Crypto Expansion**: Phase 6 is wired to a Linear milestone with issues
+> THI-252/253/254 (THI-252 Done, PR #3).
 
 ## Operational Runbook (Vercel)
 
