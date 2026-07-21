@@ -2,7 +2,7 @@
  * Transaction domain types
  */
 
-import type { Currency, PaymentType } from './card';
+import type { Currency, PaymentType, RewardUnit } from './card';
 
 // Re-export types for convenience
 export type { Currency, PaymentType } from './card';
@@ -52,8 +52,8 @@ export interface Transaction {
  * User preferences for card recommendations
  */
 export interface UserPreferences {
-  /** Preferred reward types in priority order */
-  preferredRewardTypes?: ('cash' | 'miles' | 'points')[];
+  /** Preferred reward types in priority order (cash, miles, points, crypto) */
+  preferredRewardTypes?: RewardUnit[];
 
   /** Preferred issuers */
   preferredIssuers?: string[];

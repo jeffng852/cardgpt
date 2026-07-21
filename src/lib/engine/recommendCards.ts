@@ -160,7 +160,7 @@ export function getTopRecommendations(
  */
 export function filterByRewardUnit(
   result: RecommendationResult,
-  rewardUnit: 'cash' | 'miles' | 'points'
+  rewardUnit: RewardUnit
 ): CardRecommendation[] {
   return result.recommendations.filter(
     rec => rec.calculation.rewardUnit === rewardUnit
@@ -181,7 +181,14 @@ export function groupByRewardUnit(
   };
 
   for (const rec of result.recommendations) {
-    grouped[rec.calculation.rewardUnit].push(rec);
+    const unit = rec.calculation.rewardUnit;
+    // Defensive backstop: if a future reward unit is added to the RewardUnit
+    // type but not to the literal above, initialize its bucket rather than
+    // calling .push on undefined (which would throw at runtime).
+    if (!grouped[unit]) {
+      grouped[unit] = [];
+    }
+    grouped[unit].push(rec);
   }
 
   return grouped;
@@ -192,7 +199,7 @@ export function groupByRewardUnit(
  */
 export function getBestCardForRewardUnit(
   result: RecommendationResult,
-  rewardUnit: 'cash' | 'miles' | 'points'
+  rewardUnit: RewardUnit
 ): CardRecommendation | null {
   const filtered = filterByRewardUnit(result, rewardUnit);
   return filtered.length > 0 ? filtered[0] : null;
