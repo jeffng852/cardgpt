@@ -18,9 +18,9 @@
  * imports below are resolved at runtime.
  */
 
-import { recommendCards } from '../src/lib/engine/recommendCards.ts';
-import type { CreditCard } from '../src/types/card.ts';
-import type { Transaction } from '../src/types/transaction.ts';
+import { recommendCards } from '../src/lib/engine/recommendCards';
+import type { CreditCard } from '../src/types/card';
+import type { Transaction } from '../src/types/transaction';
 import cardsData from '../src/data/cards.json' with { type: 'json' };
 
 const corpus = (cardsData as { cards: unknown[] }).cards as unknown as CreditCard[];
