@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 status: executing
-last_updated: "2026-07-20T00:00:00.000Z"
-last_activity: 2026-07-20
+last_updated: "2026-07-23T00:00:00.000Z"
+last_activity: 2026-07-23
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 1
-  percent: 20
+  completed_plans: 4
+  percent: 80
 ---
 
 # CardGPT — State
@@ -31,12 +31,13 @@ in the user's language, without login, in under a second.
 ## Current Position
 
 Phase: 6 of 11 (first of 6 in milestone v1.1) — Schema, Crypto Type Fan-out & Backfills
-Plan: 06-01 ✅ merged (PR #3 → main f233706, prod-deployed, healthy) · 06-02/03/04 next (THI-253) · 06-05 human-gated (THI-254)
-Status: Executing Phase 6 — Wave 1 done (1/5 plans). Paused per issue-by-issue flow: awaiting THI-253 kickoff.
-Linear: milestone "Phase 6…" · THI-252 (06-01 schema) **Done** (auto-transitioned on PR #3 merge — Linear↔GitHub integration CONFIRMED working) · THI-253 (06-02/03/04 fan-out+RewardCap) Todo · THI-254 (06-05 prod Redis, High, human-gated) Todo · chain 252✅→253→254
-Last activity: 2026-07-20 — 06-01 executed on branch, QA-Karen APPROVED, PR #3 squash-merged + deployed (Ops-Grace: home 200, admin gated); THI-252 auto-closed
+Plan: 06-01 ✅ + 06-02/03/04 ✅ merged (PR #3 f233706, PR #4 7cc8411 → main, prod-deployed, healthy) · 06-05 NEXT — human-gated prod Redis backfill (THI-254)
+Status: Executing Phase 6 — Waves 1–3 done (4/5 plans). ONLY 06-05 remains: production Redis cardType backfill (autonomous:false, needs human go).
+Linear: milestone "Phase 6…" · THI-252 **Done** (PR #3) · THI-253 **Done** (PR #4, auto-transitioned on merge) · THI-254 (06-05 prod Redis, High, human-gated) Todo · chain 252✅→253✅→254⬚
+⚠ Open window: prod Redis cards still lack `cardType` (backfill = 06-05/THI-254). Public read-path unaffected (ungated); ADMIN EDIT of an un-typed card fails write-validation until THI-254 runs. QA-Karen's optional 1-line load-time hardening (`cardType: data.card.cardType||'credit'`) would pre-empt it.
+Last activity: 2026-07-23 — 06-02/03/04 executed (Opus), QA-Karen APPROVED (byte-identical proof independently reproduced), PR #4 squash-merged + deployed (Ops-Grace: home 200, /en 200, admin gated); THI-253 auto-closed
 
-Progress: [██░░░░░░░░] 20% of Phase 6 (1 of 5 plans) · Phase 6 in progress (0 of 6 v1.1 phases complete)
+Progress: [████████░░] 80% of Phase 6 (4 of 5 plans) · Phase 6 in progress (0 of 6 v1.1 phases complete)
 
 ## Accumulated Context
 
