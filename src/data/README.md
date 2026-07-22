@@ -29,14 +29,13 @@ Every card must have:
 - `imageUrl` - Card image URL
 - `network` - Card network (Visa, Mastercard, etc.)
 - `tags` - Array of tags for categorization
-- `rewardCap` - Monthly/yearly reward limits
 
 ## Reward Rules
 
 Each reward rule specifies:
 - `merchantTypes` - Array of merchant categories this rule applies to
 - `rewardRate` - Percentage as decimal (e.g., 0.05 = 5%)
-- `rewardUnit` - "cash", "miles", or "points"
+- `rewardUnit` - "cash", "miles", "points", or "crypto"
 - `description` - Human-readable description
 - `conditions` - Optional conditions (payment type, amount limits, etc.)
 

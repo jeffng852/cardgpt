@@ -126,10 +126,6 @@
         "foreignTransactionFeeRate": 0,
         "cashAdvanceFee": 0,
         "redemptionFee": 0
-      },
-      "rewardCap": {
-        "unit": "cash",
-        "redemptionThreshold": 200
       }
     },
     {
@@ -268,11 +264,6 @@
       "fees": {
         "annualFee": 0,
         "foreignTransactionFeeRate": 0
-      },
-      "rewardCap": {
-        "unit": "cash",
-        "monthlyLimit": 3000,
-        "redemptionThreshold": 50
       }
     },
     {
@@ -323,10 +314,6 @@
       ],
       "fees": {
         "annualFee": 2000
-      },
-      "rewardCap": {
-        "unit": "cash",
-        "redemptionThreshold": 50
       }
     },
     {
