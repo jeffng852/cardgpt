@@ -25,6 +25,10 @@ const emptyCard: Partial<CreditCard> = {
   id: '',
   name: '',
   issuer: '',
+  // Default new cards to a conventional credit card so they satisfy
+  // validateCard's required-cardType rule (added in 06-02). Admin can change it
+  // via the Card Type selector below.
+  cardType: 'credit',
   applyUrl: '',
   imageUrl: '',
   network: '',
@@ -542,6 +546,18 @@ export default function CardEditForm({ cardId }: CardEditFormProps) {
                 <option value="Mastercard">Mastercard</option>
                 <option value="UnionPay">UnionPay</option>
                 <option value="American Express">American Express</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1">Card Type *</label>
+              <select
+                value={card.cardType || 'credit'}
+                onChange={(e) => updateCard({ cardType: e.target.value as CreditCard['cardType'] })}
+                className="w-full px-4 py-2 rounded-lg border border-border bg-background text-foreground"
+              >
+                <option value="credit">Credit</option>
+                <option value="crypto">Crypto</option>
+                <option value="prepaid">Prepaid</option>
               </select>
             </div>
             <div className="md:col-span-2">
@@ -1124,6 +1140,7 @@ function RuleEditor({
                 <option value="cash">Cash</option>
                 <option value="miles">Miles</option>
                 <option value="points">Points</option>
+                <option value="crypto">Crypto</option>
               </select>
             </div>
           </div>

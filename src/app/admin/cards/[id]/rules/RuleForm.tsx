@@ -357,6 +357,7 @@ export default function RuleForm({ cardId, ruleIndex }: RuleFormProps) {
                   <option value="cash">Cash</option>
                   <option value="miles">Miles</option>
                   <option value="points">Points</option>
+                  <option value="crypto">Crypto</option>
                 </select>
               </div>
             </div>
