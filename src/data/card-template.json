@@ -59,13 +59,6 @@
     "latePaymentFee": 100
   },
 
-  "rewardCap": {
-    "monthlyLimit": 500,
-    "yearlyLimit": 6000,
-    "unit": "cash",
-    "redemptionThreshold": 200
-  },
-
   "_rewardPrograms_comment": "Optional: Specify reward program names for miles/points cards",
   "rewardPrograms": {
     "miles": {

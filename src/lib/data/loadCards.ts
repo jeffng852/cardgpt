@@ -5,7 +5,7 @@
  * - Async version: Checks Redis in production for fresh data
  */
 
-import type { CreditCard } from '@/types';
+import type { CreditCard, RewardUnit } from '@/types';
 import cardsData from '@/data/cards.json';
 import {
   isProductionEnvironment,
@@ -177,11 +177,11 @@ export async function getCardsByIssuer(issuer: string): Promise<CreditCard[]> {
 /**
  * Get cards by reward unit (async, checks blob)
  *
- * @param rewardUnit - cash, miles, or points
+ * @param rewardUnit - cash, miles, points, or crypto
  * @returns Array of cards offering that reward type
  */
 export async function getCardsByRewardUnit(
-  rewardUnit: 'cash' | 'miles' | 'points'
+  rewardUnit: RewardUnit
 ): Promise<CreditCard[]> {
   const cards = await loadCards();
   return cards.filter((card) =>

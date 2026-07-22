@@ -110,10 +110,5 @@
     "foreignTransactionFeeRate": 0.0195,
     "cashAdvanceFee": 100,
     "latePaymentFee": 230
-  },
-
-  "rewardCap": {
-    "unit": "cash",
-    "redemptionThreshold": 200
   }
 }

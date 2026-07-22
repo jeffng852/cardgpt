@@ -330,15 +330,17 @@ export function getRewardUnitName(
     return ''; // Cash uses $ prefix, no suffix needed
   }
 
-  // Check if card has a specific program name for this unit
+  // Check if card has a specific program name for this unit.
+  // crypto reads its named asset from rewardPrograms.crypto (e.g. USDC),
+  // mirroring how miles/points read their program details.
   if (card?.rewardPrograms) {
-    const program = card.rewardPrograms[rewardUnit as 'miles' | 'points'];
+    const program = card.rewardPrograms[rewardUnit as 'miles' | 'points' | 'crypto'];
     if (program) {
       return useShortName && program.shortName ? program.shortName : program.name;
     }
   }
 
-  // Fallback to generic names
+  // Fallback to generic names (e.g. the literal "crypto" when no asset is named)
   return rewardUnit;
 }
 
@@ -357,6 +359,12 @@ export function formatReward(calculation: RewardCalculation, card?: CreditCard):
     case 'points': {
       const programName = getRewardUnitName(rewardUnit, card);
       return `${Math.round(rewardAmount)} ${programName}`;
+    }
+    case 'crypto': {
+      // Render the amount followed by the named crypto asset (e.g. "12.34 USDC"),
+      // falling back to the generic "crypto" label when no asset is named.
+      const assetName = getRewardUnitName(rewardUnit, card);
+      return `${rewardAmount.toFixed(2)} ${assetName}`;
     }
     default:
       return `${rewardAmount.toFixed(2)} ${rewardUnit}`;

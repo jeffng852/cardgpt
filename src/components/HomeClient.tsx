@@ -14,10 +14,12 @@ import { Link } from '@/i18n/routing';
 import { Logo } from '@/components/Logo';
 import type { ParseResult } from '@/lib/parser/transactionParser';
 import type { CardRecommendation } from '@/types/recommendation';
-import type { CreditCard } from '@/types/card';
+import type { CreditCard, RewardUnit } from '@/types/card';
 import { recommendCards } from '@/lib/engine';
 
-type RewardType = 'cash' | 'miles' | 'points';
+// Sourced from the shared RewardUnit type so a crypto preference typechecks
+// against the widened engine union (now includes 'crypto').
+type RewardType = RewardUnit;
 
 interface HomeClientProps {
   cards: CreditCard[];
