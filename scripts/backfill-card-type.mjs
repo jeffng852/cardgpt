@@ -79,7 +79,7 @@ async function main() {
   // 2. Mutate in place: set cardType only where missing/falsy. Leave every other field untouched.
   let changed = 0;
   for (const card of cards) {
-    if (!card.cardType) {
+    if (card && !card.cardType) {
       card.cardType = DEFAULT_CARD_TYPE;
       changed++;
     }
