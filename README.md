@@ -54,4 +54,4 @@ git commit -m "THI-123: Add card recommendation engine"
 
 ## License
 
-Proprietary - All rights reserved
+MIT - see [LICENSE](LICENSE)
