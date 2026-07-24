@@ -25,19 +25,20 @@
 | Role | Agent | Responsibilities |
 |------|-------|-----------------|
 | **CTO** | Claude (main) | Architecture, planning, code changes, PR creation, release prep, orchestration |
-| **QA** | Karen | PR code review **before merge**, GitHub issue filing |
-| **Ops** | Grace | Post-deploy health checks on Vercel; verifies the live site + admin API after each deploy |
+| **QA** | Karen (`qa-karen`) | PR code review **before merge**, GitHub issue filing |
+| **Ops** | Grace (`ops-grace`) | Post-deploy health checks on Vercel; verifies the live site + admin API after each deploy |
 | **Data** | Leona | Card-data quality: the corpus **is** the product — accuracy, staleness, coverage of HK issuers |
 
 ### QA-Karen
 - **MUST review every PR BEFORE merge** — never merge then review
 - Reviews for: logic errors, regressions, security, adherence to `.planning/` decisions, API contracts,
   the Vercel timeout budget, **and whether anything security-sensitive is about to be made public**
-- Spawn as a sub-agent with the PR diff context and the list of changed files
+- Dispatch the `qa-karen` subagent (Agent tool → `subagent_type: qa-karen`) with the PR diff context and the list of changed files — the real global subagent at `~/.claude/agents/qa-karen.md`, which self-adapts to this repo by reading this section
 - Enforces the **Linear-link gate** below
 - Files GitHub issues with label `qa-karen` for findings; closes them when fixes are verified
 
 ### Ops-Grace
+- Dispatch the `ops-grace` subagent (Agent tool → `subagent_type: ops-grace`) — the real global subagent at `~/.claude/agents/ops-grace.md`, which self-adapts by reading this section
 - After each merge to `main`, Vercel auto-deploys — Grace confirms the production site responds and
   the admin surface still authenticates as intended.
 - Redis is the live data store. A deploy cannot corrupt it, but an admin-route change can.
@@ -75,10 +76,10 @@
 1. **CTO** creates (or locates) the **Linear issue first** in *Todo* via the Linear MCP, then branches with Linear's suggested name `jeffreyn/thi-XXX-...`
 2. **CTO** implements changes on that feature branch
 3. **CTO** pushes and opens a PR to `main` with **`Closes THI-XXX`** in the body
-4. **QA-Karen** reviews the PR (sub-agent with full diff context) and enforces the Linear-link gate
+4. **QA-Karen** (`subagent_type: qa-karen`) reviews the PR (sub-agent with full diff context) and enforces the Linear-link gate
 5. **CTO** addresses findings, Karen re-reviews
 6. **Only after Karen approves** → squash merge to `main` → Vercel auto-deploys → Linear moves to Done
-7. **Ops-Grace** verifies production is healthy post-deploy
+7. **Ops-Grace** (`subagent_type: ops-grace`) verifies production is healthy post-deploy
 
 > **🔴 ISSUE-FIRST IS ABSOLUTE.** Log a Linear issue (`THI-XXX`, in *Todo*/*In Progress*) **before touching any code** — features, refactors, AND bug fixes discovered mid-execution or at a human-check/verification checkpoint. This holds **even in direct-to-main / bootstrap mode** (no feature branch): create or locate the issue first, then make the change and reference `THI-XXX` in the commit. Never edit first and reconcile later.
 
