@@ -67,7 +67,10 @@ describe('calculateReward', () => {
     const transaction: Transaction = {
       amount: 500,
       currency: 'HKD',
-      merchantType: 'restaurant',
+      // Fixture fix (07-01): the dining-bonus rule matches on `categories`
+      // (new schema), not the deprecated `merchantType`. Use `category` so the
+      // bonus genuinely stacks — otherwise only the 1% base matched (got 5).
+      category: 'dining',
       paymentType: 'offline'
     };
 
@@ -83,7 +86,10 @@ describe('calculateReward', () => {
     const transaction: Transaction = {
       amount: 500,
       currency: 'USD',
-      merchantType: 'restaurant',
+      // Fixture fix (07-01): give it a matching `category` so the bonus is
+      // excluded strictly by the currency condition (HKD-only) — the point of
+      // this test — rather than silently missing on the deprecated field.
+      category: 'dining',
       paymentType: 'offline'
     };
 
@@ -111,7 +117,10 @@ describe('calculateReward', () => {
     const transaction: Transaction = {
       amount: 1000,
       currency: 'HKD',
-      merchantType: 'casino',
+      // Fixture fix (07-01): merchant exclusions are matched against
+      // `merchantId` (new schema), not the deprecated `merchantType`. Set
+      // `merchantId` so the base 'all' rule is excluded for casino (got 10).
+      merchantId: 'casino',
       paymentType: 'offline'
     };
 
