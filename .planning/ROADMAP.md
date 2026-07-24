@@ -219,7 +219,15 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   4. `hkEligible` gates recommendation inclusion **fail-closed inside `recommendCards()`** (`undefined` ⇒ eligible for the 11 legacy cards; global cards must set `false`) — a card an HK resident can't obtain is never returned by the recommender, while the directory still shows it (CRY-05)
   5. **Regression, test-guarded:** with identity fiat rates the existing 11-card rankings are **byte-identical**, verified by a `vitest` suite that covers the new valuation logic (TECH-01)
 
-**Plans**: TBD
+**Plans**: 3 plans
+**Wave 1**
+
+- [ ] 07-01-PLAN.md — Wave 0: install vitest + config, triage dormant tests, commit baseline fiat-ranking snapshot (TECH-01)
+- [ ] 07-02-PLAN.md — Wave 1: valuation types + `valuateCrypto` (stale/absent fail-safe) + `minStaking` base-tier default (CRY-04)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07-03-PLAN.md — Wave 2: `recommendCards` fail-closed `hkEligible` gate + partition-before-sort + `cryptoSegment` assembly (CRY-04, CRY-05, TECH-01)
 
 ### Phase 8: Bulk Crypto Seed & Affiliate / Disclosure
 

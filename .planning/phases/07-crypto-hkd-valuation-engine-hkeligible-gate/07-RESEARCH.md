@@ -344,20 +344,22 @@ describe('fiat ranking is byte-identical (TECH-01)', () => {
 | A4 | `globals: true` chosen over rewriting existing test files to explicit imports | Stack / Pattern | Low — either works; globals avoids touching pre-existing files |
 | A5 | Adding optional 4th param `rateTable?` (vs. folding rate into `preferences`) | Pattern 1 | Low — both backward-compatible; positional param keeps `preferences` semantically clean |
 
-## Open Questions
+## Open Questions (RESOLVED)
+
+*All three resolved during planning and concretely encoded in Phase 7 plan tasks (see markers below).*
 
 1. **Segment boundary: `cardType !== 'credit'` vs `=== 'crypto'`?**
    - What we know: schema has `credit | crypto | prepaid` [VERIFIED: card.ts:16]; the 11 legacy are all `credit`.
    - What's unclear: whether `prepaid`/neobank belongs in the crypto segment or its own.
-   - Recommendation: use `cardType === 'credit'` for the FIAT set (guarantees the 11 stay fiat) and everything else → the alt/crypto segment; revisit if prepaid needs its own section in Phase 9.
+   - **RESOLVED:** use `cardType === 'credit'` for the FIAT set (guarantees the 11 stay fiat) and everything else (`crypto`, `prepaid`) → the alt/crypto segment; revisit if prepaid needs its own section in Phase 9. *Encoded in 07-03 Task 2.*
 
 2. **Rate-table key convention.**
    - What we know: asset named via `rewardPrograms.crypto` (name/shortName) [VERIFIED: card.ts:251, calculateReward.ts:336-341].
    - What's unclear: exact symbol string Phase 8 seed will use (`USDC` vs `USD Coin`).
-   - Recommendation: standardize on `shortName` (ticker) as the `HkdRateTable` key and document it for Phase 8.
+   - **RESOLVED:** standardize on `shortName` (ticker, exact casing, resolved `shortName ?? name`) as the `HkdRateTable` key — a hard alignment constraint for Phase 8 seed data. *Encoded in 07-02 Task 1.*
 
 3. **Should the two pre-existing test files be fixed or quarantined?**
-   - Recommendation: run once, triage; fixing them is a bounded task and gives immediate coverage, but is not strictly required by TECH-01.
+   - **RESOLVED:** run once, triage — fix or `.skip` (with a note) so the suite stays green under `globals:true`. *Encoded in 07-01 Task 2.*
 
 ## Environment Availability
 

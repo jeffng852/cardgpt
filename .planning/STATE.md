@@ -30,14 +30,14 @@ in the user's language, without login, in under a second.
 
 ## Current Position
 
-Phase: 6 of 11 — Schema, Crypto Type Fan-out & Backfills — ✅ **COMPLETE** (5/5 plans). Next: Phase 7 (Crypto→HKD valuation + hkEligible gate — the milestone's critical phase).
-Plan: 06-01 (PR #3) · 06-02/03/04 (PR #4) · 06-05 (PR #5 `0e4a8b5`) — all merged + deployed.
-Status: Phase 6 complete. Prod Redis re-provisioned on Thirdvisor Pro + seeded (11/11 cards typed, read-back verified). Ready to plan Phase 7.
-Linear: milestone "Phase 6…" · THI-252 **Done** (PR #3) · THI-253 **Done** (PR #4) · THI-254 **Done** (PR #5, auto-closed on merge) · chain 252✅→253✅→254✅
-Infra note (2026-07-24): Vercel project moved hobby→Thirdvisor Pro; prod Redis DB `cardgpt-prod` (env prefix now `KV_*`, was `REAL_STORAGE_*`). Deferred: Blob not re-provisioned (unused — images served from static public/cards/); manual admin-edit persistence check recommended.
-Last activity: 2026-07-24 — 06-05 done via re-provision+seed (not backfill — original Upstash DB was decommissioned); QA-Karen APPROVED seed script; PR #5 merged; THI-254 auto-closed; Phase 6 COMPLETE
+Phase: 7 of 11 — Crypto→HKD Valuation Engine & `hkEligible` Gate (the milestone's critical phase) — **PLANNED**, ready to execute. (Phase 6 ✅ COMPLETE.)
+Plan: 3 plans (07-01…07-03) across waves 0→1→2 — verified (plan-checker: PASSED, 0 blockers). Decisions locked in 07-CONTEXT.md (DEC-VAL-A/B/C).
+Status: Phase 7 planned. Design: **unit-segmented** crypto (own segment, partition-before-sort → fiat ranking structurally byte-identical), **last-known rate + staleness warning** (absent→value-unavailable), **base un-staked tier**. Wave 0 installs vitest (repo's first test runner, TECH-01). Next: `/gsd-execute-phase 7`.
+Linear: Phase 6 milestone THI-252/253/254 all Done. ⚠ Phase 7 NOT yet mirrored to a Linear milestone/issues — do that before/at execute (issue-first).
+Infra (from Phase 6): Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused). Prod Redis is irrelevant to Phase 7 (pure engine work).
+Last activity: 2026-07-24 — Phase 7 planned (discuss skipped → decisions captured inline; research done; vitest/partition-before-sort/byte-identical guard); plan-checker PASSED
 
-Progress: [██████████] 100% of Phase 6 (5 of 5 plans) · Milestone v1.1: 1 of 6 phases complete (Phase 6)
+Progress: [██████████] Phase 6 100% (5/5) · Phase 7 planned (0/3 executed) · Milestone v1.1: 1 of 6 phases complete
 
 ## Accumulated Context
 
