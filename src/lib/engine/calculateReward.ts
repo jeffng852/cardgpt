@@ -163,6 +163,16 @@ function matchesRule(rule: RewardRule, transaction: Transaction): boolean {
   // This would be handled at a higher level with spending history
   // For now, we assume the condition is met if present
 
+  // Staking/holding gate (DEC-VAL-C): a minStaking condition is a REAL barrier,
+  // NOT an assumed-met condition like minMonthlySpending above. A gated tier is
+  // NOT unlocked by default, so crypto rewards are valued at the base un-staked
+  // tier. Do NOT extend the minMonthlySpending "assume met" no-op to staking.
+  // (No fiat rule carries minStaking, so this cannot perturb the fiat path.)
+  // Higher tiers are surfaced separately as conditional ("up to X% if you stake Y").
+  if (conditions.minStaking) {
+    return false;
+  }
+
   return true;
 }
 
