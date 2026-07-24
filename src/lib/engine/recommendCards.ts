@@ -5,10 +5,15 @@
  * tie-breaking logic as defined in the PRD
  */
 
-import type { CreditCard, RewardUnit } from '@/types/card';
+import type { CreditCard, RewardUnit, HkdRateTable } from '@/types/card';
 import type { Transaction } from '@/types/transaction';
-import type { CardRecommendation, RecommendationResult } from '@/types/recommendation';
+import type {
+  CardRecommendation,
+  CryptoRecommendation,
+  RecommendationResult,
+} from '@/types/recommendation';
 import { calculateReward, calculateNetValue } from './calculateReward';
+import { valuateCrypto } from './valuateCrypto';
 
 /**
  * User preferences for card recommendations
@@ -50,10 +55,11 @@ export interface RecommendationPreferences {
 export function recommendCards(
   cards: CreditCard[],
   transaction: Transaction,
-  preferences?: RecommendationPreferences
+  preferences?: RecommendationPreferences,
+  rateTable?: HkdRateTable
 ): RecommendationResult {
   // Filter out inactive cards and user-excluded cards
-  let eligibleCards = cards.filter(card => {
+  const baseEligibleCards = cards.filter(card => {
     if (!card.isActive) return false;
     if (preferences?.excludedCardIds?.includes(card.id)) return false;
     // Fail-closed HK-eligibility gate (CRY-05, T-07-GATE): exclude a card only on
@@ -64,6 +70,20 @@ export function recommendCards(
     if (card.hkEligible === false) return false;
     return true;
   });
+
+  // Partition-before-sort (DEC-VAL-B / TECH-01). Split the eligible set BEFORE
+  // the sort so crypto/non-fiat cards NEVER enter the fiat comparator — this is
+  // the structural guarantee behind the byte-identical fiat ranking (Plan 01
+  // snapshot). Fiat = `cardType === 'credit'` (locks the 11 legacy `credit`
+  // cards into the unchanged pipeline). Everything else (`crypto`, `prepaid`)
+  // is non-fiat and valued separately below; prepaid may get its own section in
+  // Phase 9. The segment boundary is `cardType === 'credit'` (RESEARCH Open
+  // Question 1, decided here).
+  const fiatCards = baseEligibleCards.filter(card => card.cardType === 'credit');
+  const cryptoCards = baseEligibleCards.filter(card => card.cardType !== 'credit');
+
+  // ===== FIAT PIPELINE — runs VERBATIM on the fiat set only =====
+  let eligibleCards = fiatCards;
 
   // Apply preference filters
   if (preferences) {
@@ -142,8 +162,53 @@ export function recommendCards(
     netValue: calculateNetValue(rec.calculation)
   }));
 
+  // ===== CRYPTO SEGMENT — a SEPARATE fresh array, never aliasing the fiat one =====
+  // Built only when a rateTable is injected AND at least one non-fiat card is
+  // eligible; otherwise omitted so current 3-arg callers see the unchanged shape
+  // (RESEARCH Pattern 1 + Pitfall 6). Crypto is valued via `valuateCrypto`, ranked
+  // among itself by `hkdEquivalent` desc; value-unavailable (null) entries are
+  // appended unranked (DEC-VAL-A — cannot rank on a missing number). rank/
+  // isRecommended are assigned over the ranked (non-null) entries only.
+  let cryptoSegment: CryptoRecommendation[] | undefined;
+  if (rateTable && cryptoCards.length > 0) {
+    const valued = cryptoCards.map(card => {
+      const calculation = calculateReward(card, transaction, {
+        monthlySpending: preferences?.monthlySpending
+      });
+      const valuation = valuateCrypto(calculation, card, rateTable);
+      return {
+        card,
+        calculation,
+        netValue: calculateNetValue(calculation),
+        hkdEquivalent: valuation.hkdEquivalent,
+        rateStale: valuation.rateStale,
+        rateAsOf: valuation.rateAsOf
+      };
+    });
+
+    const ranked = valued
+      .filter(entry => entry.hkdEquivalent !== null)
+      .sort((a, b) => b.hkdEquivalent! - a.hkdEquivalent!);
+    const unranked = valued.filter(entry => entry.hkdEquivalent === null);
+
+    cryptoSegment = [
+      ...ranked.map((entry, index) => ({
+        ...entry,
+        rank: index + 1,
+        isRecommended: index === 0
+      })),
+      // Value-unavailable entries: rank 0 = unranked (appended after all ranked).
+      ...unranked.map(entry => ({
+        ...entry,
+        rank: 0,
+        isRecommended: false
+      }))
+    ];
+  }
+
   return {
     recommendations: rankedCards,
+    ...(cryptoSegment ? { cryptoSegment } : {}),
     transaction,
     totalCardsEvaluated: cards.length,
     eligibleCardsCount: eligibleCards.length,
