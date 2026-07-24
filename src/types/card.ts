@@ -253,6 +253,33 @@ export interface RewardPrograms {
 }
 
 /**
+ * Injectable HKD rate table for crypto→HKD valuation (Phase 7, DEC-VAL-A/B).
+ *
+ * The rate is passed INTO the engine like `cards` — there is no fetch inside the
+ * client engine. Staleness is defined by the timestamped `asOf` on each entry.
+ *
+ * KEY CONVENTION (locked here, RESEARCH Open Question 2): the table is keyed by
+ * the crypto asset's `shortName` ticker in the EXACT casing used in
+ * `rewardPrograms.crypto.shortName` (e.g. `USDC`, `BTC`). Valuation resolves the
+ * key as `rewardPrograms.crypto.shortName ?? rewardPrograms.crypto.name`. No
+ * normalization or casing coercion is applied at lookup time, so Phase 8 seed
+ * data MUST key assets by that same ticker string — a hard alignment constraint.
+ */
+export type AssetSymbol = string; // e.g. 'USDC', 'BTC'
+
+/** A single HKD-per-unit rate with the timestamp it was captured (staleness source). */
+export interface HkdRate {
+  /** HKD value of one unit of the asset. Must be > 0 to be usable. */
+  hkdPerUnit: number;
+
+  /** ISO 8601 timestamp of when this rate was captured (drives staleness). */
+  asOf: string;
+}
+
+/** Injectable static rate table, keyed by the asset `shortName` ticker (see AssetSymbol). */
+export type HkdRateTable = Record<AssetSymbol, HkdRate>;
+
+/**
  * Credit Card entity
  */
 export interface CreditCard {

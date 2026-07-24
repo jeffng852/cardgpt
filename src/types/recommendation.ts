@@ -104,11 +104,40 @@ export interface CardRecommendation {
 }
 
 /**
+ * A crypto card recommendation, valued in HKD-equivalent for intra-crypto
+ * ordering + display (Phase 7, DEC-VAL-A/B). Additive extension of
+ * CardRecommendation — crypto is segmented OUT of the fiat `recommendations`
+ * list, never merged into the fiat sort.
+ */
+export interface CryptoRecommendation extends CardRecommendation {
+  /**
+   * HKD-equivalent value of this crypto reward.
+   * `null` ⇒ "value unavailable" (no usable rate) — NOT ranked (DEC-VAL-A);
+   * never fabricate a number for a missing/zero/negative/NaN rate.
+   */
+  hkdEquivalent: number | null;
+
+  /** True when the rate used is older than the staleness threshold (last-known value kept). */
+  rateStale: boolean;
+
+  /** ISO 8601 timestamp of the rate used, for the "rate as of <time>" marker. */
+  rateAsOf?: string;
+}
+
+/**
  * Full recommendation result
  */
 export interface RecommendationResult {
   /** Ranked list of card recommendations */
   recommendations: CardRecommendation[];
+
+  /**
+   * Crypto/alt cards valued in HKD-equivalent, ranked among themselves
+   * (DEC-VAL-B). OPTIONAL + additive: absent when no rate table is passed to
+   * `recommendCards`; existing consumers that read only `.recommendations` are
+   * unaffected. Populated by Plan 03 (Wave 2).
+   */
+  cryptoSegment?: CryptoRecommendation[];
 
   /** The transaction that was analyzed */
   transaction: Transaction;
