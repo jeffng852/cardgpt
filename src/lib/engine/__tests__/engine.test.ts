@@ -13,6 +13,7 @@ const mockCitiCashBack: CreditCard = {
   id: 'citi-cash-back',
   name: 'Citi Cash Back Card',
   issuer: 'Citibank',
+  cardType: 'credit',
   applyUrl: 'https://example.com',
   rewards: [
     {
@@ -138,6 +139,7 @@ describe('recommendCards', () => {
       id: 'basic-card',
       name: 'Basic Card',
       issuer: 'Basic Bank',
+      cardType: 'credit',
       applyUrl: 'https://example.com',
       rewards: [
         {
