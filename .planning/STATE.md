@@ -7,9 +7,9 @@ last_updated: "2026-07-24T00:00:00.000Z"
 last_activity: 2026-07-24
 progress:
   total_phases: 6
-  completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  completed_phases: 2
+  total_plans: 8
+  completed_plans: 8
   percent: 100
 ---
 
@@ -30,15 +30,15 @@ in the user's language, without login, in under a second.
 
 ## Current Position
 
-Phase: 7 of 11 — Crypto→HKD Valuation Engine & `hkEligible` Gate (the milestone's critical phase) — **EXECUTING** (1/3 plans). (Phase 6 ✅ COMPLETE.)
-Plan: 07-01 ✅ merged (PR #7 `e718dbe` — vitest + fiat baseline on main) · 07-02/03 NEXT (THI-280, engine). Decisions locked in 07-CONTEXT.md (DEC-VAL-A/B/C).
-Status: Wave 0 done — vitest is the repo's first test runner; fiat baseline snapshot committed. Now building the valuation core + gate + segmentation (unit-segmented, partition-before-sort → fiat byte-identical; last-known+warn; base un-staked tier). Executing issue-by-issue (feature branch → PR → qa-karen).
-Linear: Phase 7 milestone `3678a78f` · THI-279 (07-01 vitest+baseline) **Done** (PR #7) · THI-280 (07-02/03 engine, blocked-by 279 cleared) In Progress · Phase 6 THI-252/253/254 all Done.
-Deferred follow-up (issue-first when parser next touched): 7 quarantined `transactionParser` tests need a parser-taxonomy reconciliation issue (qa-karen flagged on PR #7).
-Infra (from Phase 6): Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused). Prod Redis is irrelevant to Phase 7 (pure engine work).
-Last activity: 2026-07-24 — Phase 7 planned (discuss skipped → decisions captured inline; research done; vitest/partition-before-sort/byte-identical guard); plan-checker PASSED
+Phase: 7 of 11 — Crypto→HKD Valuation Engine & `hkEligible` Gate — ✅ **COMPLETE** (3/3 plans). Next: Phase 8 (Bulk Crypto Seed & Affiliate/Disclosure) — and it must ALSO build the crypto HKD rate source (DEC-DATA-002, cron-refreshed table) or the crypto cards it seeds can't be valued.
+Plan: 07-01 (PR #7 `e718dbe`, vitest+baseline) · 07-02/03 (PR #8 `43d33a7`, valuation+gate+segmentation) — all merged + deployed.
+Status: Phase 7 complete. Crypto valuation engine SHIPPED but dormant — no crypto data + no caller passes a rate table yet, so `cryptoSegment` is empty and the live recommender behaves exactly as before (fiat ranking byte-identical, structurally guaranteed). 73 tests green (vitest is now the repo's runner).
+Linear: Phase 7 milestone `3678a78f` · THI-279 **Done** (PR #7) · THI-280 **Done** (PR #8, auto-closed) · Phase 6 THI-252/253/254 all Done.
+Deferred follow-ups (issue-first when picked up): (1) 7 quarantined `transactionParser` tests → parser-taxonomy reconciliation; (2) NIT-1 `eligibleCardsCount` is fiat-only post-partition → fix/clarify in Phase 8 when crypto data exists; (3) crypto segment skips preference filters → Phase 9 UI decision.
+Infra: Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused).
+Last activity: 2026-07-24 — Phase 7 executed issue-by-issue (07-01 PR #7, 07-02/03 PR #8), qa-karen APPROVED both, fiat byte-identical verified; DEC-DATA-002 recorded (crypto rate source = cron table, Phase 8); Phase 7 COMPLETE
 
-Progress: [██████████] Phase 6 100% (5/5) · Phase 7 planned (0/3 executed) · Milestone v1.1: 1 of 6 phases complete
+Progress: [██████████] Phase 7 100% (3/3) · Milestone v1.1: **2 of 6 phases complete** (Phases 6, 7)
 
 ## Accumulated Context
 

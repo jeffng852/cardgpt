@@ -166,7 +166,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 ## Phases — Milestone v1.1
 
 - [x] **Phase 6: Schema, Crypto Type Fan-out & Backfills** - `cardType`, `crypto` reward unit + asset, staking gate, and `hkEligible` field; 11 cards backfilled (JSON + Redis); dead `RewardCap` retired (completed 2026-07-24)
-- [ ] **Phase 7: Crypto→HKD Valuation Engine & `hkEligible` Gate** - HKD valuation ranks crypto beside fiat, fail-safe on stale rates; gate fail-closed inside `recommendCards()`; vitest regression guard
+- [x] **Phase 7: Crypto→HKD Valuation Engine & `hkEligible` Gate** - HKD valuation ranks crypto beside fiat, fail-safe on stale rates; gate fail-closed inside `recommendCards()`; vitest regression guard (completed 2026-07-24)
 - [ ] **Phase 8: Bulk Crypto Seed & Affiliate / Disclosure** - Merge-aware global crypto seed; affiliate `applyUrl` links + bilingual pre-CTA disclosure; "recommendable" decoupled from "has a link"
 - [ ] **Phase 9: Data Page (Card Directory)** - Browsable Data page — filter/sort/search/detail over all cards, provenance-labeled, recommender deep-link
 - [ ] **Phase 10: Research Page** - Bilingual Research page — ranking-methodology explainer + crypto explainer
@@ -219,15 +219,15 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   4. `hkEligible` gates recommendation inclusion **fail-closed inside `recommendCards()`** (`undefined` ⇒ eligible for the 11 legacy cards; global cards must set `false`) — a card an HK resident can't obtain is never returned by the recommender, while the directory still shows it (CRY-05)
   5. **Regression, test-guarded:** with identity fiat rates the existing 11-card rankings are **byte-identical**, verified by a `vitest` suite that covers the new valuation logic (TECH-01)
 
-**Plans**: 1/3 plans executed
+**Plans**: 3/3 plans complete
 **Wave 1**
 
 - [x] 07-01-PLAN.md — Wave 0: install vitest + config, triage dormant tests, commit baseline fiat-ranking snapshot (TECH-01)
-- [ ] 07-02-PLAN.md — Wave 1: valuation types + `valuateCrypto` (stale/absent fail-safe) + `minStaking` base-tier default (CRY-04)
+- [x] 07-02-PLAN.md — Wave 1: valuation types + `valuateCrypto` (stale/absent fail-safe) + `minStaking` base-tier default (CRY-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 07-03-PLAN.md — Wave 2: `recommendCards` fail-closed `hkEligible` gate + partition-before-sort + `cryptoSegment` assembly (CRY-04, CRY-05, TECH-01)
+- [x] 07-03-PLAN.md — Wave 2: `recommendCards` fail-closed `hkEligible` gate + partition-before-sort + `cryptoSegment` assembly (CRY-04, CRY-05, TECH-01)
 
 ### Phase 8: Bulk Crypto Seed & Affiliate / Disclosure
 
@@ -295,7 +295,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 6. Schema, Crypto Type Fan-out & Backfills | 5/5 | Complete   | 2026-07-24 |
-| 7. Crypto→HKD Valuation Engine & hkEligible Gate | 1/3 | In Progress|  |
+| 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 0/TBD | Not started | - |
 | 9. Data Page (Card Directory) | 0/TBD | Not started | - |
 | 10. Research Page | 0/TBD | Not started | - |
