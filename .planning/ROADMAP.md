@@ -219,10 +219,10 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   4. `hkEligible` gates recommendation inclusion **fail-closed inside `recommendCards()`** (`undefined` ⇒ eligible for the 11 legacy cards; global cards must set `false`) — a card an HK resident can't obtain is never returned by the recommender, while the directory still shows it (CRY-05)
   5. **Regression, test-guarded:** with identity fiat rates the existing 11-card rankings are **byte-identical**, verified by a `vitest` suite that covers the new valuation logic (TECH-01)
 
-**Plans**: 3 plans
+**Plans**: 1/3 plans executed
 **Wave 1**
 
-- [ ] 07-01-PLAN.md — Wave 0: install vitest + config, triage dormant tests, commit baseline fiat-ranking snapshot (TECH-01)
+- [x] 07-01-PLAN.md — Wave 0: install vitest + config, triage dormant tests, commit baseline fiat-ranking snapshot (TECH-01)
 - [ ] 07-02-PLAN.md — Wave 1: valuation types + `valuateCrypto` (stale/absent fail-safe) + `minStaking` base-tier default (CRY-04)
 
 **Wave 2** *(blocked on Wave 1 completion)*
@@ -294,7 +294,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 6. Schema, Crypto Type Fan-out & Backfills | 5/5 | Complete   | 2026-07-24 |
-| 7. Crypto→HKD Valuation Engine & hkEligible Gate | 0/TBD | Not started | - |
+| 7. Crypto→HKD Valuation Engine & hkEligible Gate | 1/3 | In Progress|  |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 0/TBD | Not started | - |
 | 9. Data Page (Card Directory) | 0/TBD | Not started | - |
 | 10. Research Page | 0/TBD | Not started | - |

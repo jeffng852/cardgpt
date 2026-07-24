@@ -30,10 +30,11 @@ in the user's language, without login, in under a second.
 
 ## Current Position
 
-Phase: 7 of 11 — Crypto→HKD Valuation Engine & `hkEligible` Gate (the milestone's critical phase) — **PLANNED**, ready to execute. (Phase 6 ✅ COMPLETE.)
-Plan: 3 plans (07-01…07-03) across waves 0→1→2 — verified (plan-checker: PASSED, 0 blockers). Decisions locked in 07-CONTEXT.md (DEC-VAL-A/B/C).
-Status: Phase 7 planned. Design: **unit-segmented** crypto (own segment, partition-before-sort → fiat ranking structurally byte-identical), **last-known rate + staleness warning** (absent→value-unavailable), **base un-staked tier**. Wave 0 installs vitest (repo's first test runner, TECH-01). Next: `/gsd-execute-phase 7`.
-Linear: Phase 6 milestone THI-252/253/254 all Done. ⚠ Phase 7 NOT yet mirrored to a Linear milestone/issues — do that before/at execute (issue-first).
+Phase: 7 of 11 — Crypto→HKD Valuation Engine & `hkEligible` Gate (the milestone's critical phase) — **EXECUTING** (1/3 plans). (Phase 6 ✅ COMPLETE.)
+Plan: 07-01 ✅ merged (PR #7 `e718dbe` — vitest + fiat baseline on main) · 07-02/03 NEXT (THI-280, engine). Decisions locked in 07-CONTEXT.md (DEC-VAL-A/B/C).
+Status: Wave 0 done — vitest is the repo's first test runner; fiat baseline snapshot committed. Now building the valuation core + gate + segmentation (unit-segmented, partition-before-sort → fiat byte-identical; last-known+warn; base un-staked tier). Executing issue-by-issue (feature branch → PR → qa-karen).
+Linear: Phase 7 milestone `3678a78f` · THI-279 (07-01 vitest+baseline) **Done** (PR #7) · THI-280 (07-02/03 engine, blocked-by 279 cleared) In Progress · Phase 6 THI-252/253/254 all Done.
+Deferred follow-up (issue-first when parser next touched): 7 quarantined `transactionParser` tests need a parser-taxonomy reconciliation issue (qa-karen flagged on PR #7).
 Infra (from Phase 6): Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused). Prod Redis is irrelevant to Phase 7 (pure engine work).
 Last activity: 2026-07-24 — Phase 7 planned (discuss skipped → decisions captured inline; research done; vitest/partition-before-sort/byte-identical guard); plan-checker PASSED
 
