@@ -56,6 +56,12 @@ export function recommendCards(
   let eligibleCards = cards.filter(card => {
     if (!card.isActive) return false;
     if (preferences?.excludedCardIds?.includes(card.id)) return false;
+    // Fail-closed HK-eligibility gate (CRY-05, T-07-GATE): exclude a card only on
+    // an EXPLICIT hkEligible === false, so it reaches neither `recommendations`
+    // nor `cryptoSegment`. Keyed on `=== false` (not falsy) so `undefined` — the
+    // 11 legacy cards — stays eligible. The directory (elsewhere) still lists
+    // ineligible cards; this gate governs recommendations only.
+    if (card.hkEligible === false) return false;
     return true;
   });
 
