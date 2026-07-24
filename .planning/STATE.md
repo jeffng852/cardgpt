@@ -49,8 +49,8 @@ Progress: [██████████] Phase 6 100% (5/5) · Phase 7 planned
   imported for the directory; the recommender ranks only `hkEligible` cards, insulating it
   from the accepted lower-accuracy bulk data. Directory data must be provenance-labeled.
 - **DEC-SCOPE-001 (2026-07-15):** the admin/ingestion subsystem is core and in scope.
-- **Deferred to Phase 7 planning (design fork):** cross-unit valuation **normalize-to-HKD vs.
-  unit-segmented results** — must be decided and recorded before writing the engine.
+- **DEC-VAL-B (2026-07-24, Phase 7):** crypto ranking is **unit-segmented** (own `cryptoSegment`, partition-before-sort → fiat ranking byte-identical), NOT normalize-to-HKD. (Resolves the old Phase-7 fork below.) See `07-CONTEXT.md` for DEC-VAL-A/B/C.
+- **DEC-DATA-002 (2026-07-24):** the crypto→HKD **rate source is a cron-refreshed static rate table** — a scheduled job writes `{ [assetTicker]: { hkdPerUnit, asOf } }` (seeded with stablecoin rates) into the data layer (Redis), which is then **injected** into `recommendCards()` (the engine never fetches — DEC-VAL-B). This is what Phase 7's `stale → last-known + staleness warning` logic (DEC-VAL-A) was built to consume. **To be built in Phase 8** (the crypto cards seeded there are inert until a rate table feeds them). Rate-table key = asset `shortName` ticker, exact casing (hard constraint from Phase 7). Live price-feed APIs remain deferred to a later milestone.
 - Full decision log in PROJECT.md. Zero ADRs locked.
 
 ### Pending Todos

@@ -243,6 +243,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 
 **Plans**: TBD
 **Notes**: Upstream-blocked on primary-source crypto card data (RQ-001 — which HK-available crypto cards exist and their real reward structures); directory data ships under DEC-DATA-001 with provenance labeling. Compliance is a pre-deploy release gate (see above), not phase work.
+**Crypto HKD rate source (DEC-DATA-002 — add to Phase 8 scope):** Phase 7 built the crypto valuation engine but it's **inert without a rate table**. Phase 8 must build the **cron-refreshed static rate table** — a scheduled job writes `{ [assetTicker]: { hkdPerUnit, asOf } }` (seeded with stablecoin rates) into Redis, injected into `recommendCards()` (engine never fetches). Rate-table key = asset `shortName` ticker (exact casing) per Phase 7. Feeds Phase 7's stale→last-known+warning logic. Live price feeds stay deferred. Without this, the crypto cards seeded here can't be valued.
 
 ### Phase 9: Data Page (Card Directory)
 
