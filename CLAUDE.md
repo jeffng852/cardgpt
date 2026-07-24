@@ -132,12 +132,17 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
 
 ## Operational Runbook (Vercel)
 
-- **Production:** https://cardgpt-beta.vercel.app · Vercel project `cardgpt` · region `hkg1` (Hong Kong — chosen for HK users; keep it).
+- **Production:** https://cardgpt-beta.vercel.app · Vercel project `cardgpt` on the **Thirdvisor (Pro)** team (Vercel slug `polytracker`; moved off the personal hobby team 2026-07-24) · region `hkg1` (Hong Kong — chosen for HK users; keep it).
 - **Deploy:** merge to `main` → Vercel auto-deploys. No manual step.
 - **Env vars:** read headlessly with `vercel env ls` / `vercel env pull` (CLI is linked). **Do not ask the user to read them out.**
 - **Data layer is Upstash Redis**, resolved in this precedence order (`src/lib/data/redisStorage.ts:27`):
   `REAL_STORAGE_KV_REST_API_URL` → `KV_REST_API_URL` → `UPSTASH_REDIS_REST_URL`.
-  In production the **`REAL_STORAGE_*` names are the ones actually set** — that prefix is not a typo.
+  **As of 2026-07-24 the prod DB is `cardgpt-prod` on Thirdvisor, and the `KV_*` names are the ones actually set**
+  (host `grown-starfish-176247.upstash.io`). The old `REAL_STORAGE_*` set was deleted — its original Upstash DB had been
+  decommissioned, so the store was re-provisioned + seeded from `cards.json` (see `.planning/phases/06-.../06-05-SUMMARY.md`).
+  The code's precedence lists `REAL_STORAGE_*` first only for legacy reasons; it now falls through to `KV_*`.
+  ⚠ **When mutating prod Redis from a script, `vercel env pull` a FRESH `.env` first** — a stale local file that still
+  carries a removed/old `REAL_STORAGE_*` line will win the precedence and point the script at the wrong (or dead) host.
 - **Single quotes in curl** (zsh treats `&` in double quotes as background):
   `curl --max-time 60 'https://cardgpt-beta.vercel.app/api/...'`
 - **Timeout budget:** Vercel serverless hard limit ~120s. The AI extraction route (`/api/admin/extract`)

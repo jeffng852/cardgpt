@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 status: executing
-last_updated: "2026-07-23T00:00:00.000Z"
-last_activity: 2026-07-23
+last_updated: "2026-07-24T00:00:00.000Z"
+last_activity: 2026-07-24
 progress:
   total_phases: 6
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
-  percent: 80
+  completed_plans: 5
+  percent: 100
 ---
 
 # CardGPT — State
@@ -30,14 +30,14 @@ in the user's language, without login, in under a second.
 
 ## Current Position
 
-Phase: 6 of 11 (first of 6 in milestone v1.1) — Schema, Crypto Type Fan-out & Backfills
-Plan: 06-01 ✅ + 06-02/03/04 ✅ merged (PR #3 f233706, PR #4 7cc8411 → main, prod-deployed, healthy) · 06-05 NEXT — human-gated prod Redis backfill (THI-254)
-Status: Executing Phase 6 — Waves 1–3 done (4/5 plans). ONLY 06-05 remains: production Redis cardType backfill (autonomous:false, needs human go).
-Linear: milestone "Phase 6…" · THI-252 **Done** (PR #3) · THI-253 **Done** (PR #4, auto-transitioned on merge) · THI-254 (06-05 prod Redis, High, human-gated) Todo · chain 252✅→253✅→254⬚
-⚠ Open window: prod Redis cards still lack `cardType` (backfill = 06-05/THI-254). Public read-path unaffected (ungated); ADMIN EDIT of an un-typed card fails write-validation until THI-254 runs. QA-Karen's optional 1-line load-time hardening (`cardType: data.card.cardType||'credit'`) would pre-empt it.
-Last activity: 2026-07-23 — 06-02/03/04 executed (Opus), QA-Karen APPROVED (byte-identical proof independently reproduced), PR #4 squash-merged + deployed (Ops-Grace: home 200, /en 200, admin gated); THI-253 auto-closed
+Phase: 6 of 11 — Schema, Crypto Type Fan-out & Backfills — ✅ **COMPLETE** (5/5 plans). Next: Phase 7 (Crypto→HKD valuation + hkEligible gate — the milestone's critical phase).
+Plan: 06-01 (PR #3) · 06-02/03/04 (PR #4) · 06-05 (PR #5 `0e4a8b5`) — all merged + deployed.
+Status: Phase 6 complete. Prod Redis re-provisioned on Thirdvisor Pro + seeded (11/11 cards typed, read-back verified). Ready to plan Phase 7.
+Linear: milestone "Phase 6…" · THI-252 **Done** (PR #3) · THI-253 **Done** (PR #4) · THI-254 **Done** (PR #5, auto-closed on merge) · chain 252✅→253✅→254✅
+Infra note (2026-07-24): Vercel project moved hobby→Thirdvisor Pro; prod Redis DB `cardgpt-prod` (env prefix now `KV_*`, was `REAL_STORAGE_*`). Deferred: Blob not re-provisioned (unused — images served from static public/cards/); manual admin-edit persistence check recommended.
+Last activity: 2026-07-24 — 06-05 done via re-provision+seed (not backfill — original Upstash DB was decommissioned); QA-Karen APPROVED seed script; PR #5 merged; THI-254 auto-closed; Phase 6 COMPLETE
 
-Progress: [████████░░] 80% of Phase 6 (4 of 5 plans) · Phase 6 in progress (0 of 6 v1.1 phases complete)
+Progress: [██████████] 100% of Phase 6 (5 of 5 plans) · Milestone v1.1: 1 of 6 phases complete (Phase 6)
 
 ## Accumulated Context
 
