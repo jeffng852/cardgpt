@@ -87,7 +87,13 @@ async function main() {
   // Refresh bookkeeping fields (mirror writeCardsToRedis) and write.
   database.lastUpdated = new Date().toISOString();
   if (database.metadata) database.metadata.totalCards = cards.length;
-  await redis.set(CARDS_KEY, database);
+  // nx: server-side never-clobber — writes only if `cards` still doesn't exist, closing the
+  // check-then-set race between the emptiness guard above and this write.
+  const wrote = await redis.set(CARDS_KEY, database, { nx: true });
+  if (wrote === null) {
+    console.error('[seed] FATAL: `cards` was populated by another writer between the check and the write — aborting (nothing overwritten).');
+    process.exit(1);
+  }
   console.log(`[seed] wrote ${cards.length} cards (lastUpdated: ${database.lastUpdated}).`);
 
   // Independent read-back proof.
