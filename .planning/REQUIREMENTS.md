@@ -271,9 +271,12 @@ Grounded in `.planning/research/SUMMARY.md`. Traceability (phase mapping) is fil
 
 - [ ] **AFF-01** — The "Apply" CTA uses affiliate/referral links where available (populate the
   existing `applyUrl`), rendered `rel="sponsored nofollow noopener"`.
-- [ ] **AFF-02** — A bilingual affiliate/advertiser disclosure appears clearly **before** the CTA;
-  ranking is **never** reordered by affiliate presence; "recommendable" is decoupled from "has
-  `applyUrl`" (fix the current `loadCards` drop of cards without one).
+- [ ] **AFF-02** (revised 2026-07-25, Phase 8 discuss) — Ranking is **never** reordered by
+  affiliate presence, and "recommendable" is decoupled from "has `applyUrl`" (fix the current
+  `loadCards` drop of cards without one). **The bilingual affiliate/advertiser disclosure clause
+  was dropped** by product-owner decision (DEC D-08, `08-CONTEXT.md`), which also removes the
+  associated pre-deploy compliance release gate — risk explicitly acknowledged and accepted (see
+  D-08). Do not re-add a disclosure without re-opening the requirement and a compliance review.
 
 ### Research page (RES)
 
