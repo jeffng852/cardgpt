@@ -24,9 +24,10 @@ Stand up the **machinery** for the global crypto/neobank card set and affiliate 
 - **D-01:** Build **all machinery now, defer only the real data load.** The seed script, rate-table cron, affiliate CTA wiring, and `loadCards` fix are all implemented and tested against a small crypto fixture (a handful of representative crypto/neobank cards). The bulk seed of *real* cards is a later, RQ-001-gated action — the script exists and is proven; only its input data waits. — **Reversibility:** reversible — fixture is test-only; swapping in real data is a data step, not a code change.
 
 ### Crypto→HKD rate table (refines DEC-DATA-002)
-- **D-02:** Rate source is a **scheduled cron job that fetches real rates from a free price API (e.g. CoinGecko)** and writes `{ [assetTicker]: { hkdPerUnit, asOf } }` to Redis, injected into `recommendCards()` (the engine never fetches — DEC-VAL-B). **This advances the earlier DEC-DATA-002 note** which had deferred live price feeds and assumed manually-seeded stablecoin rates — Jeff chose to bring a real fetched feed forward now. — **Reversibility:** costly — introduces an external API dependency, a Vercel Cron entry, and a `CRON_SECRET`; backing it out to a static table later means unwinding cron infra.
-- **D-03:** Rate-table key = crypto asset **`shortName` ticker, exact casing** (hard constraint locked in Phase 7 — resolved `shortName ?? name`, no normalization at lookup). CoinGecko ids must be mapped to these tickers in the job, not at engine lookup.
-- **D-04:** Fetch failures are **not** a new failure mode to design from scratch — Phase 7's staleness logic already handles it (stale → last-known value + `rateStale` warning; bad/absent rate → `hkdEquivalent: null`, never fabricated/thrown). The cron writes `asOf` on every successful refresh so Phase 7's 24h staleness gate works. — **Reversibility:** reversible.
+- **D-02:** Rate source is a **scheduled cron job that fetches real rates from CoinMarketCap** (`/v2/cryptocurrency/quotes/latest`, convert=HKD) and writes `{ [assetTicker]: { hkdPerUnit, asOf } }` to Redis, injected into `recommendCards()` (the engine never fetches — DEC-VAL-B). **This advances the earlier DEC-DATA-002 note** which had deferred live price feeds and assumed manually-seeded stablecoin rates — Jeff chose to bring a real fetched feed forward now, on CoinMarketCap (changed from an initial CoinGecko suggestion). — **Reversibility:** costly — introduces an external API dependency, a Vercel Cron entry, a `CRON_SECRET`, and a `COINMARKETCAP_API_KEY`; backing it out to a static table later means unwinding cron infra.
+- **D-02a (⚠ public repo):** CoinMarketCap **requires an API key**, and its free "Basic" tier is **credit-metered** (monthly call budget). The key is a secret — it MUST be a Vercel env var (e.g. `COINMARKETCAP_API_KEY`), **never committed** (repo is public; honor `.gitignore` for `.env*`). The cron must be **credit-budget-aware**: batch all needed tickers into one `quotes/latest` call (comma-separated `symbol`), refresh on a modest cadence (Phase 7's 24h staleness tolerates ≥ daily), and cache to Redis so page loads never hit CMC. — **Reversibility:** reversible (config/secret).
+- **D-03:** Rate-table key = crypto asset **`shortName` ticker, exact casing** (hard constraint locked in Phase 7 — resolved `shortName ?? name`, no normalization at lookup). CoinMarketCap `symbol` values must be mapped to these tickers in the job, not at engine lookup (CMC symbols are upper-case tickers, e.g. `USDC`, `BTC` — mapping is likely identity but must be explicit + validated).
+- **D-04:** Fetch failures are **not** a new failure mode to design from scratch — Phase 7's staleness logic already handles it (stale → last-known value + `rateStale` warning; bad/absent rate → `hkdEquivalent: null`, never fabricated/thrown). The cron writes `asOf` on every successful refresh so Phase 7's 24h staleness gate works; a CMC error / credit-exhaustion leaves the last-known table in Redis untouched (never overwrite with nulls). — **Reversibility:** reversible.
 
 ### Affiliate CTA + disclosure (AFF-01 / AFF-02)
 - **D-05:** `applyUrl` CTA renders `rel="sponsored nofollow noopener"` and appears **only when a link exists** (AFF-01). Affiliate URLs are populated later as they're obtained; the rail is built now. — **Reversibility:** reversible.
@@ -39,7 +40,7 @@ Stand up the **machinery** for the global crypto/neobank card set and affiliate 
 - **D-10:** Crypto directory data is bulk-seeded from **ranked.plus public listings, facts only** (their referral links excluded), **provenance-labeled**, per DEC-DATA-001. The full global set feeds the directory; the recommender ranks only `hkEligible` cards (fail-closed gate already built in Phase 7). Applies to the *real* load (deferred); the fixture stands in until then.
 
 ### Claude's Discretion
-- Exact CoinGecko endpoint, id→ticker mapping table, refresh cadence, rate-limit/caching handling, and cron scheduling mechanics — for researcher/planner to nail down.
+- Exact CoinMarketCap endpoint params, symbol→ticker mapping table, refresh cadence within the free credit budget, caching + cron scheduling mechanics — for researcher/planner to nail down.
 - Fixture composition (how many crypto cards, which assets) — pick a minimal representative set covering stablecoin + volatile + staking-gated + a null-rate case.
 - Affiliate CTA visual treatment within the existing `CardRecommendationList` Apply button.
 
@@ -92,14 +93,14 @@ Stand up the **machinery** for the global crypto/neobank card set and affiliate 
 - **Rate table → engine:** cron writes `{ticker:{hkdPerUnit,asOf}}` to Redis; server read path injects it as `recommendCards(cards, tx, opts, rateTable)`; wire it at `HomeClient.tsx:46` / `page.tsx`.
 - **Seed script → Redis:** appends crypto cards by id alongside the 11 credit cards under the existing `cards` key.
 - **Affiliate CTA:** `CardRecommendationList.tsx:460` already conditionally renders on `card.applyUrl`; add the `rel` attributes and ensure link-less cards still render (minus the button).
-- **New infra:** Vercel Cron entry in `vercel.json` + `CRON_SECRET` (greenfield — none exists today).
+- **New infra:** Vercel Cron entry in `vercel.json` + `CRON_SECRET` + `COINMARKETCAP_API_KEY` env secret (greenfield — none exists today; keys are Vercel env vars, never committed).
 
 </code_context>
 
 <specifics>
 ## Specific Ideas
 
-- Rate feed: free price API, CoinGecko named as the example.
+- Rate feed: **CoinMarketCap** (`/v2/cryptocurrency/quotes/latest`, `convert=HKD`), API key via Vercel env secret, credit-budget-aware batched calls cached to Redis.
 - Merge-aware seed explicitly modeled on `backfill-card-type.mjs`, explicitly NOT `seed-redis.mjs`.
 - Small crypto fixture drives all machinery testing until RQ-001 real data lands.
 
@@ -110,7 +111,7 @@ Stand up the **machinery** for the global crypto/neobank card set and affiliate 
 
 - **Real bulk crypto card data load (RQ-001)** — the actual global crypto/neobank set from ranked.plus public listings. Machinery is built + tested against a fixture this phase; the real load is a later data step once RQ-001 resolves.
 - **Admin-editable rate table** — considered and rejected for now (manual toil + gated on THI-236 admin-auth). Cron-fetched instead.
-- **Live price feeds beyond CoinGecko / richer asset coverage** — expand later; this phase covers the fixture's assets.
+- **Richer asset coverage / higher-frequency refresh / paid CMC tier** — expand later; this phase covers the fixture's assets on the free credit budget.
 - **Prepaid card handling / its own results section** — Phase 9 (partition already routes prepaid into the non-fiat segment).
 - **`cryptoSegment` UI rendering** (a crypto section beside the fiat list) — downstream UI phase; the engine contract is ready.
 - **Admin-auth hardening (THI-236, Urgent)** — release gate, not phase work.
