@@ -4,6 +4,12 @@
   "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["hkg1"],
+  "crons": [
+    {
+      "path": "/api/cron/refresh-rates",
+      "schedule": "0 3 * * *"
+    }
+  ],
   "env": {},
   "headers": [
     {
