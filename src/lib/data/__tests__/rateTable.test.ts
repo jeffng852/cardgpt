@@ -29,7 +29,12 @@ const { mockGet, mockSet } = vi.hoisted(() => ({
 }));
 
 vi.mock('@upstash/redis', () => ({
-  Redis: vi.fn(() => ({ get: mockGet, set: mockSet })),
+  // Must be `new`-able (getRedis does `new Redis(...)`), so a class — an arrow
+  // function is not a valid constructor.
+  Redis: class {
+    get = mockGet;
+    set = mockSet;
+  },
 }));
 
 // Imported AFTER the mock is registered so getRedis()'s `new Redis()` is the fake.
