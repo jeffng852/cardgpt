@@ -238,11 +238,15 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 
   1. The global crypto/neobank set is seeded into production Redis via a **merge-aware** script (read Redis → append by new id → write back) — the 11 credit cards and any live admin edits survive; `init-redis` (which clobbers Redis from static JSON) is never used to seed
   2. The Apply CTA uses affiliate/referral links where available (populating the existing `applyUrl` rail), rendered `rel="sponsored nofollow noopener"` (AFF-01)
-  3. A bilingual affiliate/advertiser disclosure appears clearly **before** the CTA on every surface that shows one (AFF-02)
+  3. ~~A bilingual affiliate/advertiser disclosure appears clearly **before** the CTA on every surface that shows one (AFF-02)~~ — **SUPERSEDED 2026-07-25 (DEC-AFF-DROP / D-08):** disclosure dropped by product-owner decision (risk accepted); no longer a success criterion. AFF-02 revised in REQUIREMENTS.md to its ranking-neutrality + recommendable-without-`applyUrl` clauses only.
   4. Ranking is **never** reordered by affiliate presence, and a card is recommendable **without** an `applyUrl` — the current `loadCards` drop of link-less cards is removed, decoupling "recommendable" from "has affiliate link" (AFF-02)
 
-**Plans**: TBD
-**Notes**: Upstream-blocked on primary-source crypto card data (RQ-001 — which HK-available crypto cards exist and their real reward structures); directory data ships under DEC-DATA-001 with provenance labeling. Compliance is a pre-deploy release gate (see above), not phase work.
+**Plans**: 4 plans
+- [ ] 08-01-PLAN.md — Affiliate CTA (`rel="sponsored nofollow noopener"`) + `loadCards` link-less fix + ranking-neutrality test (AFF-01, AFF-02)
+- [ ] 08-02-PLAN.md — Crypto fixture + merge-aware seed script (pure `mergeCards`) modelled on `backfill-card-type.mjs` (D-01/D-09/D-10)
+- [ ] 08-03-PLAN.md — Rate-table Redis API (`crypto-rates`, merge-write) + server→engine injection [phase tracer] (DEC-DATA-002/D-03/D-04)
+- [ ] 08-04-PLAN.md — CoinMarketCap `CRON_SECRET`-gated rate-refresh cron + `vercel.json` crons (D-02/D-02a/D-04)
+**Notes**: Upstream-blocked on primary-source crypto card data (RQ-001 — which HK-available crypto cards exist and their real reward structures); directory data ships under DEC-DATA-001 with provenance labeling. **The bilingual affiliate disclosure is DROPPED** (DEC-AFF-DROP / D-08, product-owner risk-accepted) — the Goal + Success Criterion #3 above are superseded and should be reconciled; AFF-02 in REQUIREMENTS.md is already revised. Machinery is built + tested against a crypto fixture this phase; the real bulk data load is a later data step (RQ-001).
 **Crypto HKD rate source (DEC-DATA-002 — add to Phase 8 scope):** Phase 7 built the crypto valuation engine but it's **inert without a rate table**. Phase 8 must build the **cron-refreshed static rate table** — a scheduled job writes `{ [assetTicker]: { hkdPerUnit, asOf } }` (seeded with stablecoin rates) into Redis, injected into `recommendCards()` (engine never fetches). Rate-table key = asset `shortName` ticker (exact casing) per Phase 7. Feeds Phase 7's stale→last-known+warning logic. Live price feeds stay deferred. Without this, the crypto cards seeded here can't be valued.
 
 ### Phase 9: Data Page (Card Directory)
