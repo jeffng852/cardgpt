@@ -14,7 +14,7 @@ import { Link } from '@/i18n/routing';
 import { Logo } from '@/components/Logo';
 import type { ParseResult } from '@/lib/parser/transactionParser';
 import type { CardRecommendation } from '@/types/recommendation';
-import type { CreditCard, RewardUnit } from '@/types/card';
+import type { CreditCard, RewardUnit, HkdRateTable } from '@/types/card';
 import { recommendCards } from '@/lib/engine';
 
 // Sourced from the shared RewardUnit type so a crypto preference typechecks
@@ -23,9 +23,15 @@ type RewardType = RewardUnit;
 
 interface HomeClientProps {
   cards: CreditCard[];
+  /**
+   * Optional crypto→HKD rate table read server-side (DEC-DATA-002). Threaded as
+   * the 4th arg to recommendCards; optional at every hop so a missing table (no
+   * Redis key / dev) leaves the fiat path byte-identical (Phase 7 additive contract).
+   */
+  rateTable?: HkdRateTable;
 }
 
-export default function HomeClient({ cards }: HomeClientProps) {
+export default function HomeClient({ cards, rateTable }: HomeClientProps) {
   const t = useTranslations('common');
   const tFeatures = useTranslations('features');
   const tFooter = useTranslations('footer');
@@ -42,11 +48,14 @@ export default function HomeClient({ cards }: HomeClientProps) {
       ? { preferredRewardUnits: [selectedRewardType] }
       : undefined;
 
-    // Get recommendations (sync - cards already loaded)
+    // Get recommendations (sync - cards already loaded). rateTable is the
+    // optional 4th arg: when present the engine values crypto cards in HKD; when
+    // absent the call is the unchanged 3-arg fiat path (Phase 7 additive contract).
     const recommendationResult = recommendCards(
       cards,
       result.transaction,
-      preferences
+      preferences,
+      rateTable
     );
 
     setRecommendations(recommendationResult.recommendations);
