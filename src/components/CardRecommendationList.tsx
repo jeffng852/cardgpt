@@ -8,6 +8,7 @@ import type { RuleContribution } from '@/types/recommendation';
 import { formatReward, getRewardUnitName } from '@/lib/engine/calculateReward';
 import type { CreditCard, RewardUnit } from '@/types/card';
 import { getCardImageUrl, hasCardImage } from '@/lib/cardImages';
+import { applyCtaProps } from '@/lib/affiliate/applyCtaProps';
 
 interface CardRecommendationListProps {
   recommendations: CardRecommendation[];
@@ -456,12 +457,10 @@ export default function CardRecommendationList({
                     </div>
                   )}
 
-                  {/* Apply Button */}
+                  {/* Apply Button — affiliate-signalled CTA (AFF-01 / D-05), rendered only when a link exists */}
                   {card.applyUrl && (
                     <a
-                      href={card.applyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      {...applyCtaProps(card.applyUrl)!}
                       className="group/btn relative block w-full px-4 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-primary to-primary/90 text-white text-center rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 overflow-hidden"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
