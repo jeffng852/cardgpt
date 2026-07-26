@@ -1,0 +1,158 @@
+{
+  "cards": [
+    {
+      "id": "fixture-usdc-stablecoin",
+      "cardType": "crypto",
+      "name": "FIXTURE Stablecoin Rewards Card",
+      "issuer": "Fixture Labs (SYNTHETIC — not a real issuer)",
+      "network": "Visa",
+      "applyUrl": "https://example.com/fixture/usdc-stablecoin",
+      "tags": ["crypto", "stablecoin", "fixture"],
+      "isActive": true,
+      "lastUpdated": "2026-07-27T00:00:00.000Z",
+      "hkEligible": true,
+      "rewardPrograms": {
+        "crypto": { "name": "USD Coin", "shortName": "USDC" }
+      },
+      "rewards": [
+        {
+          "id": "usdc-base",
+          "rewardRate": 0.02,
+          "rewardUnit": "crypto",
+          "priority": "base",
+          "isPromotional": false,
+          "description": "FIXTURE: 2% back paid in USDC on all spending",
+          "categories": ["all"]
+        }
+      ],
+      "fees": { "annualFee": 0 }
+    },
+    {
+      "id": "fixture-eth-volatile",
+      "cardType": "crypto",
+      "name": "FIXTURE ETH Rewards Card (no apply link)",
+      "issuer": "Fixture Labs (SYNTHETIC — not a real issuer)",
+      "network": "Mastercard",
+      "tags": ["crypto", "volatile", "fixture"],
+      "isActive": true,
+      "lastUpdated": "2026-07-27T00:00:00.000Z",
+      "hkEligible": true,
+      "rewardPrograms": {
+        "crypto": { "name": "Ethereum", "shortName": "ETH" }
+      },
+      "rewards": [
+        {
+          "id": "eth-base",
+          "rewardRate": 0.01,
+          "rewardUnit": "crypto",
+          "priority": "base",
+          "isPromotional": false,
+          "description": "FIXTURE: 1% back paid in ETH on all spending",
+          "categories": ["all"]
+        }
+      ],
+      "fees": { "annualFee": 0 }
+    },
+    {
+      "id": "fixture-eth-staking",
+      "cardType": "crypto",
+      "name": "FIXTURE Staking-Gated ETH Card",
+      "issuer": "Fixture Labs (SYNTHETIC — not a real issuer)",
+      "network": "Visa",
+      "applyUrl": "https://example.com/fixture/eth-staking",
+      "tags": ["crypto", "staking", "fixture"],
+      "isActive": true,
+      "lastUpdated": "2026-07-27T00:00:00.000Z",
+      "hkEligible": true,
+      "rewardPrograms": {
+        "crypto": { "name": "Ethereum", "shortName": "ETH" }
+      },
+      "rewards": [
+        {
+          "id": "eth-staking-base",
+          "rewardRate": 0.01,
+          "rewardUnit": "crypto",
+          "priority": "base",
+          "isPromotional": false,
+          "description": "FIXTURE: 1% back paid in ETH (base, no staking required)",
+          "categories": ["all"]
+        },
+        {
+          "id": "eth-staking-bonus",
+          "rewardRate": 0.02,
+          "rewardUnit": "crypto",
+          "priority": "bonus",
+          "isCumulative": true,
+          "isPromotional": false,
+          "description": "FIXTURE: +2% back paid in ETH when a minimum ETH stake is held",
+          "categories": ["all"],
+          "conditions": {
+            "minStaking": { "amount": 1, "asset": "ETH" }
+          }
+        }
+      ],
+      "fees": { "annualFee": 0 }
+    },
+    {
+      "id": "fixture-usdc-nonhk",
+      "cardType": "crypto",
+      "name": "FIXTURE Non-HK Stablecoin Card",
+      "issuer": "Fixture Labs (SYNTHETIC — not a real issuer)",
+      "network": "Visa",
+      "applyUrl": "https://example.com/fixture/usdc-nonhk",
+      "tags": ["crypto", "stablecoin", "fixture", "non-hk"],
+      "isActive": true,
+      "lastUpdated": "2026-07-27T00:00:00.000Z",
+      "hkEligible": false,
+      "rewardPrograms": {
+        "crypto": { "name": "USD Coin", "shortName": "USDC" }
+      },
+      "rewards": [
+        {
+          "id": "usdc-nonhk-base",
+          "rewardRate": 0.03,
+          "rewardUnit": "crypto",
+          "priority": "base",
+          "isPromotional": false,
+          "description": "FIXTURE: 3% back in USDC — exercises the Phase 7 hkEligible fail-closed gate",
+          "categories": ["all"]
+        }
+      ],
+      "fees": { "annualFee": 0 }
+    },
+    {
+      "id": "fixture-nullx-unmapped",
+      "cardType": "crypto",
+      "name": "FIXTURE Unmapped-Ticker Card",
+      "issuer": "Fixture Labs (SYNTHETIC — not a real issuer)",
+      "network": "Mastercard",
+      "applyUrl": "https://example.com/fixture/nullx-unmapped",
+      "tags": ["crypto", "fixture", "null-rate"],
+      "isActive": true,
+      "lastUpdated": "2026-07-27T00:00:00.000Z",
+      "hkEligible": true,
+      "rewardPrograms": {
+        "crypto": { "name": "Null Token", "shortName": "NULLX" }
+      },
+      "rewards": [
+        {
+          "id": "nullx-base",
+          "rewardRate": 0.05,
+          "rewardUnit": "crypto",
+          "priority": "base",
+          "isPromotional": false,
+          "description": "FIXTURE: 5% back in NULLX — a deliberately unmapped ticker so valuateCrypto returns null",
+          "categories": ["all"]
+        }
+      ],
+      "fees": { "annualFee": 0 }
+    }
+  ],
+  "lastUpdated": "2026-07-27T00:00:00.000Z",
+  "version": "0.1.0-fixture",
+  "metadata": {
+    "totalCards": 5,
+    "dataSource": "FIXTURE — synthetic test data (NOT authoritative). Drives Phase 8 machinery testing only. The real bulk crypto load is deferred to RQ-001 (D-01/D-10); provenance/DEC-DATA-001 labeling lands with that real load.",
+    "notes": "Covers: stablecoin (USDC, hkEligible), volatile no-apply-link (ETH), staking-gated bonus rule (minStaking asset ETH), an hkEligible:false card, and an unmapped-ticker null-rate case (NULLX). Mapped tickers this fixture relies on: USDC, ETH (the ticker contract 08-04's CMC id→ticker map must cover). NULLX is intentionally left unmapped. One crypto reward asset per card (no unit-mixing)."
+  }
+}
