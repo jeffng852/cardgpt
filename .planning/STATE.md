@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
-current_phase: 08
-current_phase_name: Planned — 4 plans, 2 waves
-status: ready-to-execute
-stopped_at: Phase 8 planned (4 plans, plan-checker PASSED) — ready to execute
-last_updated: "2026-07-26T00:00:00.000Z"
-last_activity: 2026-07-26
-last_activity_desc: Phase 8 planned — 4 plans across 2 waves; RESEARCH+VALIDATION+PATTERNS done; plan-checker PASSED
+current_phase: 09
+current_phase_name: Not started (0/TBD plans)
+status: ready-to-plan
+stopped_at: Phase 8 COMPLETE — merged PR #9 (THI-294), verified PASSED; ready to plan Phase 9
+last_updated: "2026-07-27T00:16:00.000Z"
+last_activity: 2026-07-27
+last_activity_desc: Phase 8 COMPLETE — 4 plans executed + verifier PASSED + qa-karen APPROVED + merged PR #9 to main (THI-294 Done); crypto engine now live (dormant until CMC/CRON secrets + RQ-001 data)
 progress:
   total_phases: 6
-  completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
-  percent: 33
+  completed_phases: 3
+  total_plans: 12
+  completed_plans: 12
+  percent: 50
 ---
 
 # CardGPT — State
@@ -29,16 +29,17 @@ See: .planning/PROJECT.md (updated 2026-07-16)
 **Core value:** Answer "which of my cards should I use for this purchase?" — for HK cards,
 in the user's language, without login, in under a second.
 
-**Current focus:** Milestone **v1.1 — Card Directory & Crypto Expansion**. Phases 6 & 7 complete
-(2 of 6). **Next: Phase 8 — Bulk Crypto Seed & Affiliate / Disclosure** (not yet discussed/planned;
-upstream-blocked on RQ-001 crypto-card source data; also owns the DEC-DATA-002 rate table).
+**Current focus:** Milestone **v1.1 — Card Directory & Crypto Expansion**. Phases 6, 7 & 8 complete
+(3 of 6). **Next: Phase 9 — Data Page (Card Directory)** (not yet discussed/planned). Phase 8's crypto
+engine + rate cron are live-but-dormant until `COINMARKETCAP_API_KEY`/`CRON_SECRET` are set and RQ-001
+real crypto-card data lands; disclosure revisit tracked as THI-297.
 
 ## Current Position
 
-Phase: 08 of 11 — planned, ready to execute (Phases 6 & 7 complete)
-Plan: 4 plans across 2 waves (08-01/02/03 wave 1, 08-04 wave 2 depends on 08-03)
-Status: Ready to EXECUTE Phase 8 — plan-checker PASSED (research + Nyquist validation + pattern map done)
-Linear: Phase 7 milestone `3678a78f` · THI-279 **Done** (PR #7) · THI-280 **Done** (PR #8, auto-closed) · Phase 6 THI-252/253/254 all Done.
+Phase: 09 of 11 — next (Phases 6, 7 & 8 complete)
+Plan: Not started
+Status: Ready to plan Phase 9 (Data Page). Phase 8 merged to main (PR #9, THI-294 Done); crypto engine live-dormant.
+Linear: Phase 8 milestone `d8cb2a69` · THI-294 **Done** (PR #9, auto-closed) · THI-297 disclosure follow-up (Todo, RQ-001-gated) · Phase 7 THI-279/280 Done · Phase 6 THI-252/253/254 Done.
 Deferred follow-ups (issue-first when picked up): (1) 7 quarantined `transactionParser` tests → parser-taxonomy reconciliation; (2) NIT-1 `eligibleCardsCount` is fiat-only post-partition → fix/clarify in Phase 8 when crypto data exists; (3) crypto segment skips preference filters → Phase 9 UI decision.
 Infra: Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused).
 Last activity: 2026-07-25 — Phase 07 complete
@@ -89,11 +90,13 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 
 ## Session Continuity
 
-Last session: 2026-07-26
-Stopped at: Phase 8 planned — 4 plans across 2 waves, plan-checker PASSED; ready to execute
-Resume file: .planning/phases/08-bulk-crypto-seed-affiliate-disclosure/08-01-PLAN.md
+Last session: 2026-07-27
+Stopped at: Phase 8 COMPLETE — merged PR #9 to main (THI-294 Done), verifier + qa-karen PASSED, Ops-Grace post-deploy check run
+Resume file: None
 
-**Next:** `/gsd-execute-phase 8` — 4 plans ready (plan-checker PASSED). Wave 1: 08-01 (affiliate CTA +
-loadCards fix), 08-02 (crypto fixture + merge-seed), 08-03 (rate-table Redis API + engine injection [tracer]).
-Wave 2: 08-04 (CoinMarketCap CRON_SECRET cron) depends on 08-03. Machinery tested against a fixture;
-real bulk data load deferred to RQ-001. ⚠ Needs COINMARKETCAP_API_KEY + CRON_SECRET as Vercel env secrets before prod.
+**Next:** `/gsd-discuss-phase 9` — Phase 9 (Data Page / Card Directory), the next unplanned phase. 3 of 6 v1.1 phases done.
+
+**Phase 8 operational follow-ups (not blocking Phase 9):**
+- Set `COINMARKETCAP_API_KEY` + `CRON_SECRET` as Vercel env secrets to activate the (currently dormant) rate cron.
+- RQ-001: source real HK crypto-card data before the merge-seed loads anything real (fixture-only in prod today).
+- THI-297: revisit affiliate disclosure before live monetized Apply links ship.
