@@ -293,7 +293,11 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   2. Light and dark mode both work under the new theme, and the choice still persists (UI-01 — preserve existing function)
   3. Every pre-existing behavior — recommendation, tags, language switch, directory filter/search, and the recommender→detail deep-link — still works after the re-skin (UI-01 — preserve existing function)
 
-**Plans**: TBD
+**Plans**: 4 plans (re-scoped to Home/recommender + shared chrome + the reusable card component; Data/Research build into this system in Phases 9/10 — see 11-CONTEXT.md re-sequencing note)
+- [ ] 11-01-PLAN.md — TRACER: v2 tokens + Rethink Sans/Inter/Geist Mono fonts + CardGPT wordmark logo + full Home shell, both themes (wave 1)
+- [ ] 11-02-PLAN.md — shared brutalist card (buildCardView + CreditCardCard, parameterized) + recommender results restyle; affiliate CTA + alignment preserved (wave 2)
+- [ ] 11-03-PLAN.md — recommender input surface (TransactionInput chips/input + FloatingCards), all parse/AI/tag/submit behavior preserved (wave 2)
+- [ ] 11-04-PLAN.md — chrome (dark-mode toggle + EN·繁 language switch) + How-It-Works restyle; persistence + locale switch preserved (wave 2)
 **UI hint**: yes
 
 ---
@@ -307,7 +311,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
 | 9. Data Page (Card Directory) | 0/3 | Planned | - |
 | 10. Research Page | 0/TBD | Not started | - |
-| 11. UI / Theme Refresh (THI-176) | 0/TBD | Not started | - |
+| 11. UI / Theme Refresh (THI-176) | 0/4 | Planned | - |
 
 ---
 
