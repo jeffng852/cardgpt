@@ -91,14 +91,26 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 ## Session Continuity
 
 Last session: 2026-07-27
-Stopped at: Phase 9 CONTEXT gathered (design decided) — ready to plan; Phase 8 shipped (PR #9, THI-294 Done) + rate cron now live
-Resume file: .planning/phases/09-data-page-card-directory/09-CONTEXT.md
+Stopped at: RE-SEQUENCED — Phase 11 (ranked.plus redesign / THI-176) pulled ahead of Phase 9; Phase 9 PARKED; awaiting ranked.plus screenshots from Jeff
+Resume file: .planning/phases/09-data-page-card-directory/09-CONTEXT.md (parked)
 
-**Next:** `/gsd-plan-phase 9` — Phase 9 (Data Page). Design locked in 09-CONTEXT.md: responsive card grid,
-dedicated `/[locale]/cards/[id]` detail (uses existing `getCardById`), client search+sort (name/issuer;
-reward-rate/annual-fee/name), page-level provenance banner, bilingual (next-intl), nav entry + recommender
-deep-link. Filters DEFERRED (11 credit cards today; revisit when crypto seeds / set grows). Frontend phase →
-gets a UI-SPEC at plan time. Run gated (issue-first → branch → plan → execute → verify → qa-karen → PR → merge).
+**⚠ Re-sequencing decision (2026-07-27):** Jeff reviewed the Phase 9 directory mockup and asked to (a) keep + integrate the
+transaction simulator into the new design, and (b) **adopt ranked.plus's colour + design system across the app**. That is
+a redesign spanning recommender + directory = **Phase 11 (UI/Theme Refresh, THI-176) pulled forward**. Decision: do the
+**redesign FIRST** (restyle existing app incl. simulator into the ranked.plus system), THEN build the Phase 9 directory
+into the finished system (so the directory is built once, in the final look).
+
+**Phase 9 is PARKED:** 09-CONTEXT.md + 3 plans (09-01/02/03) exist and are committed, but were authored for the CURRENT
+design system — do NOT execute them. They'll be revised/rebuilt into the new ranked.plus system after the redesign lands.
+
+**Next:** Redesign (Phase 11 / THI-176). BLOCKED on Jeff pasting **ranked.plus screenshots** (homepage + a card/list view)
+so the palette/type/card-style can be matched faithfully. Once screenshots arrive: study them → new unified mockup
+(recommender/simulator + directory chrome in the ranked.plus system) for approval → discuss/plan/execute Phase 11 gated
+(issue-first → branch → execute → verify → qa-karen → PR → merge). Phase 9 directory follows, built into the new system.
+
+**Design decisions still valid regardless of the restyle (from 09-CONTEXT.md):** card grid, dedicated /cards/[id] detail
+(uses getCardById), search+sort (filters deferred), page-level provenance banner, recommender deep-link, bilingual. Only
+the VISUAL system changes (current → ranked.plus).
 
 **Phase 8 operational follow-ups (not blocking Phase 9):**
 - Set `COINMARKETCAP_API_KEY` + `CRON_SECRET` as Vercel env secrets to activate the (currently dormant) rate cron.
