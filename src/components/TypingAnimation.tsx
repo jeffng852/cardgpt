@@ -80,7 +80,7 @@ export default function TypingAnimation({
     <span className={className}>
       {displayText}
       <span
-        className={`inline-block w-0.5 h-[1em] bg-current ml-1 transition-opacity duration-100 ${
+        className={`inline-block w-[0.5ch] h-[1em] bg-brand ml-1 align-baseline transition-opacity duration-100 ${
           showCursor ? 'opacity-100' : 'opacity-0'
         }`}
         aria-hidden="true"
