@@ -6,8 +6,14 @@
 >
 > **CardGPT was migrated onto GSD on 2026-07-15** (THI-233) after ~6 months off-process.
 > Phases 1–5 in `.planning/` are a retrospective **as-built capture** (shipped before GSD, all
-> COMPLETE). **Milestone v1.1 — Card Directory & Crypto Expansion (Phases 6–11) is now defined**
-> and forward work has begun: Phase 6 (schema foundation) shipped to `main` (THI-252, PR #3).
+> COMPLETE). **Milestone v1.1 — Card Directory & Crypto Expansion (Phases 6–11) is defined** and
+> forward work is well underway — **Phases 6, 7 and 8 are complete on `main`** (3/6): schema
+> foundation + reward-unit fan-out (THI-252/253/254, PRs #3–#5), crypto HKD valuation with the
+> `hkEligible` gate and unit-segmented ranking (THI-279/280, PRs #7–#8), and the bulk crypto seed
+> machinery with the affiliate CTA and CoinMarketCap rate cron (THI-294, PR #9). Phase 9 (Data page /
+> card directory) is planned but **parked**; the ranked.plus UI redesign (Phase 11, THI-176) was
+> re-sequenced ahead of it, awaiting design screenshots. This line is a snapshot — `git log` is the
+> live tip.
 
 ## 🔴 This repository is PUBLIC
 
@@ -127,9 +133,10 @@
 The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4215519c`).
 
 > **Phases 1–5 are retrospective** — they describe work that shipped before GSD existed here, so they
-> were **not** mirrored as Linear milestones. Mirroring now starts at the first *real* milestone,
-> **v1.1 — Card Directory & Crypto Expansion**: Phase 6 is wired to a Linear milestone with issues
-> THI-252/253/254 (THI-252 Done, PR #3).
+> were **not** mirrored as Linear milestones. Mirroring starts at the first *real* milestone,
+> **v1.1 — Card Directory & Crypto Expansion**, where each phase is wired to a Linear milestone with
+> an issue per plan — Phase 6 (THI-252/253/254), Phase 7 (THI-279/280), Phase 8 (THI-294), all now
+> merged and Done.
 
 ## Operational Runbook (Vercel)
 
@@ -148,16 +155,23 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
   `curl --max-time 60 'https://cardgpt-beta.vercel.app/api/...'`
 - **Timeout budget:** Vercel serverless hard limit ~120s. The AI extraction route (`/api/admin/extract`)
   is the one at risk — PDF parse + Anthropic call. HTTP/2 framing errors = hit the limit.
+- **Scheduled job:** one Vercel Cron — `/api/cron/refresh-rates`, daily at **03:00 UTC** (`vercel.json`).
+  It refreshes the crypto→HKD rate table from CoinMarketCap so crypto-card valuations aren't stale.
+  It is auth-gated, and it **degrades safely**: with no CoinMarketCap key it no-ops, and a failed
+  fetch or write leaves the last-known rates intact rather than nulling them.
 - **Post-deploy:** Ops-Grace verifies the site responds and admin auth behaves.
 
 ## Known Pitfalls
 
 - **🔴 Admin auth is not currently sound — see THI-236 (Urgent) before touching `src/lib/auth/`.**
   Do not treat the admin surface as protected. Details are in Linear, not here (public repo).
-- **There is no test runner.** `src/lib/engine/__tests__/engine.test.ts` and
-  `src/lib/parser/__tests__/transactionParser.test.ts` exist, but no jest/vitest is installed and
-  there is **no `test` script**. `npm test` fails. The archived ENGINE_DOCUMENTATION cites these
-  tests as if they run — they don't. (OPEN-008. Installing vitest is a cheap early win.)
+- **The test runner now exists** (this reverses a long-standing gap — OPEN-008 is closed). Phase 7
+  Wave 0 installed **vitest** (`vitest.config.ts`, `vitest 4.1.10` devDependency) and added the
+  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 12 files
+  covering the engine (crypto valuation, `hkEligible`, `minStaking`, unit segmentation, the
+  fiat-ranking regression baseline, affiliate neutrality), the data layer (`loadCards`, `rateTable`),
+  the affiliate CTA, the rate cron, and the transaction parser. Archived docs that described the
+  pre-vitest state are stale on this point.
 - **`docs/ARCHITECTURE.md` is wrong about storage.** It documents Vercel Blob throughout; the data
   layer is Upstash Redis (commits `6fb4d19`, `d43be5e`). `@vercel/blob` survives **only** for card
   *image* upload in `/api/admin/upload`. Its non-storage content (server/client split, `force-dynamic`,
@@ -178,13 +192,16 @@ npm run dev              # health-check, then next dev
 npm run dev:skip-check   # bypass the health check
 npm run build            # health-check, then next build
 npm run lint             # eslint
+npm test                 # vitest run (12 test files)
+npm run test:watch       # vitest in watch mode
 npm run health-check     # scripts/health-check.js on its own
 npx tsc --noEmit         # typecheck — there is no `typecheck` script (needs npm install first)
 vercel env ls            # inspect production env (CLI is linked)
 ```
 
-> **`npm test` does not exist** — verified: it errors with `Missing script: "test"`. See Known
-> Pitfalls. Do not put it in CI or a PR checklist until a runner is installed.
+> **`npm test` now works** — the `test` script (`vitest run`) landed with the Phase 7 vitest install,
+> replacing the earlier "no runner, `Missing script: test`" state. It is safe to put in CI or a PR
+> checklist.
 >
 > `npx tsc --noEmit` is the typecheck route (`typescript ^5` is a devDependency), but **run
 > `npm install` first** — without `node_modules`, `npx` fetches an unrelated stub package and

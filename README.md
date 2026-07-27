@@ -41,6 +41,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
   /components   # React components
   /lib          # Utilities and business logic
   /data         # Card data (JSON)
+  /i18n         # next-intl routing and message config
   /types        # TypeScript type definitions
 ```
 
