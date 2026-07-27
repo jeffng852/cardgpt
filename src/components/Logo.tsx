@@ -1,39 +1,50 @@
 'use client';
 
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-
 interface LogoProps {
+  /** Scales the wordmark font-size (px). Kept for call-site compatibility. */
   size?: number;
   className?: string;
 }
 
+/**
+ * CardGPT wordmark (contract §4): the text `CardGPT` in the display face,
+ * camelCase with tight tracking, immediately followed by a mint block cursor `▍`
+ * that blinks — encoding the conversational/AI nature. Monochrome + the single
+ * mint accent, no boxes. The blink respects `prefers-reduced-motion`.
+ */
 export function Logo({ size = 40, className = '' }: LogoProps) {
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Show light mode icon by default during SSR/hydration
-  const isDark = mounted && resolvedTheme === 'dark';
-  const iconSrc = isDark ? '/icon-dark-192.png' : '/icon-192.png';
+  // The wordmark reads best a touch smaller than the old icon box.
+  const fontSize = Math.round(size * 0.6);
 
   return (
-    <div
-      className={`relative overflow-hidden rounded-xl shadow-lg ${className}`}
-      style={{ width: size, height: size }}
+    <span
+      className={`font-display font-extrabold normal-case select-none ${className}`}
+      style={{
+        fontSize,
+        letterSpacing: '-0.03em',
+        lineHeight: 1,
+        color: 'var(--fg)',
+      }}
+      aria-label="CardGPT"
     >
-      <Image
-        src={iconSrc}
-        alt="CardGPT"
-        width={size}
-        height={size}
-        className="object-cover"
-        priority
-      />
-    </div>
+      <span>CardGPT</span>
+      <span
+        aria-hidden="true"
+        className="cardgpt-cursor"
+        style={{ color: 'var(--brand)', marginLeft: '0.02em' }}
+      >
+        ▍
+      </span>
+      <style>{`
+        .cardgpt-cursor {
+          animation: cursor-blink 1.06s steps(1, end) infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .cardgpt-cursor {
+            animation: none;
+          }
+        }
+      `}</style>
+    </span>
   );
 }

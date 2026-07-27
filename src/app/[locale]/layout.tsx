@@ -1,18 +1,28 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { Geist, Geist_Mono } from "next/font/google";
+import { Rethink_Sans, Inter, Geist_Mono } from "next/font/google";
 import { routing } from '@/i18n/routing';
 import { notFound } from 'next/navigation';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { ThemeFavicon } from '@/components/ThemeFavicon';
 import "../globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Display face — uppercase headings, nav labels, card names, CTA labels (contract §2).
+const rethinkSans = Rethink_Sans({
+  variable: "--font-rethink",
   subsets: ["latin"],
+  weight: ["700", "800"],
 });
 
+// Body / UI — paragraphs, inputs, secondary labels (contract §2).
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
+// Data / numeric values with tabular-nums (retained — contract §2).
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -23,7 +33,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: "#10a37f",
+  themeColor: "#121212",
 };
 
 export const metadata: Metadata = {
@@ -81,7 +91,7 @@ export default async function LocaleLayout({
         <meta name="apple-mobile-web-app-title" content="CardGPT" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${rethinkSans.variable} ${inter.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
