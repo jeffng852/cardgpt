@@ -103,10 +103,13 @@ into the finished system (so the directory is built once, in the final look).
 **Phase 9 is PARKED:** 09-CONTEXT.md + 3 plans (09-01/02/03) exist and are committed, but were authored for the CURRENT
 design system — do NOT execute them. They'll be revised/rebuilt into the new ranked.plus system after the redesign lands.
 
-**Next:** Redesign (Phase 11 / THI-176). BLOCKED on Jeff pasting **ranked.plus screenshots** (homepage + a card/list view)
-so the palette/type/card-style can be matched faithfully. Once screenshots arrive: study them → new unified mockup
-(recommender/simulator + directory chrome in the ranked.plus system) for approval → discuss/plan/execute Phase 11 gated
-(issue-first → branch → execute → verify → qa-karen → PR → merge). Phase 9 directory follows, built into the new system.
+**Next:** Redesign (Phase 11 / THI-176) — design is **APPROVED + LOCKED** in `.planning/design/ui-contract-v2.md` (brutalist-editorial:
+mono #fff/#121212 + #dedede hairlines, flat, square cards, mint #67ffc5 + neon accents, Rethink Sans/Inter/Geist Mono,
+CardGPT wordmark + mint cursor logo, shared card component for recommender + directory, **dark mode KEPT**). Product owner
+signed off on the unified mockup (simulator retained + restyled + directory + detail). Ready to build Phase 11 gated:
+issue-first (THI + branch) → plan (design contract = ui-contract-v2.md) → execute → verify → qa-karen → PR → merge.
+Then rebuild the Phase 9 directory into the finished system. Reference mockup: scratchpad cardgpt-redesign-mockup.html
+(artifact 59c451e4). Real build loads Rethink Sans + Inter via next/font (mockup used system-font approximations).
 
 **Design decisions still valid regardless of the restyle (from 09-CONTEXT.md):** card grid, dedicated /cards/[id] detail
 (uses getCardById), search+sort (filters deferred), page-level provenance banner, recommender deep-link, bilingual. Only
