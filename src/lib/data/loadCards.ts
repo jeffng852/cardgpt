@@ -28,9 +28,13 @@ interface CardDatabase {
 }
 
 /**
- * Validate a single credit card object
+ * Validate a single credit card object.
+ *
+ * Note: `applyUrl` is intentionally NOT required (D-06 / AFF-02) — "recommendable" is
+ * decoupled from "has an affiliate link", so a structurally-valid card without a link
+ * still loads, ranks, and can be recommended. Exported for direct unit testing.
  */
-function validateCard(card: any): card is CreditCard {
+export function validateCard(card: any): card is CreditCard {
   if (!card.id || typeof card.id !== 'string') {
     console.warn(`Invalid card: missing or invalid id`);
     return false;
@@ -43,11 +47,6 @@ function validateCard(card: any): card is CreditCard {
 
   if (!card.issuer || typeof card.issuer !== 'string') {
     console.warn(`Invalid card ${card.id}: missing or invalid issuer`);
-    return false;
-  }
-
-  if (!card.applyUrl || typeof card.applyUrl !== 'string') {
-    console.warn(`Invalid card ${card.id}: missing or invalid applyUrl`);
     return false;
   }
 

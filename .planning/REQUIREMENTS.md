@@ -269,9 +269,9 @@ Grounded in `.planning/research/SUMMARY.md`. Traceability (phase mapping) is fil
 
 ### Affiliate monetization (AFF)
 
-- [ ] **AFF-01** — The "Apply" CTA uses affiliate/referral links where available (populate the
+- [x] **AFF-01** (Phase 8, THI-294) — The "Apply" CTA uses affiliate/referral links where available (populate the
   existing `applyUrl`), rendered `rel="sponsored nofollow noopener"`.
-- [ ] **AFF-02** (revised 2026-07-25, Phase 8 discuss) — Ranking is **never** reordered by
+- [x] **AFF-02** (revised 2026-07-25; Phase 8, THI-294) — Ranking is **never** reordered by
   affiliate presence, and "recommendable" is decoupled from "has `applyUrl`" (fix the current
   `loadCards` drop of cards without one). **The bilingual affiliate/advertiser disclosure clause
   was dropped** by product-owner decision (DEC D-08, `08-CONTEXT.md`), which also removes the
@@ -355,8 +355,8 @@ Phase mapping for the 14 forward requirements. Filled by the roadmapper 2026-07-
 | CRY-04 | Phase 7 | Pending |
 | CRY-05 | Phase 7 | Pending |
 | TECH-01 | Phase 7 | Pending |
-| AFF-01 | Phase 8 | Pending |
-| AFF-02 | Phase 8 | Pending |
+| AFF-01 | Phase 8 | Complete |
+| AFF-02 | Phase 8 | Complete |
 | DIR-01 | Phase 9 | Pending |
 | DIR-02 | Phase 9 | Pending |
 | DIR-03 | Phase 9 | Pending |

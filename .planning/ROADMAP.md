@@ -167,7 +167,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 
 - [x] **Phase 6: Schema, Crypto Type Fan-out & Backfills** - `cardType`, `crypto` reward unit + asset, staking gate, and `hkEligible` field; 11 cards backfilled (JSON + Redis); dead `RewardCap` retired (completed 2026-07-24)
 - [x] **Phase 7: Crypto→HKD Valuation Engine & `hkEligible` Gate** - HKD valuation ranks crypto beside fiat, fail-safe on stale rates; gate fail-closed inside `recommendCards()`; vitest regression guard (completed 2026-07-24)
-- [ ] **Phase 8: Bulk Crypto Seed & Affiliate / Disclosure** - Merge-aware global crypto seed; affiliate `applyUrl` links + bilingual pre-CTA disclosure; "recommendable" decoupled from "has a link"
+- [ ] **Phase 8: Bulk Crypto Seed & Affiliate / Disclosure** - Merge-aware seed machinery + CoinMarketCap cron rate table (engine now live) + affiliate `applyUrl` CTA (`rel="sponsored nofollow noopener"`); "recommendable" decoupled from "has a link". Disclosure DROPPED (DEC-AFF-DROP/D-08). Executed + verified (PASSED) on THI-294; PR pending — real bulk data deferred to RQ-001
 - [ ] **Phase 9: Data Page (Card Directory)** - Browsable Data page — filter/sort/search/detail over all cards, provenance-labeled, recommender deep-link
 - [ ] **Phase 10: Research Page** - Bilingual Research page — ranking-methodology explainer + crypto explainer
 - [ ] **Phase 11: UI / Theme Refresh (THI-176)** - ranked.plus-inspired re-skin across Home, Data, Research (Tailwind v4 tokens + next-themes); function preserved
@@ -300,7 +300,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 |-------|----------------|--------|-----------|
 | 6. Schema, Crypto Type Fan-out & Backfills | 5/5 | Complete   | 2026-07-24 |
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
-| 8. Bulk Crypto Seed & Affiliate / Disclosure | 0/TBD | Not started | - |
+| 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | In review (THI-294, verified PASSED) | - |
 | 9. Data Page (Card Directory) | 0/TBD | Not started | - |
 | 10. Research Page | 0/TBD | Not started | - |
 | 11. UI / Theme Refresh (THI-176) | 0/TBD | Not started | - |
@@ -329,7 +329,7 @@ recorded so a later session can decide, not resolved by inference now.
 | **PUB-007** | **Multi-card split is entirely unbuilt.** No split logic in `src/lib/engine/`; no "merchant allows splitting" flag anywhere. Largest unbuilt PRD requirement. **Downstream of OPEN-002.** |
 | **OPEN-003** | 🔴 **Admin authentication requires urgent hardening. Tracked privately as [THI-236](https://linear.app/thirdvisor/issue/THI-236) (Urgent) — details deliberately withheld from this file.** Confirmed against the live deployment on 2026-07-15. `src/lib/auth/adminAuth.ts` does not adequately protect the admin surface, and its own header comment concedes "For production, consider using a proper JWT or session library." **This repo is public, so the specifics live in the Linear issue rather than here** — publishing them while the issue is open would hand over a working exploit. Scope: the whole admin surface, all 11 `/api/admin/*` routes, writing to live Redis. No personal data is at risk (the product holds none); the exposure is card-data integrity and API-key abuse. **Read THI-236 before touching `src/lib/auth/`, and re-expand this entry once the fix has shipped.** |
 | **OPEN-004** | **Zero ADRs.** CAND-001…007 are unlocked candidates. **CAND-006 (Redis migration) and CAND-007 (admin panel) have no doc source at all** — they exist only in git. Promoting these two into real ADRs is the **clearest early win for GSD adoption**. Also: `docs/ARCHITECTURE.md` still documents Vercel Blob and must be rewritten; the PRD needs a v2 covering the admin surface + Redis. |
-| **OPEN-008** | **Tests exist but cannot run.** `src/lib/engine/__tests__/engine.test.ts` and `src/lib/parser/__tests__/transactionParser.test.ts` are present, but **no test runner is installed** (no jest/vitest/mocha in `package.json`) and there is **no `test` script**. ENGINE_DOCUMENTATION references these tests as if they run. |
+| **OPEN-008** | ✅ **RESOLVED (Phase 7 + 8).** vitest is installed and `npm test` (`vitest run`) is wired (`vitest.config.ts`); the suite runs green (108 passed / 7 skipped as of Phase 8, THI-294). The 7 skips are the pre-existing `transactionParser` assertions quarantined pending a taxonomy decision (separate follow-up). ⚠ CLAUDE.md's "There is no test runner" pitfall note is now stale — fix via doc-sync. |
 | **OPEN-009** | **Landing-page NFRs are claimed, never verified.** Lighthouse >90, <3s load, 60fps, WCAG AA, 44×44px tap targets, `prefers-reduced-motion` guard, PWA manifest — all asserted by LANDING_PAGE_REDESIGN under a sign-off, with an **entirely unchecked** testing checklist. Only the brand palette is verified (`globals.css:15-25`). |
 | **OPEN-010** | **`dayOfWeek` is a dead code path.** Honored at `calculateReward.ts:131`; used by 0 of 11 cards. Either a card should exercise it or it should go. |
 | **OPEN-011** | **Doc debt.** Stale framework versions (docs say 14/15, actual 16.1.4), stale card counts (10/36 vs. actual 11/40), `sim-card` in no research doc, `/api/recommend` referenced but nonexistent, `DEPLOYMENT_READY.md` rooted at a dead path. |
