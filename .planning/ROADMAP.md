@@ -242,10 +242,12 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   4. Ranking is **never** reordered by affiliate presence, and a card is recommendable **without** an `applyUrl` — the current `loadCards` drop of link-less cards is removed, decoupling "recommendable" from "has affiliate link" (AFF-02)
 
 **Plans**: 4 plans
+
 - [ ] 08-01-PLAN.md — Affiliate CTA (`rel="sponsored nofollow noopener"`) + `loadCards` link-less fix + ranking-neutrality test (AFF-01, AFF-02)
 - [ ] 08-02-PLAN.md — Crypto fixture + merge-aware seed script (pure `mergeCards`) modelled on `backfill-card-type.mjs` (D-01/D-09/D-10)
 - [ ] 08-03-PLAN.md — Rate-table Redis API (`crypto-rates`, merge-write) + server→engine injection [phase tracer] (DEC-DATA-002/D-03/D-04)
 - [ ] 08-04-PLAN.md — CoinMarketCap `CRON_SECRET`-gated rate-refresh cron + `vercel.json` crons (D-02/D-02a/D-04)
+
 **Notes**: Upstream-blocked on primary-source crypto card data (RQ-001 — which HK-available crypto cards exist and their real reward structures); directory data ships under DEC-DATA-001 with provenance labeling. **The bilingual affiliate disclosure is DROPPED** (DEC-AFF-DROP / D-08, product-owner risk-accepted) — the Goal + Success Criterion #3 above are superseded and should be reconciled; AFF-02 in REQUIREMENTS.md is already revised. Machinery is built + tested against a crypto fixture this phase; the real bulk data load is a later data step (RQ-001).
 **Crypto HKD rate source (DEC-DATA-002 — add to Phase 8 scope):** Phase 7 built the crypto valuation engine but it's **inert without a rate table**. Phase 8 must build the **cron-refreshed static rate table** — a scheduled job writes `{ [assetTicker]: { hkdPerUnit, asOf } }` (seeded with stablecoin rates) into Redis, injected into `recommendCards()` (engine never fetches). Rate-table key = asset `shortName` ticker (exact casing) per Phase 7. Feeds Phase 7's stale→last-known+warning logic. Live price feeds stay deferred. Without this, the crypto cards seeded here can't be valued.
 
@@ -262,9 +264,11 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   4. A recommendation result deep-links to that card's Data-page detail view (DIR-03)
 
 **Plans**: 3 plans
+
 - [ ] 09-01-PLAN.md — Directory grid route + client grid tiles + provenance banner + pure directory helpers/tests + full bilingual i18n + home nav link [wave 1] (DIR-01, DIR-02)
 - [ ] 09-02-PLAN.md — Card detail route `/[locale]/cards/[id]` (getCardById + notFound) + provenance labeling (HK-availability/last-verified) + affiliate Apply CTA + recommender deep-link [wave 2] (DIR-01, DIR-02, DIR-03)
 - [ ] 09-03-PLAN.md — Search (name/issuer) + sort (reward rate/annual fee/name) with URL-synced shareable state + bilingual empty-state [wave 2] (DIR-01)
+
 **Scope reconciliation (v1)**: The Goal's **filter** clause (type/issuer) is **DEFERRED** per D-03 (only credit cards in prod today — nothing to filter until the set grows / crypto seeds); v1 ships browse + search + sort + detail. DIR-02 is satisfied by a **page-level provenance banner** + **detail-page labels** (per-card grid badges deferred, D-04). Recorded in each plan's `must_haves.deferred`.
 **UI hint**: yes
 
@@ -293,11 +297,13 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   2. Light and dark mode both work under the new theme, and the choice still persists (UI-01 — preserve existing function)
   3. Every pre-existing behavior — recommendation, tags, language switch, directory filter/search, and the recommender→detail deep-link — still works after the re-skin (UI-01 — preserve existing function)
 
-**Plans**: 4 plans (re-scoped to Home/recommender + shared chrome + the reusable card component; Data/Research build into this system in Phases 9/10 — see 11-CONTEXT.md re-sequencing note)
-- [ ] 11-01-PLAN.md — TRACER: v2 tokens + Rethink Sans/Inter/Geist Mono fonts + CardGPT wordmark logo + full Home shell, both themes (wave 1)
-- [ ] 11-02-PLAN.md — shared brutalist card (buildCardView + CreditCardCard, parameterized) + recommender results restyle; affiliate CTA + alignment preserved (wave 2)
-- [ ] 11-03-PLAN.md — recommender input surface (TransactionInput chips/input + FloatingCards), all parse/AI/tag/submit behavior preserved (wave 2)
+**Plans**: 3/4 plans executed
+
+- [x] 11-01-PLAN.md — TRACER: v2 tokens + Rethink Sans/Inter/Geist Mono fonts + CardGPT wordmark logo + full Home shell, both themes (wave 1)
+- [x] 11-02-PLAN.md — shared brutalist card (buildCardView + CreditCardCard, parameterized) + recommender results restyle; affiliate CTA + alignment preserved (wave 2)
+- [x] 11-03-PLAN.md — recommender input surface (TransactionInput chips/input + FloatingCards), all parse/AI/tag/submit behavior preserved (wave 2)
 - [ ] 11-04-PLAN.md — chrome (dark-mode toggle + EN·繁 language switch) + How-It-Works restyle; persistence + locale switch preserved (wave 2)
+
 **UI hint**: yes
 
 ---
