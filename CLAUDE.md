@@ -167,11 +167,13 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
   Do not treat the admin surface as protected. Details are in Linear, not here (public repo).
 - **The test runner now exists** (this reverses a long-standing gap — OPEN-008 is closed). Phase 7
   Wave 0 installed **vitest** (`vitest.config.ts`, `vitest 4.1.10` devDependency) and added the
-  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 12 files
+  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 13 files
   covering the engine (crypto valuation, `hkEligible`, `minStaking`, unit segmentation, the
   fiat-ranking regression baseline, affiliate neutrality), the data layer (`loadCards`, `rateTable`),
-  the affiliate CTA, the rate cron, and the transaction parser. Archived docs that described the
-  pre-vitest state are stale on this point.
+  the affiliate CTA, the rate cron, the transaction parser, and the crypto-seed script's pure merge
+  helper. The `include` globs cover **both** `src/**` and `scripts/**` (broadened in Phase 8 so
+  `scripts/__tests__/seed-crypto-cards.test.ts` collects without a live Redis). Archived docs that
+  described the pre-vitest state are stale on this point.
 - **`docs/ARCHITECTURE.md` is wrong about storage.** It documents Vercel Blob throughout; the data
   layer is Upstash Redis (commits `6fb4d19`, `d43be5e`). `@vercel/blob` survives **only** for card
   *image* upload in `/api/admin/upload`. Its non-storage content (server/client split, `force-dynamic`,
@@ -192,7 +194,7 @@ npm run dev              # health-check, then next dev
 npm run dev:skip-check   # bypass the health check
 npm run build            # health-check, then next build
 npm run lint             # eslint
-npm test                 # vitest run (12 test files)
+npm test                 # vitest run (13 test files, src/** + scripts/**)
 npm run test:watch       # vitest in watch mode
 npm run health-check     # scripts/health-check.js on its own
 npx tsc --noEmit         # typecheck — there is no `typecheck` script (needs npm install first)
