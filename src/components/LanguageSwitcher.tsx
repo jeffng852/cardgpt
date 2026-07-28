@@ -10,26 +10,24 @@ export default function LanguageSwitcher() {
   const pathname = usePathname();
 
   const handleChange = (newLocale: string) => {
-    console.log('[LanguageSwitcher] Switching from', locale, 'to', newLocale);
-    console.log('[LanguageSwitcher] Current pathname:', pathname);
     router.replace(pathname, { locale: newLocale });
     router.refresh();
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex items-center gap-1.5">
       {routing.locales.map((loc) => (
         <button
           key={loc}
           onClick={() => handleChange(loc)}
-          className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
+          className={`h-10 min-w-10 px-3 rounded-[2px] font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] text-sm transition-all ${
             locale === loc
-              ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-              : 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
+              ? 'bg-brand text-[#121212] border-[1.5px] border-[#121212]'
+              : 'bg-bg text-fg border border-border hover:bg-surface'
           }`}
           aria-label={`Switch to ${loc === 'en' ? 'English' : '繁體中文'}`}
         >
-          {loc === 'en' ? 'EN' : '中'}
+          {loc === 'en' ? 'EN' : '繁'}
         </button>
       ))}
     </div>

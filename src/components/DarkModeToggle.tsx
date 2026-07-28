@@ -15,7 +15,7 @@ export default function DarkModeToggle() {
   if (!mounted) {
     // Render a placeholder to avoid hydration mismatch
     return (
-      <div className="w-10 h-10 rounded-lg bg-background-secondary animate-pulse"></div>
+      <div className="w-10 h-10 rounded-[2px] border border-border bg-bg animate-pulse"></div>
     );
   }
 
@@ -24,13 +24,13 @@ export default function DarkModeToggle() {
   return (
     <button
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
-      className="relative w-10 h-10 rounded-lg bg-background-secondary hover:bg-background-tertiary transition-all duration-200 flex items-center justify-center group"
+      className="relative w-10 h-10 rounded-[2px] border border-border bg-bg hover:bg-surface transition-all duration-200 flex items-center justify-center group"
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {/* Sun Icon (visible in dark mode) */}
       <svg
-        className={`w-5 h-5 text-foreground transition-all duration-300 ${
+        className={`w-5 h-5 text-fg transition-all duration-300 ${
           isDark
             ? 'opacity-100 rotate-0 scale-100'
             : 'opacity-0 rotate-90 scale-0 absolute'
@@ -49,7 +49,7 @@ export default function DarkModeToggle() {
 
       {/* Moon Icon (visible in light mode) */}
       <svg
-        className={`w-5 h-5 text-foreground transition-all duration-300 ${
+        className={`w-5 h-5 text-fg transition-all duration-300 ${
           !isDark
             ? 'opacity-100 rotate-0 scale-100'
             : 'opacity-0 -rotate-90 scale-0 absolute'
@@ -67,7 +67,7 @@ export default function DarkModeToggle() {
       </svg>
 
       {/* Hover effect ring */}
-      <div className="absolute inset-0 rounded-lg ring-2 ring-transparent group-hover:ring-primary/20 transition-all duration-200"></div>
+      <div className="absolute inset-0 rounded-[2px] ring-1 ring-transparent group-hover:ring-border-strong/20 transition-all duration-200"></div>
     </button>
   );
 }
