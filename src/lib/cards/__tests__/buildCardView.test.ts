@@ -40,7 +40,7 @@ function makeCard(overrides: Partial<CreditCard> = {}): CreditCard {
         categories: ['dining'],
       },
     ],
-    fees: { annualFee: 1800, foreignTransactionFeeRate: 0.0195 },
+    fees: { annualFee: 1800, foreignTransactionFeeRate: 0.02 },
     isActive: true,
     lastUpdated: '2026-01-01T00:00:00.000Z',
     ...overrides,
