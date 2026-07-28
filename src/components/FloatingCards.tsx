@@ -61,7 +61,7 @@ export default function FloatingCards() {
       {cards.map((card) => (
         <div
           key={card.id}
-          className="absolute w-32 h-20 md:w-40 md:h-24 rounded-xl opacity-5 bg-gradient-to-br from-primary to-primary-hover shadow-lg"
+          className="absolute w-32 h-20 md:w-40 md:h-24 opacity-[0.07] bg-surface border border-border"
           style={{
             left: `${card.x}%`,
             top: `${card.y}%`,
@@ -70,10 +70,10 @@ export default function FloatingCards() {
             animationDelay: `${card.delay}s`,
           }}
         >
-          {/* Card chip mockup */}
-          <div className="absolute top-3 left-4 w-8 h-6 bg-white/20 rounded"></div>
-          {/* Card stripes */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 bg-black/10"></div>
+          {/* Card chip motif — flat hairline square (contract §3: square, flat, monochrome) */}
+          <div className="absolute top-3 left-4 w-8 h-6 border border-border"></div>
+          {/* Magnetic stripe — hairline monochrome band */}
+          <div className="absolute bottom-0 left-0 right-0 h-8 bg-muted"></div>
         </div>
       ))}
 
