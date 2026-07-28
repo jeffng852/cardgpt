@@ -144,6 +144,17 @@
     "cards": "Cards",
     "found": "Found",
     "recommended": "Recommended",
+    "viewCard": "View Card",
+    "noApplyLink": "No apply link · still ranked",
+    "topReward": "Top reward",
+    "rewardType": "Reward type",
+    "rewardOn": "Reward on HK${amount}",
+    "bestFor": "Best for",
+    "cardTypes": {
+      "credit": "Credit",
+      "crypto": "Crypto",
+      "prepaid": "Prepaid"
+    },
     "estimatedReward": "Estimated Rewards",
     "transactionFee": "Transaction Fee",
     "applyHere": "Apply Here",
