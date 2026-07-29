@@ -263,11 +263,11 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   3. Every directory entry is labeled with provenance + last-verified date + HK-availability, so the accepted lower-accuracy bulk data (DEC-DATA-001) never reads as authoritative (DIR-02)
   4. A recommendation result deep-links to that card's Data-page detail view (DIR-03)
 
-**Plans**: 3 plans
+**Plans**: 3 plans (tracer-first, rebuilt into the v2 design system reusing `CreditCardCard` browse mode)
 
-- [ ] 09-01-PLAN.md — Directory grid route + client grid tiles + provenance banner + pure directory helpers/tests + full bilingual i18n + home nav link [wave 1] (DIR-01, DIR-02)
-- [ ] 09-02-PLAN.md — Card detail route `/[locale]/cards/[id]` (getCardById + notFound) + provenance labeling (HK-availability/last-verified) + affiliate Apply CTA + recommender deep-link [wave 2] (DIR-01, DIR-02, DIR-03)
-- [ ] 09-03-PLAN.md — Search (name/issuer) + sort (reward rate/annual fee/name) with URL-synced shareable state + bilingual empty-state [wave 2] (DIR-01)
+- [ ] 09-01-PLAN.md — TRACER: directory grid route (server, force-dynamic, loadCards) + `CardDirectoryClient` rendering browse-mode `CreditCardCard` tiles linked to `/cards/[id]` + browse-footer non-anchor fix + home Directory nav link + page-level provenance banner + bilingual directory namespace [wave 1] (DIR-01, DIR-02)
+- [ ] 09-02-PLAN.md — Card detail route `/[locale]/cards/[id]` (getCardById + notFound) + provenance labels (HK-availability/last-verified/note) + affiliate Apply CTA reuse + DIR-03 recommender deep-link [wave 2] (DIR-01, DIR-02, DIR-03)
+- [ ] 09-03-PLAN.md — Search (name/issuer) + sort (reward rate/annual fee/name) via pure `directoryControls` helper + node-env vitest, wired into the client with URL-synced shareable state + bilingual empty-state [wave 3] (DIR-01)
 
 **Scope reconciliation (v1)**: The Goal's **filter** clause (type/issuer) is **DEFERRED** per D-03 (only credit cards in prod today — nothing to filter until the set grows / crypto seeds); v1 ships browse + search + sort + detail. DIR-02 is satisfied by a **page-level provenance banner** + **detail-page labels** (per-card grid badges deferred, D-04). Recorded in each plan's `must_haves.deferred`.
 **UI hint**: yes
