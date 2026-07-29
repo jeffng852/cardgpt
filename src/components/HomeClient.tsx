@@ -35,6 +35,7 @@ export default function HomeClient({ cards, rateTable }: HomeClientProps) {
   const t = useTranslations('common');
   const tFeatures = useTranslations('features');
   const tFooter = useTranslations('footer');
+  const tDirectory = useTranslations('directory');
   const [showResults, setShowResults] = useState(false);
   const [recommendations, setRecommendations] = useState<CardRecommendation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -78,6 +79,12 @@ export default function HomeClient({ cards, rateTable }: HomeClientProps) {
               <Logo size={34} />
             </div>
             <div className="flex items-center gap-2">
+              <Link
+                href="/cards"
+                className="h-10 inline-flex items-center px-3 rounded-[2px] border border-border bg-bg text-fg font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] text-sm hover:bg-surface transition-colors focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+              >
+                {tDirectory('navLink')}
+              </Link>
               <DarkModeToggle />
               <LanguageSwitcher />
             </div>

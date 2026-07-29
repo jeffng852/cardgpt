@@ -285,5 +285,9 @@
         "content": "Thirdvisor Limited reserves the right to modify this Privacy Policy at any time. Changes will be effective immediately upon posting to this page. Your continued use of CardGPT after any changes constitutes acceptance of the updated Privacy Policy."
       }
     }
+  },
+  "directory": {
+    "navLink": "Directory",
+    "title": "Card Directory"
   }
 }

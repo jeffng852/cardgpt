@@ -285,5 +285,9 @@
         "content": "Thirdvisor Limited 保留隨時修改本私隱政策嘅權利。變更會喺發佈到本頁面後立即生效。你喺任何變更後繼續使用 CardGPT 即表示接受更新後嘅私隱政策。"
       }
     }
+  },
+  "directory": {
+    "navLink": "卡片目錄",
+    "title": "信用卡目錄"
   }
 }

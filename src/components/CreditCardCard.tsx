@@ -195,7 +195,16 @@ export default function CreditCardCard({
 
       {/* Footer — pinned to bottom (margin-top:auto) so all footers align */}
       <div className="mt-auto">
-        {view.cta.noApplyLink ? (
+        {mode === 'browse' ? (
+          // Browse mode (Phase 9 directory): the whole tile is wrapped in a
+          // parent Link, so the footer MUST NOT be an anchor (no nested <a>).
+          // Render a NON-interactive VIEW CARD affordance with the same
+          // hairline-top + uppercase display treatment as the ranked footer.
+          <div className="flex items-center justify-center gap-1.5 px-4 py-3 border-t border-border bg-bg text-fg font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] text-sm">
+            {t('viewCard')}
+            <span aria-hidden>→</span>
+          </div>
+        ) : view.cta.noApplyLink ? (
           <p className="px-4 py-3 border-t border-border text-[11px] uppercase tracking-wide text-muted-fg">
             {t('noApplyLink')}
           </p>
