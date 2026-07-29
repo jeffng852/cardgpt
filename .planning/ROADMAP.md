@@ -259,7 +259,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 **Success Criteria** (what must be TRUE):
 
   1. A visitor can browse **all** cards on a Data page and filter (by type/issuer), sort, search, and open a card-detail view — read-only, with **no** recommendation-engine call (DIR-01)
-  2. The Data page reads through an **ungated**, async (`getAllCardsAsync`), `force-dynamic` path — edits are immediately visible (no CDN-stale regression), and the directory shows cards the recommender would gate out (DIR-01)
+  2. The Data page reads through an **ungated**, async (`loadCards()`), `force-dynamic` path — edits are immediately visible (no CDN-stale regression), and the directory shows cards the recommender would gate out (DIR-01)
   3. Every directory entry is labeled with provenance + last-verified date + HK-availability, so the accepted lower-accuracy bulk data (DEC-DATA-001) never reads as authoritative (DIR-02)
   4. A recommendation result deep-links to that card's Data-page detail view (DIR-03)
 
