@@ -1,7 +1,18 @@
 # Phase 9: Data Page (Card Directory) - Context
 
-**Gathered:** 2026-07-27
+**Gathered:** 2026-07-27 · **Updated:** 2026-07-29 (rebuild into the shipped v2 design system)
 **Status:** Ready for planning
+
+> **⚠ BUILD INTO THE v2 DESIGN SYSTEM (Phase 11 shipped 2026-07-29).** The design contract
+> `.planning/design/ui-contract-v2.md` is now LIVE on main. This page must be built in that system,
+> NOT the old one. Critically: **reuse the existing shared card component** `src/components/CreditCardCard.tsx`
+> (+ `src/lib/cards/buildCardView.ts`) in its **browse mode** (type badge, hairline data grid, "best for"
+> chips, `VIEW CARD →` footer, "No apply link · still ranked" for link-less cards, 2-line-name alignment) —
+> it was explicitly built parameterized for this directory. Chrome/nav/search/sort/detail all use the v2
+> tokens, fonts (Rethink Sans/Inter/Geist Mono), square/flat/hairline shape, mint/neon accents. The design
+> DECISIONS below (grid, /cards/[id] detail via getCardById, search+sort, filters deferred, provenance
+> banner, deep-link, bilingual) all still hold — only the visual system is now v2, and the card is reused
+> not rebuilt. The 3 stale plans 09-01/02/03 (authored for the OLD design) are SUPERSEDED — re-plan fresh.
 
 <domain>
 ## Phase Boundary
