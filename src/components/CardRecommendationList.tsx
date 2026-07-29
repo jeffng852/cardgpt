@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 import type { CardRecommendation, RuleContribution } from '@/types/recommendation';
 import { getRewardUnitName } from '@/lib/engine/calculateReward';
 import type { CreditCard, RewardUnit } from '@/types/card';
@@ -263,6 +264,19 @@ export default function CardRecommendationList({
                     </span>
                   </div>
                 )}
+
+                {/* DIR-03 deep-link into the Data-page detail view (09-CONTEXT D-07).
+                    Sits in the non-interactive detail region — never nested inside the
+                    toggle button or the APPLY anchor — to avoid nested-interactive markup. */}
+                <div className="mt-3 pt-3 border-t border-border">
+                  <Link
+                    href={`/cards/${card.id}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-fg hover:text-muted-fg focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+                  >
+                    {t('viewFullDetails')}
+                    <span aria-hidden>→</span>
+                  </Link>
+                </div>
               </div>
             </CreditCardCard>
           );
