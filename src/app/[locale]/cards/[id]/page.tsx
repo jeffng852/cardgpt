@@ -28,6 +28,7 @@ import { Logo } from '@/components/Logo';
 import DarkModeToggle from '@/components/DarkModeToggle';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { getCardById, getDatabaseMetadata } from '@/lib/data/loadCards';
+// getDatabaseMetadata sources the last-verified date for the provenance block (DIR-02).
 import { applyCtaProps } from '@/lib/affiliate/applyCtaProps';
 import { getCardImageUrl, hasCardImage } from '@/lib/cardImages';
 import type { CreditCard, RewardRule } from '@/types/card';
@@ -86,6 +87,20 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
 
   const cta = applyCtaProps(card.applyUrl);
   const hasImage = hasCardImage(card.id);
+
+  // Provenance / availability (DIR-02, 09-CONTEXT D-04, DEC-DATA-001).
+  // hkEligible: an explicit `false` marks not-available-to-HK; `true` or
+  // undefined (the 11 legacy cards, CRY-05) renders available.
+  const hkAvailable = card.hkEligible !== false;
+  const meta = await getDatabaseMetadata();
+  const lastVerifiedDate =
+    meta.lastUpdated && !Number.isNaN(new Date(meta.lastUpdated).getTime())
+      ? new Intl.DateTimeFormat(locale, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }).format(new Date(meta.lastUpdated))
+      : null;
 
   const typeBadgeStyle =
     card.cardType === 'crypto'
@@ -215,6 +230,30 @@ export default async function CardDetailPage({ params }: CardDetailPageProps) {
                 </div>
               )}
             </dl>
+          </section>
+
+          {/* Provenance / availability (DIR-02) — flat hairline block (contract §3) */}
+          <section className="mt-8 border border-border bg-surface p-4 sm:p-5">
+            <h2 className="font-[family-name:var(--font-display)] text-sm font-extrabold uppercase text-fg tracking-[-0.01em]">
+              {t('provenanceTitle')}
+            </h2>
+            <dl className="mt-3 border-t border-border">
+              <div className="flex items-center justify-between gap-3 py-2 border-b border-border">
+                <dt className="text-[11px] uppercase tracking-wide text-muted-fg">{t('hkAvailability')}</dt>
+                <dd className="text-[12px] font-bold text-right text-fg">
+                  {hkAvailable ? t('hkAvailable') : t('hkNotAvailable')}
+                </dd>
+              </div>
+              {lastVerifiedDate && (
+                <div className="flex items-center justify-between gap-3 py-2 border-b border-border">
+                  <dt className="text-[11px] uppercase tracking-wide text-muted-fg">{t('lastVerified')}</dt>
+                  <dd className="font-[family-name:var(--font-mono)] text-[12px] font-bold tabular-nums text-right text-fg">
+                    {lastVerifiedDate}
+                  </dd>
+                </div>
+              )}
+            </dl>
+            <p className="mt-3 text-[11px] leading-relaxed text-muted-fg">{t('provenanceNote')}</p>
           </section>
 
           {/* Apply CTA — reuses applyCtaProps (rel triplet); link-less card shows no anchor */}

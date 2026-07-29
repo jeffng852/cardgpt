@@ -299,6 +299,12 @@
     "redemptionFee": "兌換手續費",
     "apply": "立即申請",
     "noApplyLink": "暫無申請連結",
-    "free": "免費"
+    "free": "免費",
+    "provenanceTitle": "資料與供應情況",
+    "hkAvailability": "香港供應情況",
+    "hkAvailable": "香港居民可申請",
+    "hkNotAvailable": "香港居民暫不可申請",
+    "lastVerified": "最後核實",
+    "provenanceNote": "部分卡片資料屬批量或社群提供，準確度或會較低。申請前請務必向發卡機構核實獎賞比率、費用及條款。"
   }
 }

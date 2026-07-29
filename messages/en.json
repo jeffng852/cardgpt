@@ -299,6 +299,12 @@
     "redemptionFee": "Redemption Fee",
     "apply": "Apply Here",
     "noApplyLink": "No apply link available",
-    "free": "Free"
+    "free": "Free",
+    "provenanceTitle": "Data & Availability",
+    "hkAvailability": "HK Availability",
+    "hkAvailable": "Available to HK residents",
+    "hkNotAvailable": "Not available to HK residents",
+    "lastVerified": "Last Verified",
+    "provenanceNote": "Some card data is bulk- or community-sourced and may be less authoritative. Always confirm reward rates, fees and terms with the issuer before applying."
   }
 }
