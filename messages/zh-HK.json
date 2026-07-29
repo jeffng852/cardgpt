@@ -144,6 +144,17 @@
     "cards": "張卡",
     "found": "找到",
     "recommended": "推薦",
+    "viewCard": "睇卡詳情",
+    "noApplyLink": "冇申請連結 · 仍然排名",
+    "topReward": "最高回贈",
+    "rewardType": "獎賞類型",
+    "rewardOn": "HK${amount} 回贈",
+    "bestFor": "最啱",
+    "cardTypes": {
+      "credit": "信用卡",
+      "crypto": "加密貨幣",
+      "prepaid": "預付卡"
+    },
     "estimatedReward": "預計獎賞",
     "transactionFee": "交易費",
     "applyHere": "立即申請",

@@ -5,16 +5,16 @@ milestone_name: Card Directory & Crypto Expansion
 current_phase: 09
 current_phase_name: Context gathered — ready to plan
 status: ready-to-plan
-stopped_at: Phase 9 context gathered (design decided) — ready to plan
-last_updated: "2026-07-27T00:40:00.000Z"
-last_activity: 2026-07-27
-last_activity_desc: Phase 9 discuss complete — card grid + /cards/[id] detail + search/sort + provenance banner (filters deferred); CRON_SECRET set → crypto rate cron now LIVE (ETH/USDC writing daily)
+stopped_at: Completed 11-03-PLAN.md
+last_updated: "2026-07-28T00:40:42.230Z"
+last_activity: 2026-07-25
+last_activity_desc: Phase 07 complete
 progress:
-  total_phases: 6
-  completed_phases: 3
-  total_plans: 12
-  completed_plans: 12
-  percent: 50
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # CardGPT — State
@@ -44,7 +44,7 @@ Deferred follow-ups (issue-first when picked up): (1) 7 quarantined `transaction
 Infra: Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused).
 Last activity: 2026-07-25 — Phase 07 complete
 
-Progress: [██████████] Phase 7 100% (3/3) · Milestone v1.1: **2 of 6 phases complete** (Phases 6, 7)
+Progress: [██████████] Phase 7 [░░░░░░░░░░] 0% (3/3) · Milestone v1.1: **2 of 6 phases complete** (Phases 6, 7)
 
 ## Accumulated Context
 
@@ -90,9 +90,9 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 
 ## Session Continuity
 
-Last session: 2026-07-27
-Stopped at: RE-SEQUENCED — Phase 11 (ranked.plus redesign / THI-176) pulled ahead of Phase 9; Phase 9 PARKED; awaiting ranked.plus screenshots from Jeff
-Resume file: .planning/phases/09-data-page-card-directory/09-CONTEXT.md (parked)
+Last session: 2026-07-28T00:40:42.224Z
+Stopped at: Completed 11-03-PLAN.md
+Resume file: None
 
 **⚠ Re-sequencing decision (2026-07-27):** Jeff reviewed the Phase 9 directory mockup and asked to (a) keep + integrate the
 transaction simulator into the new design, and (b) **adopt ranked.plus's colour + design system across the app**. That is
@@ -116,6 +116,13 @@ Then rebuild the Phase 9 directory into the finished system. Reference mockup: s
 the VISUAL system changes (current → ranked.plus).
 
 **Phase 8 operational follow-ups (not blocking Phase 9):**
+
 - Set `COINMARKETCAP_API_KEY` + `CRON_SECRET` as Vercel env secrets to activate the (currently dormant) rate cron.
 - RQ-001: source real HK crypto-card data before the merge-seed loads anything real (fixture-only in prod today).
 - THI-297: revisit affiliate disclosure before live monetized Apply links ship.
+
+## Performance Metrics
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 11 P03 | 10m | 2 tasks | 2 files |

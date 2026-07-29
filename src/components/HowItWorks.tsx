@@ -20,8 +20,6 @@ export default function HowItWorks() {
       ),
       title: t('step1Title'),
       description: t('step1Description'),
-      accentColor: 'bg-gradient-to-br from-[#9333ea] to-[#c084fc]',
-      accentLight: 'bg-[#f3e8ff]',
     },
     {
       number: 2,
@@ -37,8 +35,6 @@ export default function HowItWorks() {
       ),
       title: t('step2Title'),
       description: t('step2Description'),
-      accentColor: 'bg-gradient-to-br from-[#f59e0b] to-[#fbbf24]',
-      accentLight: 'bg-[#fef3c7]',
     },
     {
       number: 3,
@@ -54,71 +50,53 @@ export default function HowItWorks() {
       ),
       title: t('step3Title'),
       description: t('step3Description'),
-      accentColor: 'bg-gradient-to-br from-[#10a37f] to-[#19c37d]',
-      accentLight: 'bg-[#e6f7f2]',
     },
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-background-secondary relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-[#9333ea]/10 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Section Header */}
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-surface border-t border-border">
+      <div className="max-w-6xl mx-auto">
+        {/* Section Header — uppercase display (contract §2) */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-[30px] font-[family-name:var(--font-display)] font-extrabold uppercase tracking-[-0.03em] text-fg mb-4 text-balance">
             {t('title')}
           </h2>
-          <p className="text-lg sm:text-xl text-foreground-muted max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-muted-fg max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </div>
 
-        {/* Steps */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-6">
-          {steps.map((step, index) => (
+        {/* Steps — flat square hairline cards (contract §3) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {steps.map((step) => (
             <div
               key={step.number}
-              className="relative group"
+              className="relative bg-bg border border-border rounded-none p-8"
             >
-              {/* Connecting line (desktop only) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-16 left-[60%] w-[80%] h-0.5 bg-border z-0">
-                  <div className="absolute right-0 -top-1 w-3 h-3 bg-border rotate-45"></div>
-                </div>
-              )}
-
-              {/* Step Card */}
-              <div className="relative bg-card-bg border-2 border-border rounded-2xl p-8 hover:border-primary/50 transition-all duration-300 hover:shadow-lg group-hover:-translate-y-1">
-                {/* Step Number Badge */}
-                <div className={`absolute -top-4 -left-4 w-12 h-12 ${step.accentColor} rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg`}>
-                  {step.number}
-                </div>
-
-                {/* Icon */}
-                <div className={`inline-flex items-center justify-center w-16 h-16 ${step.accentLight} rounded-xl mb-6 text-foreground`}>
-                  {step.icon}
-                </div>
-
-                {/* Content */}
-                <h3 className="text-xl font-semibold text-foreground mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-foreground-muted leading-relaxed">
-                  {step.description}
-                </p>
+              {/* Step Number — single mint accent (contract §1/§3) */}
+              <div className="absolute top-0 right-0 w-10 h-10 bg-brand text-[#121212] border-l border-b border-[#121212] flex items-center justify-center font-[family-name:var(--font-display)] font-extrabold text-lg tabular-nums">
+                {step.number}
               </div>
+
+              {/* Icon */}
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-muted border border-border rounded-none mb-6 text-fg">
+                {step.icon}
+              </div>
+
+              {/* Content */}
+              <h3 className="text-lg font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.02em] text-fg mb-3 text-balance">
+                {step.title}
+              </h3>
+              <p className="text-muted-fg leading-relaxed">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <p className="text-foreground-muted mb-4">
+          <p className="text-muted-fg mb-4">
             {t('ctaText')}
           </p>
           <button
@@ -127,7 +105,7 @@ export default function HowItWorks() {
               inputSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
               (inputSection as HTMLInputElement)?.focus();
             }}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-xl font-semibold hover:bg-primary-hover transition-colors shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-2 px-8 py-3.5 bg-brand text-[#121212] border-[1.5px] border-[#121212] rounded-[2px] font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] text-sm hover:brightness-95 transition-all"
           >
             {t('tryNow')}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -207,9 +207,10 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      {/* Reward Type Selector */}
+      {/* Reward Type Selector — selectable chips (contract §5): white + 1px black
+          border; selected → filled neon-yellow, keeping the black border. */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-text-secondary mb-3">
+        <label className="block text-[11px] font-[family-name:var(--font-display)] font-bold uppercase tracking-[0.04em] text-muted-fg mb-3">
           {t('rewardTypeLabel')}
         </label>
         <div className="flex gap-3">
@@ -218,25 +219,148 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               key={type}
               type="button"
               onClick={() => setSelectedRewardType(selectedRewardType === type ? undefined : type)}
-              className={`flex-1 px-4 py-3 rounded-xl border-2 font-medium transition-all ${
+              className={`flex-1 px-4 py-3 rounded-[2px] border font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] text-sm transition-all ${
                 selectedRewardType === type
-                  ? 'border-primary bg-primary/10 text-primary'
-                  : 'border-border bg-surface text-text-secondary hover:border-primary/50'
+                  ? 'bg-neon-yellow text-[#121212] border-[#121212]'
+                  : 'bg-bg text-fg border-border-strong hover:bg-surface'
               }`}
             >
-              {type === 'cash' && '💵'}
-              {type === 'miles' && '✈️'}
-              {type === 'points' && '⭐'}
-              {type === 'crypto' && '🪙'}
-              <span className="ml-2">{tRewardTypes(type)}</span>
+              {tRewardTypes(type)}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Quick Tags */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-text-secondary mb-3">
+      {/* Main Input Form — the "describe your purchase" surface */}
+      <form onSubmit={handleSubmit}>
+        {/* Big square input: white, 2px --border-strong, 2px radius, mint focus
+            outline (contract §5 inputs — the simulator's heavier main input). */}
+        <div className="relative">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value)}
+            placeholder={t('placeholder')}
+            maxLength={MAX_INPUT_LENGTH}
+            className="w-full bg-bg border-2 border-border-strong rounded-[2px] px-4 py-4 pr-16 text-base text-fg placeholder:text-muted-fg focus:outline focus:outline-2 focus:outline-brand focus:outline-offset-0"
+            autoFocus
+          />
+          {/* Character count indicator — at-limit turns --destructive (was amber) */}
+          {input.length > 0 && (
+            <span className={`absolute right-3 top-1/2 -translate-y-1/2 text-xs font-[family-name:var(--font-mono)] tabular-nums ${
+              input.length >= MAX_INPUT_LENGTH ? 'text-destructive' : 'text-muted-fg'
+            }`}>
+              {input.length}/{MAX_INPUT_LENGTH}
+            </span>
+          )}
+        </div>
+
+        {/* Real-time Feedback — hairline surfaces, monochrome + a single mint accent */}
+        {(isAnalyzing || (parseResult && parseResult.transaction)) && (
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {isAnalyzing ? (
+              // Shimmer Loading Effect
+              [1, 2, 3].map((i) => (
+                <div key={i} className="relative overflow-hidden h-16 bg-surface border border-border rounded-[2px]">
+                  <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-muted-fg/10 to-transparent" />
+                </div>
+              ))
+            ) : parseResult && parseResult.transaction ? (
+              // Detected Information Badges
+              <>
+                {/* Amount */}
+                <div className="bg-surface border border-border rounded-[2px] px-3 py-2.5">
+                  <div className="text-[10px] font-bold uppercase tracking-wide text-muted-fg mb-1">
+                    {tResults('detectedAmount')}
+                  </div>
+                  <div className="font-[family-name:var(--font-mono)] text-sm font-bold tabular-nums text-badge-crypto truncate">
+                    {parseResult.transaction.currency} ${parseResult.transaction.amount}
+                  </div>
+                </div>
+
+                {/* Merchant */}
+                <div className="bg-surface border border-border rounded-[2px] px-3 py-2.5">
+                  <div className="text-[10px] font-bold uppercase tracking-wide text-muted-fg mb-1">
+                    {tResults('detectedMerchant')}
+                  </div>
+                  {parseResult.transaction.merchantId ? (
+                    <div className="font-[family-name:var(--font-mono)] text-sm font-bold text-fg truncate">
+                      {tMerchants(parseResult.transaction.merchantId)}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-muted-fg italic">{tResults('merchantHint')}</div>
+                  )}
+                </div>
+
+                {/* Category */}
+                <div className="bg-surface border border-border rounded-[2px] px-3 py-2.5">
+                  <div className="text-[10px] font-bold uppercase tracking-wide text-muted-fg mb-1">
+                    {tResults('detectedCategory')}
+                  </div>
+                  {parseResult.transaction.category ? (
+                    <div className="font-[family-name:var(--font-mono)] text-sm font-bold text-fg truncate">
+                      {tCategories(parseResult.transaction.category)}
+                    </div>
+                  ) : (
+                    <div className="text-xs text-muted-fg italic">{tResults('categoryHint')}</div>
+                  )}
+                </div>
+              </>
+            ) : null}
+          </div>
+        )}
+
+        {/* AI Error Message — hairline --destructive treatment */}
+        {aiState.error && (
+          <div className="mt-4 p-3 bg-bg border border-destructive rounded-[2px]">
+            <div className="flex items-start gap-2">
+              <svg className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div className="flex-1">
+                <p className="text-sm text-destructive">{aiState.error}</p>
+                {aiState.rateLimitSeconds && (
+                  <p className="text-xs text-destructive/80 mt-1">
+                    {t('rateLimitMessage', { seconds: aiState.rateLimitSeconds })}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Submit Button — mint fill + 1.5px #121212 border, 2px radius, uppercase display */}
+        <button
+          type="submit"
+          disabled={!input.trim() || isProcessing || aiState.isLoading}
+          className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-brand text-[#121212] border-[1.5px] border-[#121212] rounded-[2px] font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] text-sm hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          {isProcessing || aiState.isLoading ? (
+            <>
+              <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+              {aiState.isLoading ? t('aiAnalyzing') : t('analyzing')}
+            </>
+          ) : (
+            <>
+              {t('submit')}
+              <span aria-hidden>→</span>
+            </>
+          )}
+        </button>
+
+        {/* Example Text */}
+        <p className="text-xs text-muted-fg text-center mt-3">
+          {t('exampleText')}
+        </p>
+      </form>
+
+      {/* Quick Tags — selectable example chips (contract §5): white + 1px black
+          border; selected → filled neon-cyan, keeping the black border. */}
+      <div className="mt-6">
+        <label className="block text-[11px] font-[family-name:var(--font-display)] font-bold uppercase tracking-[0.04em] text-muted-fg mb-3">
           {t('quickTagsLabel')}
         </label>
         <div className="flex flex-wrap gap-2">
@@ -245,200 +369,18 @@ export default function TransactionInput({ onSubmit }: TransactionInputProps) {
               key={tag.key}
               type="button"
               onClick={() => handleQuickTag(tag.label)}
-              className={`px-3 py-2 rounded-lg border text-sm transition-all ${
+              className={`px-3 py-2 rounded-[2px] border text-sm font-[family-name:var(--font-display)] font-bold uppercase tracking-[-0.01em] transition-all ${
                 selectedMerchantTag === tag.label
-                  ? 'bg-primary/10 border-primary text-primary'
-                  : 'bg-input-bg border-border text-text-primary hover:border-primary/50 hover:bg-primary/5'
+                  ? 'bg-neon-cyan text-[#121212] border-[#121212]'
+                  : 'bg-bg text-fg border-border-strong hover:bg-surface'
               }`}
             >
-              <span className="mr-1">{tag.icon}</span>
+              <span className="mr-1.5">{tag.icon}</span>
               {tag.label}
             </button>
           ))}
         </div>
       </div>
-
-      {/* Main Input Form */}
-      <form onSubmit={handleSubmit}>
-        <div className="bg-input-bg border-2 border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow focus-within:border-primary/50">
-          {/* Input Field */}
-          <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <svg
-                className="w-5 h-5 text-primary"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                />
-              </svg>
-            </div>
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => handleInputChange(e.target.value)}
-              placeholder={t('placeholder')}
-              maxLength={MAX_INPUT_LENGTH}
-              className="flex-1 bg-transparent text-lg text-text-primary placeholder:text-text-tertiary focus:outline-none"
-              autoFocus
-            />
-            {/* Character count indicator */}
-            {input.length > 0 && (
-              <span className={`text-xs tabular-nums flex-shrink-0 ${
-                input.length >= MAX_INPUT_LENGTH
-                  ? 'text-amber-500'
-                  : 'text-text-tertiary'
-              }`}>
-                {input.length}/{MAX_INPUT_LENGTH}
-              </span>
-            )}
-          </div>
-
-          {/* Real-time Feedback with Shimmer Effect */}
-          {(isAnalyzing || (parseResult && parseResult.transaction)) && (
-            <div className="mb-4 p-4 bg-surface rounded-xl border border-border">
-              {isAnalyzing ? (
-                // Shimmer Loading Effect
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="relative overflow-hidden h-16 bg-background-secondary rounded-lg">
-                      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-foreground-subtle/10 to-transparent" />
-                    </div>
-                  ))}
-                </div>
-              ) : parseResult && parseResult.transaction ? (
-                // Detected Information Badges
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* Amount Badge */}
-                  <div className="flex items-center gap-3 px-3 py-2.5 bg-primary-light rounded-lg border border-primary/20 transition-all hover:border-primary/40">
-                    <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10">
-                      <span className="text-lg">💵</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-xs font-medium text-foreground-muted mb-0.5">
-                        {tResults('detectedAmount')}
-                      </div>
-                      <div className="text-sm font-bold text-foreground truncate">
-                        {parseResult.transaction.currency} ${parseResult.transaction.amount}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Merchant Badge */}
-                  {parseResult.transaction.merchantId ? (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-accent-blue-light rounded-lg border border-accent-blue/20 transition-all hover:border-accent-blue/40">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-accent-blue/10">
-                        <span className="text-lg">🏪</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-muted mb-0.5">
-                          {tResults('detectedMerchant')}
-                        </div>
-                        <div className="text-sm font-bold text-foreground truncate">
-                          {tMerchants(parseResult.transaction.merchantId)}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-background-tertiary/50 rounded-lg border border-border-light">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-foreground-subtle/10">
-                        <span className="text-lg opacity-50">🏪</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-subtle">
-                          {tResults('detectedMerchant')}
-                        </div>
-                        <div className="text-xs text-foreground-muted italic">
-                          {tResults('merchantHint')}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Category Badge */}
-                  {parseResult.transaction.category ? (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-accent-purple-light rounded-lg border border-accent-purple/20 transition-all hover:border-accent-purple/40">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-accent-purple/10">
-                        <span className="text-lg">🏷️</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-muted mb-0.5">
-                          {tResults('detectedCategory')}
-                        </div>
-                        <div className="text-sm font-bold text-foreground truncate">
-                          {tCategories(parseResult.transaction.category)}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 px-3 py-2.5 bg-background-tertiary/50 rounded-lg border border-border-light">
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-foreground-subtle/10">
-                        <span className="text-lg opacity-50">🏷️</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs font-medium text-foreground-subtle">
-                          {tResults('detectedCategory')}
-                        </div>
-                        <div className="text-xs text-foreground-muted italic">
-                          {tResults('categoryHint')}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : null}
-            </div>
-          )}
-
-          {/* AI Error Message */}
-          {aiState.error && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <div className="flex items-start gap-2">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div className="flex-1">
-                  <p className="text-sm text-red-700 dark:text-red-300">{aiState.error}</p>
-                  {aiState.rateLimitSeconds && (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-1">
-                      {t('rateLimitMessage', { seconds: aiState.rateLimitSeconds })}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={!input.trim() || isProcessing || aiState.isLoading}
-            className="w-full px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            {isProcessing || aiState.isLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                {aiState.isLoading ? t('aiAnalyzing') : t('analyzing')}
-              </span>
-            ) : (
-              t('submit')
-            )}
-          </button>
-
-          {/* Example Text */}
-          <p className="text-xs text-text-tertiary text-center mt-4">
-            {t('exampleText')}
-          </p>
-        </div>
-      </form>
     </div>
   );
 }

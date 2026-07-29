@@ -1,161 +1,171 @@
 @import "tailwindcss";
 
+/*
+ * CardGPT v2 design system — brutalist-editorial (contract .planning/design/ui-contract-v2.md).
+ * Near-black on white, mint accent, square cards, 1px hairlines, FLAT (no shadows).
+ * Dark mode uses next-themes class-based mechanism (`.dark` on <html>) — NOT data-theme,
+ * so DarkModeToggle persistence keeps working (D-03).
+ */
+
 :root {
-  /* Light mode - ChatGPT inspired */
-  --background: #ffffff;
-  --background-secondary: #f7f7f8;
-  --background-tertiary: #ececf1;
-  --foreground: #2e2e2e;
-  --foreground-muted: #6e6e80;
-  --foreground-subtle: #8e8ea0;
-  --border: #e5e5e5;
-  --border-light: #f0f0f0;
+  /* === v2 tokens — light (contract §1) === */
+  --bg: #ffffff;              /* Page / card background */
+  --fg: #0b0b0b;              /* Primary text */
+  --primary: #121212;         /* Near-black — dark panels, primary buttons, emphasis borders */
+  --primary-fg: #ffffff;      /* Text on primary */
+  --brand: #67ffc5;           /* Mint — active nav, top-pick CTA, brand cursor */
+  --surface: #f5f5f5;         /* Raised surface */
+  --muted: #f2f2f2;           /* Muted background */
+  --muted-fg: #636363;        /* Secondary text */
+  --border: #dedede;          /* Hairline borders (most-used) */
+  --border-strong: #121212;   /* 2px emphasis border */
+  --ring: #121212;            /* Focus ring base (visible outline uses --brand) */
+  --destructive: #e40014;     /* Error */
 
-  /* Primary/Accent colors - Teal/Green inspired by ChatGPT */
-  --primary: #10a37f;
-  --primary-hover: #0d8968;
-  --primary-light: #e6f7f2;
+  /* Neon accents (sparingly, high saturation) */
+  --neon-yellow: #e1ff67;
+  --neon-cyan: #4af5fe;
 
-  /* Playful accent colors for modern, fun fintech brand */
-  --accent-purple: #9333ea;
-  --accent-purple-light: #f3e8ff;
-  --accent-orange: #f59e0b;
-  --accent-orange-light: #fef3c7;
-  --accent-blue: #3b82f6;
-  --accent-blue-light: #dbeafe;
+  /* Card-type badge colors — light (contract §1) */
+  --badge-credit: #121212;
+  --badge-crypto: #067a58;    /* mint-dark, AA on white */
+  --badge-prepaid: #1b6ea6;   /* cyan-dark, AA on white */
 
-  /* Card backgrounds */
-  --card-bg: #ffffff;
-  --card-hover: #f9f9f9;
+  /* Radius: 2px chips/buttons/inputs · 0px cards (square) */
+  --radius-chip: 2px;
+  --radius-card: 0px;
 
-  /* State colors */
-  --success: #10a37f;
-  --error: #ef4146;
-  --warning: #ff9500;
-  --info: #0084ff;
+  /*
+   * === Legacy token names, repointed to v2 values ===
+   * This plan (tracer) only restyles the Home shell; the rest of the app
+   * (TransactionInput, CardRecommendationList, HowItWorks, FloatingCards, chrome)
+   * still consumes these legacy utility names. Keeping the names — repointed to v2
+   * values — lets every surface inherit the v2 palette and keeps the build green
+   * until their wave-2 restyle. All reference the v2 vars so dark mode auto-flips.
+   */
+  --background: var(--bg);
+  --background-secondary: var(--surface);
+  --background-tertiary: var(--muted);
+  --foreground: var(--fg);
+  --foreground-muted: var(--muted-fg);
+  --foreground-subtle: var(--muted-fg);
+  --border-light: var(--muted);
+
+  --primary-hover: var(--fg);
+  --primary-light: var(--muted);
+
+  --accent-purple: var(--fg);
+  --accent-purple-light: var(--muted);
+  --accent-orange: var(--fg);
+  --accent-orange-light: var(--muted);
+  --accent-blue: var(--badge-prepaid);
+  --accent-blue-light: var(--muted);
+
+  --card-bg: var(--bg);
+  --card-hover: var(--surface);
+
+  --success: var(--badge-crypto);
+  --error: var(--destructive);
+  --warning: var(--fg);
+  --info: var(--badge-prepaid);
 }
 
 @theme inline {
-  /* Background tokens */
+  /* === v2 color tokens === */
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-brand: var(--brand);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-muted-fg: var(--muted-fg);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-neon-yellow: var(--neon-yellow);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-badge-credit: var(--badge-credit);
+  --color-badge-crypto: var(--badge-crypto);
+  --color-badge-prepaid: var(--badge-prepaid);
+
+  /* === Legacy color tokens (repointed to v2 values above) === */
   --color-background: var(--background);
   --color-background-secondary: var(--background-secondary);
   --color-background-tertiary: var(--background-tertiary);
-
-  /* Foreground tokens */
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
   --color-foreground-subtle: var(--foreground-subtle);
-
-  /* Border tokens */
-  --color-border: var(--border);
   --color-border-light: var(--border-light);
-
-  /* Primary/Accent tokens */
-  --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-light: var(--primary-light);
-
-  /* Playful accent tokens */
   --color-accent-purple: var(--accent-purple);
   --color-accent-purple-light: var(--accent-purple-light);
   --color-accent-orange: var(--accent-orange);
   --color-accent-orange-light: var(--accent-orange-light);
   --color-accent-blue: var(--accent-blue);
   --color-accent-blue-light: var(--accent-blue-light);
-
-  /* Card tokens */
   --color-card-bg: var(--card-bg);
   --color-card-hover: var(--card-hover);
-
-  /* State tokens */
   --color-success: var(--success);
   --color-error: var(--error);
   --color-warning: var(--warning);
   --color-info: var(--info);
 
-  /* Font tokens */
-  --font-sans: var(--font-geist-sans);
+  /* === Fonts (D-04) === */
+  --font-display: var(--font-rethink);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
-/* Dark mode - controlled by next-themes class */
+/* Dark mode — next-themes stamps `.dark` on <html> (D-03). Only override v2 base
+   tokens; the legacy vars reference these, so they flip automatically. */
 .dark {
-  /* Dark mode - ChatGPT inspired */
-  --background: #212121;
-  --background-secondary: #2f2f2f;
-  --background-tertiary: #3f3f3f;
-  --foreground: #ececec;
-  --foreground-muted: #c5c5d2;
-  --foreground-subtle: #9b9ba8;
-  --border: #4d4d4d;
-  --border-light: #3a3a3a;
-
-  /* Primary stays consistent in dark mode */
-  --primary: #19c37d;
-  --primary-hover: #1a9f6b;
-  --primary-light: #1a4d3c;
-
-  /* Playful accents adjusted for dark mode */
-  --accent-purple: #a855f7;
-  --accent-purple-light: #2d1b4e;
-  --accent-orange: #fbbf24;
-  --accent-orange-light: #4a3410;
-  --accent-blue: #60a5fa;
-  --accent-blue-light: #1e3a5f;
-
-  /* Card backgrounds - elevated in dark mode */
-  --card-bg: #2f2f2f;
-  --card-hover: #3a3a3a;
-
-  /* State colors adjusted for dark mode */
-  --success: #19c37d;
-  --error: #ff5f5f;
-  --warning: #ffb340;
-  --info: #4da6ff;
+  --bg: #0b0b0b;
+  --fg: #f4f4f4;
+  --primary: #f4f4f4;
+  --primary-fg: #0b0b0b;
+  --surface: #141414;
+  --muted: #161616;
+  --muted-fg: #9a9a9a;
+  --border: #2b2b2b;
+  --border-strong: #f4f4f4;
+  --ring: #f4f4f4;
+  /* Neon accents pop harder on the dark ground; mint CTA stays. */
+  --badge-credit: #f4f4f4;
+  --badge-crypto: #67ffc5;
+  --badge-prepaid: #4af5fe;
 }
 
-/* Also support system preference for first-time visitors */
+/* First-visit system preference (before any explicit toggle). Mirrors .dark. */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    /* Dark mode - ChatGPT inspired */
-    --background: #212121;
-    --background-secondary: #2f2f2f;
-    --background-tertiary: #3f3f3f;
-    --foreground: #ececec;
-    --foreground-muted: #c5c5d2;
-    --foreground-subtle: #9b9ba8;
-    --border: #4d4d4d;
-    --border-light: #3a3a3a;
-
-    /* Primary stays consistent in dark mode */
-    --primary: #19c37d;
-    --primary-hover: #1a9f6b;
-    --primary-light: #1a4d3c;
-
-    /* Playful accents adjusted for dark mode */
-    --accent-purple: #a855f7;
-    --accent-purple-light: #2d1b4e;
-    --accent-orange: #fbbf24;
-    --accent-orange-light: #4a3410;
-    --accent-blue: #60a5fa;
-    --accent-blue-light: #1e3a5f;
-
-    /* Card backgrounds - elevated in dark mode */
-    --card-bg: #2f2f2f;
-    --card-hover: #3a3a3a;
-
-    /* State colors adjusted for dark mode */
-    --success: #19c37d;
-    --error: #ff5f5f;
-    --warning: #ffb340;
-    --info: #4da6ff;
+    --bg: #0b0b0b;
+    --fg: #f4f4f4;
+    --primary: #f4f4f4;
+    --primary-fg: #0b0b0b;
+    --surface: #141414;
+    --muted: #161616;
+    --muted-fg: #9a9a9a;
+    --border: #2b2b2b;
+    --border-strong: #f4f4f4;
+    --ring: #f4f4f4;
+    --badge-credit: #f4f4f4;
+    --badge-crypto: #67ffc5;
+    --badge-prepaid: #4af5fe;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Flat — separation comes from borders + background contrast, never shadow (§3). */
+* {
+  box-shadow: none;
 }
 
 /* Shimmer animation for loading states */
@@ -165,5 +175,15 @@ body {
   }
   100% {
     transform: translateX(100%);
+  }
+}
+
+/* Brand cursor blink (Logo wordmark, §4) — disabled under reduced motion. */
+@keyframes cursor-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
   }
 }
