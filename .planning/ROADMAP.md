@@ -170,7 +170,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 - [x] **Phase 8: Bulk Crypto Seed & Affiliate / Disclosure** - Merge-aware seed machinery + CoinMarketCap cron rate table (engine now live) + affiliate `applyUrl` CTA (`rel="sponsored nofollow noopener"`); "recommendable" decoupled from "has a link" (fixed latent 10→11 card bug). Disclosure DROPPED (DEC-AFF-DROP/D-08). Verified PASSED; merged PR #9 (THI-294), completed 2026-07-27 — real bulk data + live rate secrets deferred to RQ-001 (THI-297 disclosure follow-up)
 - [ ] **Phase 9: Data Page (Card Directory)** - Browsable Data page — filter/sort/search/detail over all cards, provenance-labeled, recommender deep-link
 - [ ] **Phase 10: Research Page** - Bilingual Research page — ranking-methodology explainer + crypto explainer
-- [ ] **Phase 11: UI / Theme Refresh (THI-176)** - ranked.plus-inspired re-skin across Home, Data, Research (Tailwind v4 tokens + next-themes); function preserved
+- [x] **Phase 11: UI / Theme Refresh (THI-176)** - v2 brutalist-editorial re-skin (own design system, ranked.plus-inspired); Home/recommender + chrome + shared CreditCardCard restyled, dark mode + all behavior preserved. Re-sequenced AHEAD of 9 & 10 (product-owner approved). Merged PR #10, completed 2026-07-29. Data/Research build INTO this system next.
 
 ---
 
@@ -317,7 +317,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
 | 9. Data Page (Card Directory) | 0/3 | Planned | - |
 | 10. Research Page | 0/TBD | Not started | - |
-| 11. UI / Theme Refresh (THI-176) | 0/4 | Planned | - |
+| 11. UI / Theme Refresh (THI-176) | 4/4 | Complete | 2026-07-29 |
 
 ---
 

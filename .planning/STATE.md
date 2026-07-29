@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 current_phase: 09
-current_phase_name: Context gathered — ready to plan
+current_phase_name: Parked — rebuild into v2 design system
 status: ready-to-plan
-stopped_at: Completed 11-03-PLAN.md
-last_updated: "2026-07-28T00:40:42.230Z"
-last_activity: 2026-07-25
-last_activity_desc: Phase 07 complete
+stopped_at: Phase 11 redesign COMPLETE (merged PR #10, THI-176 Done, deployed) — next: Phase 9 Data page, built into the new system
+last_updated: "2026-07-29T00:00:00.000Z"
+last_activity: 2026-07-29
+last_activity_desc: Phase 11 redesign COMPLETE — 4 plans, qa-karen APPROVED, merged PR #10 to main (THI-176 Done), v2 brutalist design system live; suite 120/7 green
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 6
+  completed_phases: 4
+  total_plans: 16
+  completed_plans: 16
+  percent: 67
 ---
 
 # CardGPT — State
@@ -90,24 +90,27 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 
 ## Session Continuity
 
-Last session: 2026-07-28T00:40:42.224Z
-Stopped at: Completed 11-03-PLAN.md
+Last session: 2026-07-29
+Stopped at: Phase 11 redesign COMPLETE + merged (PR #10, THI-176 Done) + deployed; Ops-Grace post-deploy check run
 Resume file: None
 
-**⚠ Re-sequencing decision (2026-07-27):** Jeff reviewed the Phase 9 directory mockup and asked to (a) keep + integrate the
-transaction simulator into the new design, and (b) **adopt ranked.plus's colour + design system across the app**. That is
-a redesign spanning recommender + directory = **Phase 11 (UI/Theme Refresh, THI-176) pulled forward**. Decision: do the
-**redesign FIRST** (restyle existing app incl. simulator into the ranked.plus system), THEN build the Phase 9 directory
-into the finished system (so the directory is built once, in the final look).
+**Milestone v1.1: 4 of 6 phases complete (67%)** — Phases 6, 7, 8, 11 done. Remaining: **Phase 9 (Data page)** then **Phase 10 (Research page)**, both built INTO the now-live v2 design system.
 
-**Phase 9 is PARKED:** 09-CONTEXT.md + 3 plans (09-01/02/03) exist and are committed, but were authored for the CURRENT
-design system — do NOT execute them. They'll be revised/rebuilt into the new ranked.plus system after the redesign lands.
+**▶ NEXT: Phase 9 — Data page (Card Directory), rebuilt into the v2 system.** The parked 09-CONTEXT.md + 3 plans below
+were authored for the OLD design — the design decisions (card grid, /cards/[id] detail via getCardById, search+sort,
+filters deferred, provenance banner, recommender deep-link, bilingual) STILL HOLD, but the plans must be re-generated to
+use the new `CreditCardCard`/`buildCardView` (browse mode) + v2 tokens from `.planning/design/ui-contract-v2.md`.
+Suggested: refresh 09-CONTEXT.md to reference the v2 system + CreditCardCard reuse, then `/gsd-plan-phase 9` fresh
+→ execute → verify → qa-karen → PR → merge. Then Phase 10 (Research page), then milestone v1.1 complete.
 
-**Next:** Redesign (Phase 11 / THI-176) — design is **APPROVED + LOCKED** in `.planning/design/ui-contract-v2.md` (brutalist-editorial:
-mono #fff/#121212 + #dedede hairlines, flat, square cards, mint #67ffc5 + neon accents, Rethink Sans/Inter/Geist Mono,
-CardGPT wordmark + mint cursor logo, shared card component for recommender + directory, **dark mode KEPT**). Product owner
-signed off on the unified mockup (simulator retained + restyled + directory + detail). Ready to build Phase 11 gated:
-issue-first (THI + branch) → plan (design contract = ui-contract-v2.md) → execute → verify → qa-karen → PR → merge.
+**Phase 11 follow-ups (non-blocking, tracked in GH issue #11, label qa-karen):** unused `results.bestFor` i18n key;
+`buildCardView.test.ts` unused-helper smell; add an `input.describeLabel` bilingual key for the "DESCRIBE YOUR PURCHASE"
+eyebrow. Other open items unchanged: THI-297 (affiliate disclosure), RQ-001 (real crypto data), CRON_SECRET set (cron live).
+
+**Re-sequencing (2026-07-27, DONE):** Phase 11 redesign was pulled ahead of Phases 9 & 10 — restyle the app first, then
+build Data/Research into it. Phase 11 is now **complete + merged + live** (v2 design system, `.planning/design/ui-contract-v2.md`).
+The parked Phase 9 plans (09-01/02/03) were authored for the OLD design — **do NOT execute them as-is**; re-plan into the v2
+system reusing `CreditCardCard` (browse mode). See the NEXT block above.
 Then rebuild the Phase 9 directory into the finished system. Reference mockup: scratchpad cardgpt-redesign-mockup.html
 (artifact 59c451e4). Real build loads Rethink Sans + Inter via next/font (mockup used system-font approximations).
 
