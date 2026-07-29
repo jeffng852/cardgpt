@@ -289,5 +289,16 @@
   "directory": {
     "navLink": "Directory",
     "title": "Card Directory"
+  },
+  "cardDetail": {
+    "backToDirectory": "Back to directory",
+    "rewardRules": "Reward Rules",
+    "fees": "Fees",
+    "annualFee": "Annual Fee",
+    "fxFee": "FX Fee",
+    "redemptionFee": "Redemption Fee",
+    "apply": "Apply Here",
+    "noApplyLink": "No apply link available",
+    "free": "Free"
   }
 }

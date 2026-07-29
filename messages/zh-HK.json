@@ -289,5 +289,16 @@
   "directory": {
     "navLink": "卡片目錄",
     "title": "信用卡目錄"
+  },
+  "cardDetail": {
+    "backToDirectory": "返回卡片目錄",
+    "rewardRules": "獎賞規則",
+    "fees": "費用",
+    "annualFee": "年費",
+    "fxFee": "外幣交易費",
+    "redemptionFee": "兌換手續費",
+    "apply": "立即申請",
+    "noApplyLink": "暫無申請連結",
+    "free": "免費"
   }
 }
