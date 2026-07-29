@@ -8,15 +8,18 @@ CardGPT helps users maximize credit card rewards by recommending the best card(s
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router)
+- **Framework**: Next.js 16 (App Router), React 19
 - **Styling**: Tailwind CSS v4
 - **Language**: TypeScript
-- **Deployment**: Vercel
+- **Data**: Upstash Redis (card corpus + crypto→HKD rate table)
+- **Deployment**: Vercel (region `hkg1`)
 - **i18n**: next-intl (English + Traditional Chinese)
+- **Tests**: Vitest
 
 ## Project Status
 
-Currently in development. See Linear project for detailed requirements and roadmap.
+Currently in development. The app runs on the **v2 design system** (brutalist-editorial) as of the
+Phase 11 re-skin. See Linear project for detailed requirements and roadmap.
 
 ## Getting Started
 
@@ -29,6 +32,9 @@ npm run dev
 
 # Build for production
 npm run build
+
+# Run the test suite
+npm test
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.

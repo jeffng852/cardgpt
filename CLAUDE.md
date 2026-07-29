@@ -7,13 +7,13 @@
 > **CardGPT was migrated onto GSD on 2026-07-15** (THI-233) after ~6 months off-process.
 > Phases 1–5 in `.planning/` are a retrospective **as-built capture** (shipped before GSD, all
 > COMPLETE). **Milestone v1.1 — Card Directory & Crypto Expansion (Phases 6–11) is defined** and
-> forward work is well underway — **Phases 6, 7 and 8 are complete on `main`** (3/6): schema
+> forward work is well underway — **Phases 6, 7, 8 and 11 are complete on `main`** (4/6): schema
 > foundation + reward-unit fan-out (THI-252/253/254, PRs #3–#5), crypto HKD valuation with the
-> `hkEligible` gate and unit-segmented ranking (THI-279/280, PRs #7–#8), and the bulk crypto seed
-> machinery with the affiliate CTA and CoinMarketCap rate cron (THI-294, PR #9). Phase 9 (Data page /
-> card directory) is planned but **parked**; the ranked.plus UI redesign (Phase 11, THI-176) was
-> re-sequenced ahead of it, awaiting design screenshots. This line is a snapshot — `git log` is the
-> live tip.
+> `hkEligible` gate and unit-segmented ranking (THI-279/280, PRs #7–#8), the bulk crypto seed
+> machinery with the affiliate CTA and CoinMarketCap rate cron (THI-294, PR #9), and the **v2
+> design-system re-skin** (THI-176, PR #10). Phase 9 (Data page / card directory) is planned but
+> **parked** — it was re-sequenced *behind* the redesign so the directory gets built into the v2
+> system rather than re-skinned later. This line is a snapshot — `git log` is the live tip.
 
 ## 🔴 This repository is PUBLIC
 
@@ -135,8 +135,8 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
 > **Phases 1–5 are retrospective** — they describe work that shipped before GSD existed here, so they
 > were **not** mirrored as Linear milestones. Mirroring starts at the first *real* milestone,
 > **v1.1 — Card Directory & Crypto Expansion**, where each phase is wired to a Linear milestone with
-> an issue per plan — Phase 6 (THI-252/253/254), Phase 7 (THI-279/280), Phase 8 (THI-294), all now
-> merged and Done.
+> an issue per plan — Phase 6 (THI-252/253/254), Phase 7 (THI-279/280), Phase 8 (THI-294), Phase 11
+> (THI-176), all now merged and Done.
 
 ## Operational Runbook (Vercel)
 
@@ -167,13 +167,26 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
   Do not treat the admin surface as protected. Details are in Linear, not here (public repo).
 - **The test runner now exists** (this reverses a long-standing gap — OPEN-008 is closed). Phase 7
   Wave 0 installed **vitest** (`vitest.config.ts`, `vitest 4.1.10` devDependency) and added the
-  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 13 files
+  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 14 files
   covering the engine (crypto valuation, `hkEligible`, `minStaking`, unit segmentation, the
   fiat-ranking regression baseline, affiliate neutrality), the data layer (`loadCards`, `rateTable`),
-  the affiliate CTA, the rate cron, the transaction parser, and the crypto-seed script's pure merge
-  helper. The `include` globs cover **both** `src/**` and `scripts/**` (broadened in Phase 8 so
-  `scripts/__tests__/seed-crypto-cards.test.ts` collects without a live Redis). Archived docs that
-  described the pre-vitest state are stale on this point.
+  the affiliate CTA, the rate cron, the transaction parser, the crypto-seed script's pure merge
+  helper, and the Phase-11 `buildCardView` view-builder. The `include` globs cover **both** `src/**`
+  and `scripts/**` (broadened in Phase 8 so `scripts/__tests__/seed-crypto-cards.test.ts` collects
+  without a live Redis). Archived docs that described the pre-vitest state are stale on this point.
+- **The UI runs on the v2 design system — read the contract before restyling anything.**
+  Phase 11 (THI-176, PR #10) re-skinned the app to the brutalist-editorial system defined in
+  [`.planning/design/ui-contract-v2.md`](.planning/design/ui-contract-v2.md); that contract, not any
+  individual component, is the source of truth for tokens, badge colors and radii. Two traps:
+  (a) `src/app/globals.css` keeps the **legacy token names** (`--background-secondary`,
+  `--foreground-muted`, `--accent-purple`, …) alive as *aliases onto* the v2 vars, so surfaces not
+  yet restyled (e.g. `/privacy`) still inherit the new palette — repoint the alias, don't reintroduce
+  an old literal; (b) dark mode is next-themes' **class-based `.dark` on `<html>`** (not
+  `data-theme`), and only the v2 base tokens are overridden there — the legacy aliases flip for free.
+  Fonts are Rethink Sans (display) / Inter (sans) / Geist Mono (tabular numbers), wired as CSS vars
+  in `src/app/[locale]/layout.tsx`. The shared card is `CreditCardCard.tsx` rendering a typed
+  `CardView` from the pure `src/lib/cards/buildCardView.ts` — put derived display logic in the
+  builder (unit-testable in node-env vitest), not the component.
 - **`docs/ARCHITECTURE.md` is wrong about storage.** It documents Vercel Blob throughout; the data
   layer is Upstash Redis (commits `6fb4d19`, `d43be5e`). `@vercel/blob` survives **only** for card
   *image* upload in `/api/admin/upload`. Its non-storage content (server/client split, `force-dynamic`,
@@ -194,7 +207,7 @@ npm run dev              # health-check, then next dev
 npm run dev:skip-check   # bypass the health check
 npm run build            # health-check, then next build
 npm run lint             # eslint
-npm test                 # vitest run (13 test files, src/** + scripts/**)
+npm test                 # vitest run (14 test files, src/** + scripts/**)
 npm run test:watch       # vitest in watch mode
 npm run health-check     # scripts/health-check.js on its own
 npx tsc --noEmit         # typecheck — there is no `typecheck` script (needs npm install first)
