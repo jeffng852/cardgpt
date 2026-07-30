@@ -168,7 +168,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 - [x] **Phase 6: Schema, Crypto Type Fan-out & Backfills** - `cardType`, `crypto` reward unit + asset, staking gate, and `hkEligible` field; 11 cards backfilled (JSON + Redis); dead `RewardCap` retired (completed 2026-07-24)
 - [x] **Phase 7: Crypto→HKD Valuation Engine & `hkEligible` Gate** - HKD valuation ranks crypto beside fiat, fail-safe on stale rates; gate fail-closed inside `recommendCards()`; vitest regression guard (completed 2026-07-24)
 - [x] **Phase 8: Bulk Crypto Seed & Affiliate / Disclosure** - Merge-aware seed machinery + CoinMarketCap cron rate table (engine now live) + affiliate `applyUrl` CTA (`rel="sponsored nofollow noopener"`); "recommendable" decoupled from "has a link" (fixed latent 10→11 card bug). Disclosure DROPPED (DEC-AFF-DROP/D-08). Verified PASSED; merged PR #9 (THI-294), completed 2026-07-27 — real bulk data + live rate secrets deferred to RQ-001 (THI-297 disclosure follow-up)
-- [ ] **Phase 9: Data Page (Card Directory)** - Browsable Data page — filter/sort/search/detail over all cards, provenance-labeled, recommender deep-link
+- [x] **Phase 9: Data Page (Card Directory)** - Public /cards grid (reuses CreditCardCard browse mode) + /cards/[id] detail (getCardById) + search/sort + provenance banner + recommender deep-link, bilingual, in the v2 system. Filters deferred (RQ-001). Verified (banner gap fixed) + qa-karen APPROVED; merged PR #13 (THI-311), completed 2026-07-30.
 - [ ] **Phase 10: Research Page** - Bilingual Research page — ranking-methodology explainer + crypto explainer
 - [x] **Phase 11: UI / Theme Refresh (THI-176)** - v2 brutalist-editorial re-skin (own design system, ranked.plus-inspired); Home/recommender + chrome + shared CreditCardCard restyled, dark mode + all behavior preserved. Re-sequenced AHEAD of 9 & 10 (product-owner approved). Merged PR #10, completed 2026-07-29. Data/Research build INTO this system next.
 
@@ -315,7 +315,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 6. Schema, Crypto Type Fan-out & Backfills | 5/5 | Complete   | 2026-07-24 |
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
-| 9. Data Page (Card Directory) | 3/3 | In review (THI-311, verifier human_needed) | - |
+| 9. Data Page (Card Directory) | 3/3 | Complete | 2026-07-30 |
 | 10. Research Page | 0/TBD | Not started | - |
 | 11. UI / Theme Refresh (THI-176) | 4/4 | Complete | 2026-07-29 |
 

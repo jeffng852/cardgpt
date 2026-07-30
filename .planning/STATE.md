@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
-current_phase: 09
-current_phase_name: Built + verified (human_needed) — awaiting qa-karen + PR + visual sign-off
-status: in-review
-stopped_at: Phase 9 Data page built (3 plans) into v2 system, verifier human_needed (DIR-02 banner gap fixed); next: qa-karen → PR → merge
-last_updated: "2026-07-30T00:00:00.000Z"
+current_phase: 10
+current_phase_name: Not started (Research page) — the last v1.1 phase
+status: ready-to-plan
+stopped_at: Phase 9 Data page COMPLETE — merged PR #13 (THI-311 Done), deployed; next + LAST: Phase 10 Research page
+last_updated: "2026-07-30T12:00:00.000Z"
 last_activity: 2026-07-30
-last_activity_desc: Phase 9 Data page COMPLETE (code) — grid + /cards/[id] detail + search/sort + provenance banner, reuses CreditCardCard; suite 137/7 green; verifier human_needed (5 UAT items); THI-311; NOT yet merged
+last_activity_desc: Phase 9 Data page COMPLETE — verified + qa-karen APPROVED + merged PR #13 to main (THI-311 Done), deployed live; /cards grid + /cards/[id] detail + search/sort + provenance banner; suite 137/7
 progress:
   total_phases: 6
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 19
   completed_plans: 19
-  percent: 67
+  percent: 83
 ---
 
 # CardGPT — State
@@ -90,22 +90,20 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 
 ## Session Continuity
 
-Last session: 2026-07-29
-Stopped at: Phase 11 redesign COMPLETE + merged (PR #10, THI-176 Done) + deployed; Ops-Grace post-deploy check run
+Last session: 2026-07-30
+Stopped at: Phase 9 Data page COMPLETE + merged (PR #13, THI-311 Done) + deployed; Ops-Grace post-deploy check run
 Resume file: None
 
-**Milestone v1.1: 4 of 6 phases complete (67%)** — Phases 6, 7, 8, 11 done. Remaining: **Phase 9 (Data page)** then **Phase 10 (Research page)**, both built INTO the now-live v2 design system.
+**Milestone v1.1: 5 of 6 phases complete (83%)** — Phases 6, 7, 8, 9, 11 done + live. Only **Phase 10 (Research page)** remains.
 
-**▶ NEXT: Phase 9 — Data page (Card Directory), rebuilt into the v2 system.** The parked 09-CONTEXT.md + 3 plans below
-were authored for the OLD design — the design decisions (card grid, /cards/[id] detail via getCardById, search+sort,
-filters deferred, provenance banner, recommender deep-link, bilingual) STILL HOLD, but the plans must be re-generated to
-use the new `CreditCardCard`/`buildCardView` (browse mode) + v2 tokens from `.planning/design/ui-contract-v2.md`.
-Suggested: refresh 09-CONTEXT.md to reference the v2 system + CreditCardCard reuse, then `/gsd-plan-phase 9` fresh
-→ execute → verify → qa-karen → PR → merge. Then Phase 10 (Research page), then milestone v1.1 complete.
+**▶ NEXT (LAST v1.1 phase): Phase 10 — Research page.** Build INTO the live v2 design system (reuse tokens/fonts/chrome
+from `.planning/design/ui-contract-v2.md`; a `Research` nav slot exists in the mockup). ranked.plus has research.ranked.plus
+as a reference. Bilingual (en/zh-HK). Gated: confirm/refresh 10-CONTEXT → issue-first (THI + branch) → plan → execute →
+verify → qa-karen → PR → visual sign-off → merge. After Phase 10 → milestone v1.1 complete (audit → complete-milestone).
 
-**Phase 11 follow-ups (non-blocking, tracked in GH issue #11, label qa-karen):** unused `results.bestFor` i18n key;
-`buildCardView.test.ts` unused-helper smell; add an `input.describeLabel` bilingual key for the "DESCRIBE YOUR PURCHASE"
-eyebrow. Other open items unchanged: THI-297 (affiliate disclosure), RQ-001 (real crypto data), CRON_SECRET set (cron live).
+**Tracked follow-ups (non-blocking):** GH #12 (OpenRouter key dead in prod → AI free-text parser degraded; Jeff to rotate),
+THI-297 (affiliate disclosure revisit), RQ-001 (real crypto data), GH #11 (Phase 11 redesign nits), Phase 9 qa-karen nit
+(zh-HK empty-count "0 張卡" cosmetic). See memory [[cardgpt-tc-ingestion-not-scalable]] — the T&C-ingestion method may change.
 
 **Re-sequencing (2026-07-27, DONE):** Phase 11 redesign was pulled ahead of Phases 9 & 10 — restyle the app first, then
 build Data/Research into it. Phase 11 is now **complete + merged + live** (v2 design system, `.planning/design/ui-contract-v2.md`).
