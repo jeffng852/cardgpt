@@ -289,7 +289,13 @@
   },
   "directory": {
     "navLink": "Directory",
-    "title": "Card Directory"
+    "title": "Card Directory",
+    "searchPlaceholder": "Search by card name or issuer",
+    "sortLabel": "Sort by",
+    "sortRewardRate": "Reward rate",
+    "sortAnnualFee": "Annual fee",
+    "sortName": "Name",
+    "cardCount": "{count, plural, =0 {No cards} one {# card} other {# cards}}"
   },
   "cardDetail": {
     "backToDirectory": "Back to directory",

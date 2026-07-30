@@ -289,7 +289,13 @@
   },
   "directory": {
     "navLink": "卡片目錄",
-    "title": "信用卡目錄"
+    "title": "信用卡目錄",
+    "searchPlaceholder": "以卡片名稱或發卡機構搜尋",
+    "sortLabel": "排序方式",
+    "sortRewardRate": "回贈率",
+    "sortAnnualFee": "年費",
+    "sortName": "名稱",
+    "cardCount": "{count, plural, other {# 張卡}}"
   },
   "cardDetail": {
     "backToDirectory": "返回卡片目錄",
