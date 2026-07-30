@@ -290,6 +290,8 @@
   "directory": {
     "navLink": "Directory",
     "title": "Card Directory",
+    "provenanceEyebrow": "About the data",
+    "provenanceBody": "Hong Kong credit cards are hand-curated and verified. Global crypto and neobank cards (coming soon) are community-sourced and may be less precise — we label them and never let unverified data drive a recommendation.",
     "searchPlaceholder": "Search by card name or issuer",
     "sortLabel": "Sort by",
     "sortRewardRate": "Reward rate",

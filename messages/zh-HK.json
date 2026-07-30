@@ -290,6 +290,8 @@
   "directory": {
     "navLink": "卡片目錄",
     "title": "信用卡目錄",
+    "provenanceEyebrow": "關於數據",
+    "provenanceBody": "香港信用卡由人手整理並核實。全球加密貨幣及新型銀行卡（即將推出）來自社群資料，準確度或較低——我們會加以標示，且絕不會讓未經核實的數據影響推薦結果。",
     "searchPlaceholder": "以卡片名稱或發卡機構搜尋",
     "sortLabel": "排序方式",
     "sortRewardRate": "回贈率",

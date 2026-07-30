@@ -117,6 +117,15 @@ export default function CardDirectoryClient({ cards }: CardDirectoryClientProps)
             {t('title')}
           </h1>
 
+          {/* Provenance banner (DIR-02 / DEC-DATA-001) — honest labeling of
+              bulk/community-sourced data. Hairline box + left accent (contract §5). */}
+          <div className="mt-6 border border-border-strong border-l-[6px] border-l-fg bg-muted px-4 py-4 flex gap-3">
+            <span className="font-display font-extrabold uppercase text-[11px] tracking-[0.05em] shrink-0 mt-0.5">
+              {t('provenanceEyebrow')}
+            </span>
+            <p className="text-sm text-fg m-0">{t('provenanceBody')}</p>
+          </div>
+
           {/* Controls — search + sort (contract §5: hairline inputs, 2px radius,
               Inter, 2px mint focus outline). Filters deferred (RQ-001). */}
           <div className="mt-8 flex flex-col sm:flex-row sm:items-end gap-4">
