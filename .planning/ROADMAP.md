@@ -259,15 +259,15 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 **Success Criteria** (what must be TRUE):
 
   1. A visitor can browse **all** cards on a Data page and filter (by type/issuer), sort, search, and open a card-detail view — read-only, with **no** recommendation-engine call (DIR-01)
-  2. The Data page reads through an **ungated**, async (`getAllCardsAsync`), `force-dynamic` path — edits are immediately visible (no CDN-stale regression), and the directory shows cards the recommender would gate out (DIR-01)
+  2. The Data page reads through an **ungated**, async (`loadCards()`), `force-dynamic` path — edits are immediately visible (no CDN-stale regression), and the directory shows cards the recommender would gate out (DIR-01)
   3. Every directory entry is labeled with provenance + last-verified date + HK-availability, so the accepted lower-accuracy bulk data (DEC-DATA-001) never reads as authoritative (DIR-02)
   4. A recommendation result deep-links to that card's Data-page detail view (DIR-03)
 
-**Plans**: 3 plans
+**Plans**: 3 plans (tracer-first, rebuilt into the v2 design system reusing `CreditCardCard` browse mode)
 
-- [ ] 09-01-PLAN.md — Directory grid route + client grid tiles + provenance banner + pure directory helpers/tests + full bilingual i18n + home nav link [wave 1] (DIR-01, DIR-02)
-- [ ] 09-02-PLAN.md — Card detail route `/[locale]/cards/[id]` (getCardById + notFound) + provenance labeling (HK-availability/last-verified) + affiliate Apply CTA + recommender deep-link [wave 2] (DIR-01, DIR-02, DIR-03)
-- [ ] 09-03-PLAN.md — Search (name/issuer) + sort (reward rate/annual fee/name) with URL-synced shareable state + bilingual empty-state [wave 2] (DIR-01)
+- [ ] 09-01-PLAN.md — TRACER: directory grid route (server, force-dynamic, loadCards) + `CardDirectoryClient` rendering browse-mode `CreditCardCard` tiles linked to `/cards/[id]` + browse-footer non-anchor fix + home Directory nav link + page-level provenance banner + bilingual directory namespace [wave 1] (DIR-01, DIR-02)
+- [ ] 09-02-PLAN.md — Card detail route `/[locale]/cards/[id]` (getCardById + notFound) + provenance labels (HK-availability/last-verified/note) + affiliate Apply CTA reuse + DIR-03 recommender deep-link [wave 2] (DIR-01, DIR-02, DIR-03)
+- [ ] 09-03-PLAN.md — Search (name/issuer) + sort (reward rate/annual fee/name) via pure `directoryControls` helper + node-env vitest, wired into the client with URL-synced shareable state + bilingual empty-state [wave 3] (DIR-01)
 
 **Scope reconciliation (v1)**: The Goal's **filter** clause (type/issuer) is **DEFERRED** per D-03 (only credit cards in prod today — nothing to filter until the set grows / crypto seeds); v1 ships browse + search + sort + detail. DIR-02 is satisfied by a **page-level provenance banner** + **detail-page labels** (per-card grid badges deferred, D-04). Recorded in each plan's `must_haves.deferred`.
 **UI hint**: yes
@@ -315,7 +315,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 6. Schema, Crypto Type Fan-out & Backfills | 5/5 | Complete   | 2026-07-24 |
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
-| 9. Data Page (Card Directory) | 0/3 | Planned | - |
+| 9. Data Page (Card Directory) | 3/3 | In review (THI-311, verifier human_needed) | - |
 | 10. Research Page | 0/TBD | Not started | - |
 | 11. UI / Theme Refresh (THI-176) | 4/4 | Complete | 2026-07-29 |
 

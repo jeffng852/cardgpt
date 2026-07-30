@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 current_phase: 09
-current_phase_name: Parked — rebuild into v2 design system
-status: ready-to-plan
-stopped_at: Phase 11 redesign COMPLETE (merged PR #10, THI-176 Done, deployed) — next: Phase 9 Data page, built into the new system
-last_updated: "2026-07-29T00:00:00.000Z"
-last_activity: 2026-07-29
-last_activity_desc: Phase 11 redesign COMPLETE — 4 plans, qa-karen APPROVED, merged PR #10 to main (THI-176 Done), v2 brutalist design system live; suite 120/7 green
+current_phase_name: Built + verified (human_needed) — awaiting qa-karen + PR + visual sign-off
+status: in-review
+stopped_at: Phase 9 Data page built (3 plans) into v2 system, verifier human_needed (DIR-02 banner gap fixed); next: qa-karen → PR → merge
+last_updated: "2026-07-30T00:00:00.000Z"
+last_activity: 2026-07-30
+last_activity_desc: Phase 9 Data page COMPLETE (code) — grid + /cards/[id] detail + search/sort + provenance banner, reuses CreditCardCard; suite 137/7 green; verifier human_needed (5 UAT items); THI-311; NOT yet merged
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 16
-  completed_plans: 16
+  total_plans: 19
+  completed_plans: 19
   percent: 67
 ---
 

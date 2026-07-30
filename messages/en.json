@@ -145,6 +145,7 @@
     "found": "Found",
     "recommended": "Recommended",
     "viewCard": "View Card",
+    "viewFullDetails": "View full details",
     "noApplyLink": "No apply link · still ranked",
     "topReward": "Top reward",
     "rewardType": "Reward type",
@@ -285,5 +286,36 @@
         "content": "Thirdvisor Limited reserves the right to modify this Privacy Policy at any time. Changes will be effective immediately upon posting to this page. Your continued use of CardGPT after any changes constitutes acceptance of the updated Privacy Policy."
       }
     }
+  },
+  "directory": {
+    "navLink": "Directory",
+    "title": "Card Directory",
+    "provenanceEyebrow": "About the data",
+    "provenanceBody": "Hong Kong credit cards are hand-curated and verified. Global crypto and neobank cards (coming soon) are community-sourced and may be less precise — we label them and never let unverified data drive a recommendation.",
+    "searchPlaceholder": "Search by card name or issuer",
+    "sortLabel": "Sort by",
+    "sortRewardRate": "Reward rate",
+    "sortAnnualFee": "Annual fee",
+    "sortName": "Name",
+    "cardCount": "{count, plural, =0 {No cards} one {# card} other {# cards}}",
+    "emptyTitle": "No cards match",
+    "emptyHint": "Try a different card name or issuer, or clear the search to see every card."
+  },
+  "cardDetail": {
+    "backToDirectory": "Back to directory",
+    "rewardRules": "Reward Rules",
+    "fees": "Fees",
+    "annualFee": "Annual Fee",
+    "fxFee": "FX Fee",
+    "redemptionFee": "Redemption Fee",
+    "apply": "Apply Here",
+    "noApplyLink": "No apply link available",
+    "free": "Free",
+    "provenanceTitle": "Data & Availability",
+    "hkAvailability": "HK Availability",
+    "hkAvailable": "Available to HK residents",
+    "hkNotAvailable": "Not available to HK residents",
+    "lastVerified": "Last Verified",
+    "provenanceNote": "Some card data is bulk- or community-sourced and may be less authoritative. Always confirm reward rates, fees and terms with the issuer before applying."
   }
 }

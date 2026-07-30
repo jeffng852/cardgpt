@@ -145,6 +145,7 @@
     "found": "找到",
     "recommended": "推薦",
     "viewCard": "睇卡詳情",
+    "viewFullDetails": "查看完整詳情",
     "noApplyLink": "冇申請連結 · 仍然排名",
     "topReward": "最高回贈",
     "rewardType": "獎賞類型",
@@ -285,5 +286,36 @@
         "content": "Thirdvisor Limited 保留隨時修改本私隱政策嘅權利。變更會喺發佈到本頁面後立即生效。你喺任何變更後繼續使用 CardGPT 即表示接受更新後嘅私隱政策。"
       }
     }
+  },
+  "directory": {
+    "navLink": "卡片目錄",
+    "title": "信用卡目錄",
+    "provenanceEyebrow": "關於數據",
+    "provenanceBody": "香港信用卡由人手整理並核實。全球加密貨幣及新型銀行卡（即將推出）來自社群資料，準確度或較低——我們會加以標示，且絕不會讓未經核實的數據影響推薦結果。",
+    "searchPlaceholder": "以卡片名稱或發卡機構搜尋",
+    "sortLabel": "排序方式",
+    "sortRewardRate": "回贈率",
+    "sortAnnualFee": "年費",
+    "sortName": "名稱",
+    "cardCount": "{count, plural, other {# 張卡}}",
+    "emptyTitle": "沒有符合的卡片",
+    "emptyHint": "請嘗試其他卡片名稱或發卡機構，或清除搜尋以顯示所有卡片。"
+  },
+  "cardDetail": {
+    "backToDirectory": "返回卡片目錄",
+    "rewardRules": "獎賞規則",
+    "fees": "費用",
+    "annualFee": "年費",
+    "fxFee": "外幣交易費",
+    "redemptionFee": "兌換手續費",
+    "apply": "立即申請",
+    "noApplyLink": "暫無申請連結",
+    "free": "免費",
+    "provenanceTitle": "資料與供應情況",
+    "hkAvailability": "香港供應情況",
+    "hkAvailable": "香港居民可申請",
+    "hkNotAvailable": "香港居民暫不可申請",
+    "lastVerified": "最後核實",
+    "provenanceNote": "部分卡片資料屬批量或社群提供，準確度或會較低。申請前請務必向發卡機構核實獎賞比率、費用及條款。"
   }
 }
