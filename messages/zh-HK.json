@@ -295,7 +295,9 @@
     "sortRewardRate": "回贈率",
     "sortAnnualFee": "年費",
     "sortName": "名稱",
-    "cardCount": "{count, plural, other {# 張卡}}"
+    "cardCount": "{count, plural, other {# 張卡}}",
+    "emptyTitle": "沒有符合的卡片",
+    "emptyHint": "請嘗試其他卡片名稱或發卡機構，或清除搜尋以顯示所有卡片。"
   },
   "cardDetail": {
     "backToDirectory": "返回卡片目錄",

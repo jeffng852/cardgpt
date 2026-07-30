@@ -162,18 +162,35 @@ export default function CardDirectoryClient({ cards }: CardDirectoryClientProps)
             {t('cardCount', { count: visibleCards.length })}
           </p>
 
-          {/* Card grid — live filtered/sorted set drives the grid (D-05) */}
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-            {visibleCards.map((card) => (
-              <Link
-                key={card.id}
-                href={`/cards/${card.id}`}
-                className="block h-full focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
-              >
-                <CreditCardCard view={buildCardView(card, { mode: 'browse' })} mode="browse" />
-              </Link>
-            ))}
-          </div>
+          {/* Empty-state (bilingual) — a no-match search shows a v2 bordered box
+              with an uppercase display heading + muted hint, mirroring
+              CardRecommendationList's no-results block (09-CONTEXT D-03/D-06). */}
+          {visibleCards.length === 0 ? (
+            <div className="mt-4 p-8 bg-surface border border-border text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 border border-border mb-4">
+                <svg className="w-8 h-8 text-muted-fg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h2 className="font-[family-name:var(--font-display)] text-lg font-extrabold uppercase text-fg mb-2">
+                {t('emptyTitle')}
+              </h2>
+              <p className="text-sm text-muted-fg">{t('emptyHint')}</p>
+            </div>
+          ) : (
+            /* Card grid — live filtered/sorted set drives the grid (D-05) */
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+              {visibleCards.map((card) => (
+                <Link
+                  key={card.id}
+                  href={`/cards/${card.id}`}
+                  className="block h-full focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
+                >
+                  <CreditCardCard view={buildCardView(card, { mode: 'browse' })} mode="browse" />
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -295,7 +295,9 @@
     "sortRewardRate": "Reward rate",
     "sortAnnualFee": "Annual fee",
     "sortName": "Name",
-    "cardCount": "{count, plural, =0 {No cards} one {# card} other {# cards}}"
+    "cardCount": "{count, plural, =0 {No cards} one {# card} other {# cards}}",
+    "emptyTitle": "No cards match",
+    "emptyHint": "Try a different card name or issuer, or clear the search to see every card."
   },
   "cardDetail": {
     "backToDirectory": "Back to directory",
