@@ -148,6 +148,66 @@ export default function ResearchClient() {
                 </div>
               </div>
             </section>
+
+            {/* Crypto-valuation explainer — hairline-separated section, accurate to
+                valuateCrypto.ts + Phase 7 07-VERIFICATION.md (D-02, no invented
+                behavior: injected rate table not live fetch, fail-safe on stale/
+                missing rates, unit-segmented, base un-staked tier, hkEligible gate) */}
+            <section className="mt-12 pt-10 border-t border-border">
+              <h2 className="font-display font-extrabold uppercase text-fg tracking-[-0.02em] leading-[1.05] text-2xl sm:text-3xl text-balance">
+                {t('crypto.heading')}
+              </h2>
+              <p className="mt-5 font-sans text-[16px] leading-relaxed text-fg">
+                {t('crypto.lead')}
+              </p>
+
+              <div className="mt-10 space-y-10">
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('crypto.hkdValuation.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('crypto.hkdValuation.body')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('crypto.segmentation.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('crypto.segmentation.body')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('crypto.failSafe.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('crypto.failSafe.body')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('crypto.baseTier.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('crypto.baseTier.body')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('crypto.hkEligibility.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('crypto.hkEligibility.body')}
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </main>

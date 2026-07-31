@@ -352,6 +352,30 @@
         "heading": "Your preferences narrow the field first",
         "body": "Before ranking, CardGPT sets aside cards that cannot apply: inactive cards, and any you have chosen to exclude. Your preferences narrow it further — the type of reward you want (cash, miles, points or crypto) and a maximum annual fee you are willing to pay. Whatever survives those filters is ranked by net value, and the card at the top is the recommendation."
       }
+    },
+    "crypto": {
+      "heading": "How crypto rewards are valued in HKD",
+      "lead": "Some cards pay their rewards in crypto rather than cash. To compare them honestly against ordinary cards, CardGPT converts each crypto reward into an equivalent amount in Hong Kong dollars — the currency you already think in — using a maintained rate table. Here is exactly how that valuation works, and where it deliberately holds back.",
+      "hkdValuation": {
+        "heading": "Crypto rewards are converted to an HKD-equivalent value",
+        "body": "A crypto reward — say a rebate paid in USDC or CRO — is only meaningful once you know what it is worth in money you can spend. CardGPT multiplies the reward by a maintained rate for that asset to produce an HKD-equivalent value. The rate comes from a rate table that is refreshed on a schedule, not fetched live at the moment you ask, so the figure is a recent maintained rate rather than a real-time market price."
+      },
+      "segmentation": {
+        "heading": "Crypto cards are valued in their own segment",
+        "body": "Crypto cards are valued and shown separately, in their own segment beside the ordinary cash-and-miles cards. This separation is deliberate: the HKD-equivalent of a crypto reward is used only to order and display crypto cards among themselves — it is never mixed into the ranking of fiat cards. That way, adding crypto valuation can never change where an ordinary card lands."
+      },
+      "failSafe": {
+        "heading": "If a rate is stale or missing, CardGPT never guesses",
+        "body": "The valuation is built to fail safely. If the rate for an asset is older than a day, CardGPT still shows the last known value but marks how recent the rate is, rather than hiding the card. If a rate is missing altogether or unusable, the reward is shown as \"value unavailable\" and that card is simply not ranked — CardGPT never invents a number to put a card on top."
+      },
+      "baseTier": {
+        "heading": "Higher, staking-gated tiers are not assumed",
+        "body": "Some crypto cards advertise a higher reward rate, but only if you lock up or stake a certain amount first. CardGPT does not assume you have met those conditions: by default it values the base, un-staked tier that anyone holding the card actually earns. Higher tiers are treated as conditional rather than folded into the number, so the valuation reflects what you get without extra commitments."
+      },
+      "hkEligibility": {
+        "heading": "A card you can't obtain in Hong Kong is never recommended",
+        "body": "If a card is marked as unavailable to Hong Kong residents, CardGPT will never return it as a recommendation, no matter how attractive its reward looks — the gate fails closed. Such a card can still appear in the card directory for reference, but it will not be suggested as something to apply for, because a recommendation you cannot act on is worthless."
+      }
     }
   }
 }
