@@ -325,7 +325,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
 | 9. Data Page (Card Directory) | 3/3 | Complete | 2026-07-30 |
-| 10. Research Page | 0/2 | Not started | - |
+| 10. Research Page | 2/2 | In review (THI-319, verifier human_needed) | - |
 | 11. UI / Theme Refresh (THI-176) | 4/4 | Complete | 2026-07-29 |
 
 ---
