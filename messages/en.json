@@ -317,5 +317,17 @@
     "hkNotAvailable": "Not available to HK residents",
     "lastVerified": "Last Verified",
     "provenanceNote": "Some card data is bulk- or community-sourced and may be less authoritative. Always confirm reward rates, fees and terms with the issuer before applying."
+  },
+  "research": {
+    "navLink": "Research",
+    "directoryNavLink": "Directory",
+    "pageEyebrow": "Methodology",
+    "pageTitle": "How CardGPT ranks cards",
+    "pageIntro": "CardGPT recommends a credit card by working out what each one is actually worth for the purchase you describe — then ordering them by that value, with clear rules for breaking ties. No black box, no marketing score. This page explains exactly how it decides.",
+    "footerNote": "This explainer describes the live recommendation engine. It is informational only and is not financial advice.",
+    "ranking": {
+      "heading": "How CardGPT ranks cards",
+      "lead": "When you describe a purchase, CardGPT reads it, works out the reward each eligible card would earn on it, subtracts the fees that purchase would trigger, and ranks the cards by what is left — the net value. The card at the top is the one that leaves the most money in your pocket."
+    }
   }
 }
