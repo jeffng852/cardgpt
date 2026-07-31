@@ -25,6 +25,10 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 export default function ResearchClient() {
   const t = useTranslations('research');
 
+  // Ordered tie-break steps rendered as a parallel array so en/zh-HK hold
+  // key/index parity (accurate to recommendCards.ts, lines ~125-154).
+  const tieBreakSteps = t.raw('ranking.tieBreak.steps') as string[];
+
   return (
     <div className="min-h-screen flex flex-col bg-bg text-fg">
       {/* Header — hairline-bottom bar, flat (contract §3/§5), mirrors HomeClient */}
@@ -80,7 +84,8 @@ export default function ResearchClient() {
               {t('pageIntro')}
             </p>
 
-            {/* Ranking methodology — hairline-separated section (body expands in 10-02) */}
+            {/* Ranking methodology — hairline-separated section, accurate to
+                recommendCards.ts + transactionParser.ts (D-01, no invented claims) */}
             <section className="mt-12 pt-10 border-t border-border">
               <h2 className="font-display font-extrabold uppercase text-fg tracking-[-0.02em] leading-[1.05] text-2xl sm:text-3xl text-balance">
                 {t('ranking.heading')}
@@ -88,6 +93,60 @@ export default function ResearchClient() {
               <p className="mt-5 font-sans text-[16px] leading-relaxed text-fg">
                 {t('ranking.lead')}
               </p>
+
+              {/* Sub-blocks — each an uppercase Rethink sub-heading + Inter body */}
+              <div className="mt-10 space-y-10">
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('ranking.parsing.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('ranking.parsing.body')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('ranking.netValue.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('ranking.netValue.body')}
+                  </p>
+                  {/* FX-fee worked example — bordered aside (flat, hairline §3) */}
+                  <p className="mt-4 border-l-2 border-border-strong bg-muted px-4 py-3 font-sans text-[15px] leading-relaxed text-fg">
+                    {t('ranking.netValue.example')}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('ranking.tieBreak.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('ranking.tieBreak.lead')}
+                  </p>
+                  {/* Ordered tie-break chain — parallel array holds en/zh parity */}
+                  <ol className="mt-4 space-y-2">
+                    {tieBreakSteps.map((step, i) => (
+                      <li key={i} className="flex gap-3 font-sans text-[16px] leading-relaxed text-fg">
+                        <span className="font-[family-name:var(--font-mono)] font-bold tabular-nums text-muted-fg shrink-0">
+                          {i + 1}.
+                        </span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div>
+                  <h3 className="font-display font-bold uppercase text-fg tracking-[-0.01em] text-lg">
+                    {t('ranking.preferences.heading')}
+                  </h3>
+                  <p className="mt-3 font-sans text-[16px] leading-relaxed text-muted-fg">
+                    {t('ranking.preferences.body')}
+                  </p>
+                </div>
+              </div>
             </section>
           </div>
         </div>

@@ -327,7 +327,31 @@
     "footerNote": "This explainer describes the live recommendation engine. It is informational only and is not financial advice.",
     "ranking": {
       "heading": "How CardGPT ranks cards",
-      "lead": "When you describe a purchase, CardGPT reads it, works out the reward each eligible card would earn on it, subtracts the fees that purchase would trigger, and ranks the cards by what is left — the net value. The card at the top is the one that leaves the most money in your pocket."
+      "lead": "When you describe a purchase, CardGPT reads it, works out the reward each eligible card would earn on it, subtracts the fees that purchase would trigger, and ranks the cards by what is left — the net value. The card at the top is the one that leaves the most money in your pocket.",
+      "parsing": {
+        "heading": "You type a purchase, in English or Chinese",
+        "body": "You describe a purchase in plain language — \"HK$500 dinner\", \"買衫 $800\", \"Netflix 150\" — and CardGPT reads it. It picks out the amount, the currency (a bare $ is treated as HKD), the spending category, a specific merchant when it recognises one, and how you are paying. Both English and Traditional Chinese keywords are understood, so you can write however feels natural."
+      },
+      "netValue": {
+        "heading": "Cards are ranked by net value — reward minus fees",
+        "body": "For every eligible card, CardGPT calculates the reward that purchase would earn, then subtracts the fees the purchase would trigger. What remains is the net value, and the cards are ordered by it, highest first. Ranking on the reward alone would be misleading, because a headline reward can be wiped out by a fee — net value is what you actually keep.",
+        "example": "Example: on an overseas purchase, a card advertising a higher rebate but charging a foreign-transaction fee can be worth less than a plainer card with no such fee. Because CardGPT subtracts that fee first, the cheaper card correctly ranks higher."
+      },
+      "tieBreak": {
+        "heading": "How ties are broken",
+        "lead": "When two cards come out level, CardGPT applies a fixed order of tie-breakers so the result is always deterministic — never arbitrary:",
+        "steps": [
+          "Higher net value (reward minus fees) wins.",
+          "If still level, the higher reward amount wins.",
+          "If still level, the lower annual fee wins.",
+          "If still level, a card from an issuer you prefer wins.",
+          "If still level, the cards are ordered alphabetically by name."
+        ]
+      },
+      "preferences": {
+        "heading": "Your preferences narrow the field first",
+        "body": "Before ranking, CardGPT sets aside cards that cannot apply: inactive cards, and any you have chosen to exclude. Your preferences narrow it further — the type of reward you want (cash, miles, points or crypto) and a maximum annual fee you are willing to pay. Whatever survives those filters is ranked by net value, and the card at the top is the recommendation."
+      }
     }
   }
 }
