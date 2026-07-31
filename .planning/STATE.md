@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 current_phase: 10
-current_phase_name: Complete. Milestone v1.1 all 6 phases done.
-status: milestone-complete-pending-archive
-stopped_at: Phase 10 Research page COMPLETE (merged PR #14, THI-319 Done, deployed). Milestone v1.1 all 6 phases done; next is milestone audit/complete/archive.
-last_updated: "2026-07-31T00:00:00.000Z"
+current_phase_name: Milestone v1.1 COMPLETE (6/6), recorded in MILESTONES.md
+status: milestone-complete
+stopped_at: v1.1 complete + recorded (MILESTONES.md). Phase-dir archive + PROJECT.md evolution can run with /gsd-new-milestone (archives outgoing phases) in a fresh window.
+last_updated: "2026-07-31T12:00:00.000Z"
 last_activity: 2026-07-31
-last_activity_desc: "Phase 10 Research page COMPLETE: verified 6/6 + qa-karen APPROVED + merged PR #14 (THI-319 Done) + deployed; em-dash sweep across all UI copy. Milestone v1.1 (6/6) COMPLETE."
+last_activity_desc: Milestone v1.1 COMPLETE — all 6 phases live + Ops-Grace HEALTHY; recorded in MILESTONES.md
 progress:
   total_phases: 6
   completed_phases: 6
@@ -90,8 +90,8 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 
 ## Session Continuity
 
-Last session: 2026-07-31
-Stopped at: Phase 10 Research page COMPLETE + merged (PR #14, THI-319 Done) + deployed; Ops-Grace post-deploy check run. MILESTONE v1.1 COMPLETE (6/6).
+Last session: 2026-07-31T11:04:01.704Z
+Stopped at: context exhaustion at 77% (2026-07-31)
 Resume file: None
 
 **Milestone v1.1: 6 of 6 phases COMPLETE (100%) + all live.** Phases 6, 7, 8, 9, 10, 11 done + deployed.
@@ -101,6 +101,7 @@ Resume file: None
 deliberate beat + context limits).
 
 **Tracked follow-ups (non-blocking):**
+
 - GH #12 (OpenRouter key dead in prod, AI free-text parser degraded; Jeff to rotate a fresh key). HIGHEST user-impact open item.
 - Ingestion strategy: scraping evaluated, recommendation = hybrid manual-first, NOT per-issuer scrapers (see memory [[cardgpt-tc-ingestion-not-scalable]]).
 - THI-297 (affiliate disclosure revisit before live monetized links), RQ-001 (real crypto card + rate data), GH #11 (Phase 11 redesign nits), Phase 9 qa-karen nit (zh-HK empty-count cosmetic).
