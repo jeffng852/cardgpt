@@ -291,7 +291,7 @@
     "navLink": "Directory",
     "title": "Card Directory",
     "provenanceEyebrow": "About the data",
-    "provenanceBody": "Hong Kong credit cards are hand-curated and verified. Global crypto and neobank cards (coming soon) are community-sourced and may be less precise — we label them and never let unverified data drive a recommendation.",
+    "provenanceBody": "Hong Kong credit cards are hand-curated and verified. Global crypto and neobank cards (coming soon) are community-sourced and may be less precise. We label them and never let unverified data drive a recommendation.",
     "searchPlaceholder": "Search by card name or issuer",
     "sortLabel": "Sort by",
     "sortRewardRate": "Reward rate",
@@ -317,5 +317,65 @@
     "hkNotAvailable": "Not available to HK residents",
     "lastVerified": "Last Verified",
     "provenanceNote": "Some card data is bulk- or community-sourced and may be less authoritative. Always confirm reward rates, fees and terms with the issuer before applying."
+  },
+  "research": {
+    "navLink": "Research",
+    "directoryNavLink": "Directory",
+    "pageEyebrow": "Methodology",
+    "pageTitle": "How CardGPT ranks cards",
+    "pageIntro": "CardGPT recommends a credit card by working out what each one is actually worth for the purchase you describe, then ordering them by that value, with clear rules for breaking ties. No black box, no marketing score. This page explains exactly how it decides.",
+    "footerNote": "This explainer describes the live recommendation engine. It is informational only and is not financial advice.",
+    "ranking": {
+      "heading": "How CardGPT ranks cards",
+      "lead": "When you describe a purchase, CardGPT reads it, works out the reward each eligible card would earn on it, subtracts the fees that purchase would trigger, and ranks the cards by what is left, the net value. The card at the top is the one that leaves the most money in your pocket.",
+      "parsing": {
+        "heading": "You type a purchase, in English or Chinese",
+        "body": "You describe a purchase in plain language, such as \"HK$500 dinner\", \"買衫 $800\" or \"Netflix 150\", and CardGPT reads it. It picks out the amount, the currency (a bare $ is treated as HKD), the spending category, a specific merchant when it recognises one, and how you are paying. Both English and Traditional Chinese keywords are understood, so you can write however feels natural."
+      },
+      "netValue": {
+        "heading": "Cards are ranked by net value: reward minus fees",
+        "body": "For every eligible card, CardGPT calculates the reward that purchase would earn, then subtracts the fees the purchase would trigger. What remains is the net value, and the cards are ordered by it, highest first. Ranking on the reward alone would be misleading, because a headline reward can be wiped out by a fee. Net value is what you actually keep.",
+        "example": "Example: on an overseas purchase, a card advertising a higher rebate but charging a foreign-transaction fee can be worth less than a plainer card with no such fee. Because CardGPT subtracts that fee first, the cheaper card correctly ranks higher."
+      },
+      "tieBreak": {
+        "heading": "How ties are broken",
+        "lead": "When two cards come out level, CardGPT applies a fixed order of tie-breakers so the result is always deterministic, never arbitrary:",
+        "steps": [
+          "Higher net value (reward minus fees) wins.",
+          "If still level, the higher reward amount wins.",
+          "If still level, the lower annual fee wins.",
+          "If still level, a card from an issuer you prefer wins.",
+          "If still level, the cards are ordered alphabetically by name."
+        ]
+      },
+      "preferences": {
+        "heading": "Your preferences narrow the field first",
+        "body": "Before ranking, CardGPT sets aside cards that cannot apply: inactive cards, and any you have chosen to exclude. Your preferences narrow it further: the type of reward you want (cash, miles, points or crypto) and a maximum annual fee you are willing to pay. Whatever survives those filters is ranked by net value, and the card at the top is the recommendation."
+      }
+    },
+    "crypto": {
+      "heading": "How crypto rewards are valued in HKD",
+      "lead": "Some cards pay their rewards in crypto rather than cash. To compare them honestly against ordinary cards, CardGPT converts each crypto reward into an equivalent amount in Hong Kong dollars, the currency you already think in, using a maintained rate table. Here is exactly how that valuation works, and where it deliberately holds back.",
+      "hkdValuation": {
+        "heading": "Crypto rewards are converted to an HKD-equivalent value",
+        "body": "A crypto reward, say a rebate paid in USDC or CRO, is only meaningful once you know what it is worth in money you can spend. CardGPT multiplies the reward by a maintained rate for that asset to produce an HKD-equivalent value. The rate comes from a rate table that is refreshed on a schedule, not fetched live at the moment you ask, so the figure is a recent maintained rate rather than a real-time market price."
+      },
+      "segmentation": {
+        "heading": "Crypto cards are valued in their own segment",
+        "body": "Crypto cards are valued and shown separately, in their own segment beside the ordinary cash-and-miles cards. This separation is deliberate: the HKD-equivalent of a crypto reward is used only to order and display crypto cards among themselves. It is never mixed into the ranking of fiat cards. That way, adding crypto valuation can never change where an ordinary card lands."
+      },
+      "failSafe": {
+        "heading": "If a rate is stale or missing, CardGPT never guesses",
+        "body": "The valuation is built to fail safely. If the rate for an asset is older than a day, CardGPT still shows the last known value but marks how recent the rate is, rather than hiding the card. If a rate is missing altogether or unusable, the reward is shown as \"value unavailable\" and that card is simply not ranked. CardGPT never invents a number to put a card on top."
+      },
+      "baseTier": {
+        "heading": "Higher, staking-gated tiers are not assumed",
+        "body": "Some crypto cards advertise a higher reward rate, but only if you lock up or stake a certain amount first. CardGPT does not assume you have met those conditions: by default it values the base, un-staked tier that anyone holding the card actually earns. Higher tiers are treated as conditional rather than folded into the number, so the valuation reflects what you get without extra commitments."
+      },
+      "hkEligibility": {
+        "heading": "A card you can't obtain in Hong Kong is never recommended",
+        "body": "If a card is marked as unavailable to Hong Kong residents, CardGPT will never return it as a recommendation, no matter how attractive its reward looks. The gate fails closed. Such a card can still appear in the card directory for reference, but it will not be suggested as something to apply for, because a recommendation you cannot act on is worthless."
+      }
+    }
   }
 }

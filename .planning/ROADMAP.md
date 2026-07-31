@@ -283,7 +283,16 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
   2. The Research page includes at least one crypto explainer covering how crypto rewards are valued in HKD (RES-01)
   3. Both language versions (`en.json` / `zh-HK.json`) have full key parity — no missing-string fallback on either locale
 
-**Plans**: TBD
+**Plans**: 2 plans (tracer-first, built into the v2 design system reusing the chrome)
+
+**Wave 1**
+
+- [ ] 10-01-PLAN.md — TRACER: `/[locale]/research` route + `ResearchClient` v2 chrome + "Research" nav link + `research` i18n namespace + the ranking-methodology explainer (net value, 5-level tie-break, preference filter, bilingual parsing), both locales [wave 1] (RES-01)
+
+**Wave 2** *(blocked on Wave 1 completion — shares `ResearchClient.tsx` + `messages/*.json`)*
+
+- [ ] 10-02-PLAN.md — Crypto-valuation explainer (HKD-equivalent, unit-segmented, stale/missing fail-safe, base tier, hkEligible gate) + full research-namespace en/zh-HK parity gate [wave 2] (RES-01)
+
 **UI hint**: yes
 
 ### Phase 11: UI / Theme Refresh (THI-176)
@@ -316,7 +325,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
 | 9. Data Page (Card Directory) | 3/3 | Complete | 2026-07-30 |
-| 10. Research Page | 0/TBD | Not started | - |
+| 10. Research Page | 2/2 | In review (THI-319, verifier human_needed) | - |
 | 11. UI / Theme Refresh (THI-176) | 4/4 | Complete | 2026-07-29 |
 
 ---
