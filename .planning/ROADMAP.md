@@ -169,7 +169,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 - [x] **Phase 7: Crypto→HKD Valuation Engine & `hkEligible` Gate** - HKD valuation ranks crypto beside fiat, fail-safe on stale rates; gate fail-closed inside `recommendCards()`; vitest regression guard (completed 2026-07-24)
 - [x] **Phase 8: Bulk Crypto Seed & Affiliate / Disclosure** - Merge-aware seed machinery + CoinMarketCap cron rate table (engine now live) + affiliate `applyUrl` CTA (`rel="sponsored nofollow noopener"`); "recommendable" decoupled from "has a link" (fixed latent 10→11 card bug). Disclosure DROPPED (DEC-AFF-DROP/D-08). Verified PASSED; merged PR #9 (THI-294), completed 2026-07-27 — real bulk data + live rate secrets deferred to RQ-001 (THI-297 disclosure follow-up)
 - [x] **Phase 9: Data Page (Card Directory)** - Public /cards grid (reuses CreditCardCard browse mode) + /cards/[id] detail (getCardById) + search/sort + provenance banner + recommender deep-link, bilingual, in the v2 system. Filters deferred (RQ-001). Verified (banner gap fixed) + qa-karen APPROVED; merged PR #13 (THI-311), completed 2026-07-30.
-- [ ] **Phase 10: Research Page** - Bilingual Research page — ranking-methodology explainer + crypto explainer
+- [x] **Phase 10: Research Page** - Bilingual `/[locale]/research` — ranking-methodology explainer (accurate to recommendCards.ts) + crypto-valuation explainer (accurate to valuateCrypto.ts), v2 system, plain React + next-intl, full en/zh-HK parity. Verified 6/6 + qa-karen APPROVED; merged PR #14 (THI-319), completed 2026-07-31. **Final v1.1 phase.**
 - [x] **Phase 11: UI / Theme Refresh (THI-176)** - v2 brutalist-editorial re-skin (own design system, ranked.plus-inspired); Home/recommender + chrome + shared CreditCardCard restyled, dark mode + all behavior preserved. Re-sequenced AHEAD of 9 & 10 (product-owner approved). Merged PR #10, completed 2026-07-29. Data/Research build INTO this system next.
 
 ---
@@ -325,7 +325,7 @@ These are shipping conditions, not work buckets. Phases 6–10 are fully buildab
 | 7. Crypto→HKD Valuation Engine & hkEligible Gate | 3/3 | Complete   | 2026-07-24 |
 | 8. Bulk Crypto Seed & Affiliate / Disclosure | 4/4 | Complete | 2026-07-27 |
 | 9. Data Page (Card Directory) | 3/3 | Complete | 2026-07-30 |
-| 10. Research Page | 2/2 | In review (THI-319, verifier human_needed) | - |
+| 10. Research Page | 2/2 | Complete | 2026-07-31 |
 | 11. UI / Theme Refresh (THI-176) | 4/4 | Complete | 2026-07-29 |
 
 ---

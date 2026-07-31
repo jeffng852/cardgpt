@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
 current_phase: 10
-current_phase_name: Not started (Research page) — the last v1.1 phase
-status: ready-to-plan
-stopped_at: Phase 9 Data page COMPLETE — merged PR #13 (THI-311 Done), deployed; next + LAST: Phase 10 Research page
-last_updated: "2026-07-30T12:00:00.000Z"
-last_activity: 2026-07-30
-last_activity_desc: Phase 9 Data page COMPLETE — verified + qa-karen APPROVED + merged PR #13 to main (THI-311 Done), deployed live; /cards grid + /cards/[id] detail + search/sort + provenance banner; suite 137/7
+current_phase_name: Complete. Milestone v1.1 all 6 phases done.
+status: milestone-complete-pending-archive
+stopped_at: Phase 10 Research page COMPLETE (merged PR #14, THI-319 Done, deployed). Milestone v1.1 all 6 phases done; next is milestone audit/complete/archive.
+last_updated: "2026-07-31T00:00:00.000Z"
+last_activity: 2026-07-31
+last_activity_desc: "Phase 10 Research page COMPLETE: verified 6/6 + qa-karen APPROVED + merged PR #14 (THI-319 Done) + deployed; em-dash sweep across all UI copy. Milestone v1.1 (6/6) COMPLETE."
 progress:
   total_phases: 6
-  completed_phases: 5
-  total_plans: 19
-  completed_plans: 19
-  percent: 83
+  completed_phases: 6
+  total_plans: 21
+  completed_plans: 21
+  percent: 100
 ---
 
 # CardGPT — State
@@ -90,20 +90,21 @@ None scheduled for v1.1. As-built open items (OPEN-001…011) live in ROADMAP.md
 
 ## Session Continuity
 
-Last session: 2026-07-30
-Stopped at: Phase 9 Data page COMPLETE + merged (PR #13, THI-311 Done) + deployed; Ops-Grace post-deploy check run
+Last session: 2026-07-31
+Stopped at: Phase 10 Research page COMPLETE + merged (PR #14, THI-319 Done) + deployed; Ops-Grace post-deploy check run. MILESTONE v1.1 COMPLETE (6/6).
 Resume file: None
 
-**Milestone v1.1: 5 of 6 phases complete (83%)** — Phases 6, 7, 8, 9, 11 done + live. Only **Phase 10 (Research page)** remains.
+**Milestone v1.1: 6 of 6 phases COMPLETE (100%) + all live.** Phases 6, 7, 8, 9, 10, 11 done + deployed.
 
-**▶ NEXT (LAST v1.1 phase): Phase 10 — Research page.** Build INTO the live v2 design system (reuse tokens/fonts/chrome
-from `.planning/design/ui-contract-v2.md`; a `Research` nav slot exists in the mockup). ranked.plus has research.ranked.plus
-as a reference. Bilingual (en/zh-HK). Gated: confirm/refresh 10-CONTEXT → issue-first (THI + branch) → plan → execute →
-verify → qa-karen → PR → visual sign-off → merge. After Phase 10 → milestone v1.1 complete (audit → complete-milestone).
+**Next: milestone close-out.** Run the GSD milestone lifecycle for v1.1: audit (/gsd-audit-milestone) then complete/archive
+(/gsd-complete-milestone v1.1) then define v1.2 if desired. Not yet done this session (paused at the milestone boundary for a
+deliberate beat + context limits).
 
-**Tracked follow-ups (non-blocking):** GH #12 (OpenRouter key dead in prod → AI free-text parser degraded; Jeff to rotate),
-THI-297 (affiliate disclosure revisit), RQ-001 (real crypto data), GH #11 (Phase 11 redesign nits), Phase 9 qa-karen nit
-(zh-HK empty-count "0 張卡" cosmetic). See memory [[cardgpt-tc-ingestion-not-scalable]] — the T&C-ingestion method may change.
+**Tracked follow-ups (non-blocking):**
+- GH #12 (OpenRouter key dead in prod, AI free-text parser degraded; Jeff to rotate a fresh key). HIGHEST user-impact open item.
+- Ingestion strategy: scraping evaluated, recommendation = hybrid manual-first, NOT per-issuer scrapers (see memory [[cardgpt-tc-ingestion-not-scalable]]).
+- THI-297 (affiliate disclosure revisit before live monetized links), RQ-001 (real crypto card + rate data), GH #11 (Phase 11 redesign nits), Phase 9 qa-karen nit (zh-HK empty-count cosmetic).
+- Em-dash rule now standing for all product copy (memory [[jeff-prefers-hyphens-not-emdash]]); swept clean this session.
 
 **Re-sequencing (2026-07-27, DONE):** Phase 11 redesign was pulled ahead of Phases 9 & 10 — restyle the app first, then
 build Data/Research into it. Phase 11 is now **complete + merged + live** (v2 design system, `.planning/design/ui-contract-v2.md`).
