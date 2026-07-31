@@ -6,14 +6,14 @@
 >
 > **CardGPT was migrated onto GSD on 2026-07-15** (THI-233) after ~6 months off-process.
 > Phases 1–5 in `.planning/` are a retrospective **as-built capture** (shipped before GSD, all
-> COMPLETE). **Milestone v1.1 — Card Directory & Crypto Expansion (Phases 6–11) is defined** and
-> forward work is well underway — **Phases 6, 7, 8 and 11 are complete on `main`** (4/6): schema
-> foundation + reward-unit fan-out (THI-252/253/254, PRs #3–#5), crypto HKD valuation with the
-> `hkEligible` gate and unit-segmented ranking (THI-279/280, PRs #7–#8), the bulk crypto seed
-> machinery with the affiliate CTA and CoinMarketCap rate cron (THI-294, PR #9), and the **v2
-> design-system re-skin** (THI-176, PR #10). Phase 9 (Data page / card directory) is planned but
-> **parked** — it was re-sequenced *behind* the redesign so the directory gets built into the v2
-> system rather than re-skinned later. This line is a snapshot — `git log` is the live tip.
+> COMPLETE). **Milestone v1.1 — Card Directory & Crypto Expansion (Phases 6–11) is COMPLETE — 6/6 on
+> `main`**: schema foundation + reward-unit fan-out (THI-252/253/254, PRs #3–#5), crypto HKD
+> valuation with the `hkEligible` gate and unit-segmented ranking (THI-279/280, PRs #7–#8), the
+> bulk crypto seed machinery with the affiliate CTA and CoinMarketCap rate cron (THI-294, PR #9),
+> the **v2 design-system re-skin** (THI-176, PR #10), the **Data page / card directory**
+> (THI-311, PR #13 — deliberately re-sequenced *behind* the redesign so it was built into the v2
+> system rather than re-skinned later), and the **Research explainer** (THI-319, PR #14). This
+> line is a snapshot — `git log` is the live tip.
 
 ## 🔴 This repository is PUBLIC
 
@@ -136,14 +136,14 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
 > were **not** mirrored as Linear milestones. Mirroring starts at the first *real* milestone,
 > **v1.1 — Card Directory & Crypto Expansion**, where each phase is wired to a Linear milestone with
 > an issue per plan — Phase 6 (THI-252/253/254), Phase 7 (THI-279/280), Phase 8 (THI-294), Phase 11
-> (THI-176), all now merged and Done.
+> (THI-176), Phase 9 (THI-311) and Phase 10 (THI-319) — all merged and Done, closing v1.1 at 6/6.
 
 ## Operational Runbook (Vercel)
 
 - **Production:** https://cardgpt-beta.vercel.app · Vercel project `cardgpt` on the **Thirdvisor (Pro)** team (Vercel slug `polytracker`; moved off the personal hobby team 2026-07-24) · region `hkg1` (Hong Kong — chosen for HK users; keep it).
 - **Deploy:** merge to `main` → Vercel auto-deploys. No manual step.
 - **Env vars:** read headlessly with `vercel env ls` / `vercel env pull` (CLI is linked). **Do not ask the user to read them out.**
-- **Data layer is Upstash Redis**, resolved in this precedence order (`src/lib/data/redisStorage.ts:27`):
+- **Data layer is Upstash Redis**, resolved in this precedence order (`src/lib/data/redisStorage.ts:35`):
   `REAL_STORAGE_KV_REST_API_URL` → `KV_REST_API_URL` → `UPSTASH_REDIS_REST_URL`.
   **As of 2026-07-24 the prod DB is `cardgpt-prod` on Thirdvisor, and the `KV_*` names are the ones actually set**
   (host `grown-starfish-176247.upstash.io`). The old `REAL_STORAGE_*` set was deleted — its original Upstash DB had been
@@ -167,11 +167,12 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
   Do not treat the admin surface as protected. Details are in Linear, not here (public repo).
 - **The test runner now exists** (this reverses a long-standing gap — OPEN-008 is closed). Phase 7
   Wave 0 installed **vitest** (`vitest.config.ts`, `vitest 4.1.10` devDependency) and added the
-  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 14 files
+  `test` / `test:watch` scripts, so `npm test` (= `vitest run`) runs for real. The suite is 15 files
   covering the engine (crypto valuation, `hkEligible`, `minStaking`, unit segmentation, the
   fiat-ranking regression baseline, affiliate neutrality), the data layer (`loadCards`, `rateTable`),
   the affiliate CTA, the rate cron, the transaction parser, the crypto-seed script's pure merge
-  helper, and the Phase-11 `buildCardView` view-builder. The `include` globs cover **both** `src/**`
+  helper, the Phase-11 `buildCardView` view-builder, and the Phase-9 `directoryControls`
+  search/sort helper. The `include` globs cover **both** `src/**`
   and `scripts/**` (broadened in Phase 8 so `scripts/__tests__/seed-crypto-cards.test.ts` collects
   without a live Redis). Archived docs that described the pre-vitest state are stale on this point.
 - **The UI runs on the v2 design system — read the contract before restyling anything.**
@@ -187,6 +188,19 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
   in `src/app/[locale]/layout.tsx`. The shared card is `CreditCardCard.tsx` rendering a typed
   `CardView` from the pure `src/lib/cards/buildCardView.ts` — put derived display logic in the
   builder (unit-testable in node-env vitest), not the component.
+- **The public browse + explainer surfaces rank NOTHING — keep it that way.** v1.1 closed with three
+  distinct public routes: the recommender (`/`), the **Data page** (`/cards` grid + `/cards/[id]`
+  detail, THI-311) and the **Research** explainer (`/research`, THI-319). The directory and detail
+  pages call `loadCards()` / `getCardById()` and make **no recommendation-engine call** — which is
+  why the `hkEligible === false` filter lives *only* in `recommendCards.ts`, so a globally-available
+  card stays visible in the directory while staying out of HK recommendations. Wiring the engine
+  into a browse surface would silently collapse that separation. Same rule on `/research`: it is a
+  static content page whose accuracy comes from copy authored to match `recommendCards.ts` +
+  `transactionParser.ts`, deliberately **not** from calling them — so when the tie-break chain or
+  parser changes, the Research copy is a thing you must update by hand. Directory search/sort logic
+  is the pure `src/lib/cards/directoryControls.ts` (node-env testable, `isSortKey` fails closed on
+  an untrusted URL param) — the same builder-not-component split as `buildCardView`. Both new
+  surfaces are fully bilingual off the next-intl `directory` / `research` namespaces.
 - **`docs/ARCHITECTURE.md` is wrong about storage.** It documents Vercel Blob throughout; the data
   layer is Upstash Redis (commits `6fb4d19`, `d43be5e`). `@vercel/blob` survives **only** for card
   *image* upload in `/api/admin/upload`. Its non-storage content (server/client split, `force-dynamic`,
@@ -207,7 +221,7 @@ npm run dev              # health-check, then next dev
 npm run dev:skip-check   # bypass the health check
 npm run build            # health-check, then next build
 npm run lint             # eslint
-npm test                 # vitest run (14 test files, src/** + scripts/**)
+npm test                 # vitest run (15 test files, src/** + scripts/**)
 npm run test:watch       # vitest in watch mode
 npm run health-check     # scripts/health-check.js on its own
 npx tsc --noEmit         # typecheck — there is no `typecheck` script (needs npm install first)

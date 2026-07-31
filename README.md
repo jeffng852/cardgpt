@@ -6,6 +6,12 @@ AI-powered credit card rewards optimizer for Hong Kong users.
 
 CardGPT helps users maximize credit card rewards by recommending the best card(s) to use for specific transactions based on merchant type, spending amount, payment method, and other factors.
 
+Three public surfaces, all bilingual (English + Traditional Chinese):
+
+- **`/`** — the recommender. Describe a purchase and get cards ranked by net value.
+- **`/cards`** — the Card Directory: a read-only browse grid over the full active card set, with search and sort, plus a shareable `/cards/[id]` detail page. It ranks nothing and makes no engine call, so globally-available cards stay browsable even when they are out of scope for HK recommendations.
+- **`/research`** — a plain-language explainer of how the ranking and the crypto→HKD valuation work.
+
 ## Tech Stack
 
 - **Framework**: Next.js 16 (App Router), React 19
@@ -19,7 +25,9 @@ CardGPT helps users maximize credit card rewards by recommending the best card(s
 ## Project Status
 
 Currently in development. The app runs on the **v2 design system** (brutalist-editorial) as of the
-Phase 11 re-skin. See Linear project for detailed requirements and roadmap.
+Phase 11 re-skin, and milestone **v1.1 — Card Directory & Crypto Expansion is complete** (crypto
+card support with HKD valuation, the card directory, and the research explainer all shipped). See
+the Linear project for detailed requirements and roadmap.
 
 ## Getting Started
 
