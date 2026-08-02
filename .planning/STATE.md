@@ -6,9 +6,9 @@ current_phase: 10
 current_phase_name: Milestone v1.1 COMPLETE (6/6), recorded in MILESTONES.md
 status: milestone-complete
 stopped_at: v1.1 complete + recorded (MILESTONES.md). Phase-dir archive + PROJECT.md evolution can run with /gsd-new-milestone (archives outgoing phases) in a fresh window.
-last_updated: "2026-07-31T12:00:00.000Z"
-last_activity: 2026-07-31
-last_activity_desc: Milestone v1.1 COMPLETE — all 6 phases live + Ops-Grace HEALTHY; recorded in MILESTONES.md
+last_updated: "2026-08-02T12:00:00.000Z"
+last_activity: 2026-08-02
+last_activity_desc: Phase 9 UAT sign-off (3/3 passed) — 09-VERIFICATION.md canonicalized human_needed → passed. Milestone v1.1 close-out in progress.
 progress:
   total_phases: 6
   completed_phases: 6
