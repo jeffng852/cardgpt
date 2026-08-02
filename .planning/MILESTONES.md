@@ -6,7 +6,9 @@ The shipped-milestone ledger. GitHub `main` is ground truth; this records what e
 
 ## v1.1 — Card Directory & Crypto Expansion
 
-**Status:** COMPLETE (6/6 phases) · **Shipped:** 2026-07-31 · all phases merged to `main` and deployed live (cardgpt-beta.vercel.app).
+**Status:** COMPLETE (6/6 phases) · **Shipped:** 2026-07-31 (all phases merged to `main` + deployed live, cardgpt-beta.vercel.app) · **Closed:** 2026-08-02 (milestone archived; Phase 9 & 10 human UAT signed off, verifications canonicalized to `passed`).
+
+**Stats:** 6 phases · 21 plans · 30 tasks.
 
 **Goal:** extend CardGPT from a fiat-only recommender into a product that values crypto-card rewards, exposes a browsable card directory and a research/methodology surface, and wears a cohesive redesigned identity.
 
@@ -25,8 +27,12 @@ The shipped-milestone ledger. GitHub `main` is ground truth; this records what e
 
 **Key decisions locked:** DEC-VAL-A/B/C (unit-segmented crypto valuation, fail-safe, base un-staked tier) · DEC-DATA-001 (bulk crypto data provenance-labeled) · DEC-DATA-002 (CoinMarketCap cron rate table) · DEC-AFF-DROP (affiliate disclosure dropped, risk-accepted) · the v2 design contract.
 
+**Milestone audit (2026-07-31):** `gaps_found` — but all gaps were closure-hygiene, not capability gaps (product shipped live + Ops-Grace HEALTHY). Full report archived at `milestones/v1.1-MILESTONE-AUDIT.md`. Resolved at close: Phase 9 & 10 human UAT signed off. Carried forward as known overrides: Phases 6 & 11 shipped without a canonical VERIFICATION.md (features wired + live, integration-verified); the recommender-side crypto display (`cryptoSegment` built by the engine, not yet rendered) is deferred to the RQ-001 milestone.
+
 **Open at close (non-blocking, carried forward):**
+
 - **GH #12** — prod `OPENROUTER_API_KEY` is dead (401); the user-facing free-text parser (`parseActivity.ts`) degrades to keyword-only for ambiguous input. Needs a key rotation. **Highest user-impact.**
+- **CRY-04 crypto display** — the engine builds `cryptoSegment` but no UI renders it (`HomeClient.tsx:63` reads only `.recommendations`); crypto is browsable via `/cards` but not recommendable-with-value. RQ-001-gated. Reconcile the Research copy that promises a visible segment when this lands.
 - **RQ-001** — no real crypto-card data yet (the CoinMarketCap rate cron runs but there are no crypto cards in prod); the seed machinery + rate table are built and dormant-ready.
 - **THI-297** — revisit the affiliate disclosure before real monetized Apply links ship.
 - **THI-236** (Urgent) — admin auth hardening (pre-existing, unrelated to v1.1 features).

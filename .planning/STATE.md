@@ -2,19 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Card Directory & Crypto Expansion
+status: Awaiting next milestone
+stopped_at: context exhaustion at 77% (2026-07-31)
+last_updated: "2026-08-02T22:42:55.300Z"
+last_activity: 2026-08-02
+last_activity_desc: Milestone v1.1 completed and archived
+progress:
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 current_phase: 10
 current_phase_name: Milestone v1.1 COMPLETE (6/6), recorded in MILESTONES.md
-status: milestone-complete
-stopped_at: v1.1 complete + recorded (MILESTONES.md). Phase-dir archive + PROJECT.md evolution can run with /gsd-new-milestone (archives outgoing phases) in a fresh window.
-last_updated: "2026-08-02T12:00:00.000Z"
-last_activity: 2026-08-02
-last_activity_desc: Phase 9 UAT sign-off (3/3 passed) — 09-VERIFICATION.md canonicalized human_needed → passed. Milestone v1.1 close-out in progress.
-progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 21
-  completed_plans: 21
-  percent: 100
 ---
 
 # CardGPT — State
@@ -36,15 +35,10 @@ real crypto-card data lands; disclosure revisit tracked as THI-297.
 
 ## Current Position
 
-Phase: 09 of 11 — next (Phases 6, 7 & 8 complete)
-Plan: Not started
-Status: Ready to plan Phase 9 (Data Page). Phase 8 merged to main (PR #9, THI-294 Done); crypto engine live-dormant.
-Linear: Phase 8 milestone `d8cb2a69` · THI-294 **Done** (PR #9, auto-closed) · THI-297 disclosure follow-up (Todo, RQ-001-gated) · Phase 7 THI-279/280 Done · Phase 6 THI-252/253/254 Done.
-Deferred follow-ups (issue-first when picked up): (1) 7 quarantined `transactionParser` tests → parser-taxonomy reconciliation; (2) NIT-1 `eligibleCardsCount` is fiat-only post-partition → fix/clarify in Phase 8 when crypto data exists; (3) crypto segment skips preference filters → Phase 9 UI decision.
-Infra: Vercel on Thirdvisor Pro; prod Redis `cardgpt-prod` (env `KV_*`). Blob deferred (unused).
-Last activity: 2026-07-25 — Phase 07 complete
-
-Progress: [██████████] Phase 7 [░░░░░░░░░░] 0% (3/3) · Milestone v1.1: **2 of 6 phases complete** (Phases 6, 7)
+Phase: Milestone v1.1 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-08-02 — Milestone v1.1 completed and archived
 
 ## Accumulated Context
 
@@ -129,3 +123,7 @@ the VISUAL system changes (current → ranked.plus).
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 11 P03 | 10m | 2 tasks | 2 files |
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone
