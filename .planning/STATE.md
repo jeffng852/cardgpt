@@ -8,34 +8,34 @@ last_updated: "2026-08-02T22:42:55.300Z"
 last_activity: 2026-08-02
 last_activity_desc: Milestone v1.1 completed and archived
 progress:
-  total_phases: 0
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-current_phase: 10
-current_phase_name: Milestone v1.1 COMPLETE (6/6), recorded in MILESTONES.md
+  total_phases: 6
+  completed_phases: 6
+  total_plans: 21
+  completed_plans: 21
+current_phase: null
+current_phase_name: Between milestones — v1.1 shipped + archived
 ---
 
 # CardGPT — State
 
-**Updated:** 2026-07-25
+**Updated:** 2026-08-02
 **Tracking issue:** THI-233 · Linear project "CardGPT" (team THI) · issues THI-176 (revamp), THI-51 (crypto)
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-16)
+See: .planning/PROJECT.md (updated 2026-08-02, v1.1 evolution)
 
 **Core value:** Answer "which of my cards should I use for this purchase?" — for HK cards,
 in the user's language, without login, in under a second.
 
-**Current focus:** Milestone **v1.1 — Card Directory & Crypto Expansion**. Phases 6, 7 & 8 complete
-(3 of 6). **Next: Phase 9 — Data Page (Card Directory)** (not yet discussed/planned). Phase 8's crypto
-engine + rate cron are live-but-dormant until `COINMARKETCAP_API_KEY`/`CRON_SECRET` are set and RQ-001
-real crypto-card data lands; disclosure revisit tracked as THI-297.
+**Current focus:** **Between milestones.** v1.1 — Card Directory & Crypto Expansion shipped
+(6/6 phases live) and is archived. Next: `/gsd-new-milestone` — captured direction is v1.2
+"make the crypto machinery real" (activate rate cron with a live key, source real HK crypto-card
+data RQ-001, render the crypto recommendation segment CRY-04, sustainable ingestion).
 
 ## Current Position
 
-Phase: Milestone v1.1 complete
+Phase: Between milestones (v1.1 complete + archived)
 Plan: —
 Status: Awaiting next milestone
 Last activity: 2026-08-02 — Milestone v1.1 completed and archived

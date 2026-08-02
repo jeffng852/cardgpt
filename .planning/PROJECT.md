@@ -51,39 +51,44 @@ every doc in the repo is ~6 months stale and several are actively wrong.
 Answer one question well: **"Which of my cards should I use for this purchase?"** —
 for HK cards, in the user's language, without login, in under a second.
 
-## Current Milestone: v1.1 — Card Directory & Crypto Expansion
+## Current State — v1.1 shipped (2026-07-31, archived 2026-08-02)
 
-**Goal:** Grow CardGPT from a single-transaction recommender into a browsable card directory
-with crypto-card support and affiliate monetization — **without changing the recommender at its
-core.** The Home page stays the recommender; everything below is additive.
+CardGPT is now a **fiat + crypto recommender with a browsable directory and a research surface**,
+wearing its own v2 brutalist-editorial identity. Milestone **v1.1 — Card Directory & Crypto
+Expansion** shipped all 6 phases (6–11) to `main` and live on Vercel `hkg1`. Full ledger:
+`.planning/MILESTONES.md`; archived roadmap/requirements/audit under `.planning/milestones/`.
 
-**Target features:**
-- **Data page** — a browsable card directory (filterable, **no tiers**). Shows the **full card
-  set, including global crypto/neobank cards**.
-- **Research page** — an editorial / explainer surface.
-- **Crypto card category** — schema additions (`cardType`, a `crypto` reward unit + asset,
-  rule-level `minStaking` on `RewardCondition`, optional `fundingOptions`) plus **crypto→HKD
-  reward valuation** in the engine so crypto cards rank meaningfully by net value.
-- **Affiliate monetization** — populate the existing, already referral-aware `applyUrl` rail
-  (`card.ts:268`). No schema change for the rail itself.
-- **ranked.plus-inspired UI / theme refresh** (THI-176).
+**Validated this milestone:**
+- ✓ **Crypto card category** — `cardType`, crypto reward unit + asset, `minStaking` gate, `hkEligible` — v1.1 (Phase 6)
+- ✓ **Crypto→HKD valuation** — unit-segmented, fail-safe, fiat ranking byte-identical — v1.1 (Phase 7); *reopened the v1 "cross-unit conversion" exclusion in minimal form*
+- ✓ **hkEligible directory-vs-recommender switch** — gate lives sole-sited in `recommendCards.ts` — v1.1 (Phases 6–7)
+- ✓ **Affiliate monetization rail** — `applyUrl` CTA with `rel="sponsored nofollow noopener"`, ranking-neutral — v1.1 (Phase 8)
+- ✓ **Data page** — `/cards` directory + `/cards/[id]` detail, search/sort, provenance banner — v1.1 (Phase 9)
+- ✓ **Research page** — bilingual engine-accurate explainers — v1.1 (Phase 10)
+- ✓ **v2 design system** — whole-app re-skin, shared `CreditCardCard`, dark mode — v1.1 (Phase 11)
 
-**Key context:**
-- **`hkEligible` is the directory-vs-recommender switch.** The Data page shows all cards; the
-  recommender ranks only `hkEligible` ones, so a global card a user can't obtain never surfaces
-  as a recommendation.
-- **Card data source:** crypto/neobank card attributes are bulk-seeded from ranked.plus's public
-  listings (factual attributes only; referral links excluded). The **full global set** is
-  imported for the directory. See `DEC-DATA-001`.
-- **Re-opens a v1 exclusion:** crypto rewards require crypto→HKD valuation — the minimum form of
-  the "cross-unit conversion" that v1 deferred.
-- **Pro tier / subscription stays deferred** (still out of scope). Revenue this milestone is
-  affiliate-only; the tool remains free to users.
-- **Shipping-gate:** deploying to prod requires pushing the repo, which is held on **THI-236**
-  (admin auth). The security fix likely needs to land within/before this milestone's first deploy.
+**Carried forward (see ROADMAP Backlog / Open):** recommender-side crypto display (`cryptoSegment`
+built, not yet rendered — RQ-001-gated); real crypto-card data (RQ-001); GH #12 OpenRouter key
+rotation (highest user-impact); THI-236 admin-auth hardening; THI-297 affiliate disclosure revisit.
 
+## Next Milestone Goals
+
+Not yet defined — start with `/gsd-new-milestone`. The captured direction (commit `993f2b1`,
+`.planning/notes/`) points at **v1.2: making the crypto machinery real** — activate the dormant
+CoinMarketCap rate cron with a live key, source genuine HK crypto-card data (RQ-001), render the
+crypto recommendation segment (CRY-04), and pursue sustainable card-data ingestion (hybrid
+manual-first, not per-issuer scrapers — see memory `cardgpt-tc-ingestion-not-scalable`).
+
+<details>
+<summary>Archived: v1.1 milestone goal (as originally scoped)</summary>
+
+**Goal:** Grow CardGPT from a single-transaction recommender into a browsable card directory with
+crypto-card support and affiliate monetization — without changing the recommender at its core.
 Maps to **THI-176** (ranked.plus revamp) and **THI-51** (crypto cards). Full exploration record:
-`.planning/notes/ranked-plus-directory-and-crypto-expansion.md`.
+`.planning/notes/ranked-plus-directory-and-crypto-expansion.md`. All target features delivered; see
+Current State above.
+
+</details>
 
 ## Constraints
 
@@ -205,3 +210,6 @@ This document evolves at phase transitions and milestone boundaries.
 2. Core Value check — still the right priority?
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
+
+---
+*Last updated: 2026-08-02 after v1.1 milestone*
