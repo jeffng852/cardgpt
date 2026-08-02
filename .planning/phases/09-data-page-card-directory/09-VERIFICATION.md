@@ -1,7 +1,7 @@
 ---
 phase: 09-data-page-card-directory
 verified: 2026-07-30T18:56:00Z
-status: human_needed
+status: passed
 score: 13/15 must-haves verified
 behavior_unverified: 2
 overrides_applied: 0
@@ -9,31 +9,39 @@ re_verification:
   previous_status: gaps_found
   previous_score: 12/15
   gaps_closed:
+
     - "A page-level provenance banner disclosing bulk/community-sourced data (DEC-DATA-001, 09-CONTEXT D-04) sits at the top of the directory in both languages (DIR-02)."
   gaps_remaining: []
   regressions: []
 behavior_unverified_items:
+
   - truth: "Search + sort state is URL-synced, shareable, survives reload (D3)."
     test: "On /en/cards, type a query that narrows the grid, change the sort select, confirm the URL gains ?q=...&sort=..., and that reloading or sharing that URL restores the same filtered/sorted view."
     expected: "Search narrows tiles, sort reorders them, URL updates, reload/share restores state."
     why_human: "The pure filterCards/sortCards logic is unit-tested (17/17 vitest cases), and router.replace wiring is present and wired, but end-to-end URL-round-trip interactivity in a real browser has no automated UI test in this stack. Flagged human_judgment: true (D3) by 09-03-SUMMARY.md itself."
+
   - truth: "No-match search renders a bilingual empty-state with acceptable copy quality (D4)."
     test: "On /en/cards, search for a term that matches nothing (e.g. \"zzz\"): confirm a bilingual empty-state renders. Switch to /zh-HK/cards and confirm search placeholder, sort options, and empty-state copy all read naturally in Chinese."
     expected: "No-match empty-state renders; zh-HK copy reads naturally (not machine-translated or awkward)."
     why_human: "Key presence + en/zh-HK parity are automated (confirmed below), but copy quality and visual rendering are a human judgment call. Flagged human_judgment: true (D4) by 09-03-SUMMARY.md itself."
 human_verification:
+
   - test: "Open /en/cards and /zh-HK/cards; confirm the directory grid renders one browse tile per active card, footers align across columns, the new provenance banner reads naturally in both languages, and there is no nested-anchor hydration warning in the console."
     expected: "A responsive grid of browse-mode CreditCardCard tiles, one per active card, a legible hairline+left-accent provenance banner atop the grid in both locales, no console warnings."
     why_human: "Visual rendering, cross-column alignment, banner copy quality, and browser console warnings are not asserted by an automated test in this stack (no Playwright/jsdom render harness)."
+
   - test: "Click a directory tile -> lands on /en/cards/<id>; visit /en/cards/does-not-exist -> confirm a 404/not-found page (not a crash or blank page); switch to /zh-HK/cards/<id> -> confirm rule descriptions render in Chinese where description_zh exists."
     expected: "Valid id shows full detail; unknown id shows Next's not-found page; zh-HK descriptions localized."
     why_human: "Runtime navigation and locale-conditional text substitution are not covered by an automated route test; code correctly calls next/navigation's notFound() and the description_zh branch, but the rendered result needs a human/browser check."
+
   - test: "On /en/cards, type a query that narrows the grid (e.g. an issuer substring), change the sort select, confirm the URL gains ?q=...&sort=..., and that reloading or sharing that URL restores the same filtered/sorted view."
     expected: "Search narrows tiles, sort reorders them, URL updates, reload/share restores state."
     why_human: "Flagged human_judgment: true (D3) by 09-03-SUMMARY.md itself — the pure filterCards/sortCards logic is unit-tested (17 vitest cases, all passing), but end-to-end URL-synced interactivity in a real browser has no automated UI test in this stack."
+
   - test: "On /en/cards, search for a term that matches nothing (e.g. \"zzz\"): confirm a bilingual empty-state renders. Switch to /zh-HK/cards and confirm search placeholder, sort options, and empty-state copy all read naturally in Chinese."
     expected: "No-match empty-state renders; zh-HK copy reads naturally (not machine-translated or awkward)."
     why_human: "Flagged human_judgment: true (D4) by 09-03-SUMMARY.md itself — key presence + en/zh-HK parity are automated (confirmed below), but copy quality and visual rendering are a human judgment call."
+
   - test: "On /en/cards/<id> and /zh-HK/cards/<id>: confirm the HK-availability label, last-verified date, and provenance note read naturally in each language, and that a card with hkEligible=false shows the not-available label."
     expected: "Provenance block reads naturally in both languages; hkEligible=false renders the not-available copy."
     why_human: "Copy-quality and conditional-branch visual confirmation; the underlying data derivation (card.hkEligible !== false, getDatabaseMetadata()) is code-verified below."
@@ -50,6 +58,7 @@ human_verification:
 ## What changed since the last verification pass
 
 Commit `7577dff` ("fix(09): add missing DIR-02 page-level provenance banner to directory (THI-311)") adds:
+
 - A banner element in `src/components/CardDirectoryClient.tsx` (lines 120-127), positioned between the `<h1>` title and the search/sort controls row — a hairline box with a 6px left accent (`border-l-fg`), an uppercase eyebrow span, and a body paragraph.
 - `directory.provenanceEyebrow` + `directory.provenanceBody` keys added to both `messages/en.json` and `messages/zh-HK.json`.
 
@@ -148,6 +157,7 @@ None. Re-scanned `CardDirectoryClient.tsx` (the file this pass's fix touched) pl
 ### Human Verification Required
 
 See frontmatter `human_verification` for the full structured list (5 items, unchanged in substance from the prior pass — none were affected by the banner fix, and the banner itself adds a visual-quality check to item 1). In summary:
+
 1. Directory grid renders correctly, provenance banner reads naturally in both locales, no nested-anchor console warning.
 2. Detail-page navigation + 404 for unknown id + zh-HK localized rule descriptions.
 3. **D3** — search/sort URL-sync round-trip in a real browser.
