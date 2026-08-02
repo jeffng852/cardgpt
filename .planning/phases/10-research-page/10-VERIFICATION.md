@@ -1,11 +1,12 @@
 ---
 phase: 10-research-page
 verified: 2026-07-31T01:35:00Z
-status: human_needed
+status: passed
 score: 6/6 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: "View /en/research and /zh-HK/research at localhost in both light and dark mode"
     expected: "The ranking-methodology and crypto-valuation explainers read naturally, the Traditional-Chinese copy is well-formed and idiomatic (not just mechanically parity-correct), and the editorial layout (headings, hairline rules, tie-break list, FX-fee aside) matches the v2 brutalist-editorial system visually in both themes"
     why_human: "Copy quality/register and visual layout fidelity are judgment calls that grep/build/test cannot assess — this is the discretionary owner sign-off both 10-01 and 10-02 SUMMARY.md explicitly flag as non-blocking and deferred to Jeff"
