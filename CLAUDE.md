@@ -12,8 +12,10 @@
 > bulk crypto seed machinery with the affiliate CTA and CoinMarketCap rate cron (THI-294, PR #9),
 > the **v2 design-system re-skin** (THI-176, PR #10), the **Data page / card directory**
 > (THI-311, PR #13 — deliberately re-sequenced *behind* the redesign so it was built into the v2
-> system rather than re-skinned later), and the **Research explainer** (THI-319, PR #14). This
-> line is a snapshot — `git log` is the live tip.
+> system rather than re-skinned later), and the **Research explainer** (THI-319, PR #14). v1.1 was
+> **archived on 2026-08-02** — its roadmap, phases and requirements now live under
+> `.planning/milestones/v1.1-*`, and **no milestone is currently active** (start the next one with
+> `/gsd-new-milestone`). This line is a snapshot — `git log` is the live tip.
 
 ## 🔴 This repository is PUBLIC
 
@@ -147,7 +149,7 @@ The Linear **project** stays fixed (`CardGPT`, id `5643e79a-2bd9-48ed-9a67-9e0c4
   `REAL_STORAGE_KV_REST_API_URL` → `KV_REST_API_URL` → `UPSTASH_REDIS_REST_URL`.
   **As of 2026-07-24 the prod DB is `cardgpt-prod` on Thirdvisor, and the `KV_*` names are the ones actually set**
   (host `grown-starfish-176247.upstash.io`). The old `REAL_STORAGE_*` set was deleted — its original Upstash DB had been
-  decommissioned, so the store was re-provisioned + seeded from `cards.json` (see `.planning/phases/06-.../06-05-SUMMARY.md`).
+  decommissioned, so the store was re-provisioned + seeded from `cards.json` (see `.planning/milestones/v1.1-phases/06-schema-crypto-type-fan-out-backfills/06-05-SUMMARY.md`).
   The code's precedence lists `REAL_STORAGE_*` first only for legacy reasons; it now falls through to `KV_*`.
   ⚠ **When mutating prod Redis from a script, `vercel env pull` a FRESH `.env` first** — a stale local file that still
   carries a removed/old `REAL_STORAGE_*` line will win the precedence and point the script at the wrong (or dead) host.
