@@ -4,14 +4,22 @@
 **Last Updated**: 2026-01-30
 **Status**: Production
 
+> ⚠ **The storage sections of this document are stale (verified against `main`, 2026-08-21).**
+> It describes Vercel Blob as the data store throughout — including a `src/lib/data/blobStorage.ts`
+> module that no longer exists. The live data layer is **Upstash Redis**
+> (`src/lib/data/redisStorage.ts`); `@vercel/blob` survives only for card *image* upload in
+> `src/app/api/admin/upload/route.ts`. The non-storage content — the server/client component split,
+> `force-dynamic`, and the sync/async repository rule — still matches the code. The full rewrite is
+> tracked as **OPEN-011** in [`.planning/ROADMAP.md`](../.planning/ROADMAP.md).
+
 ---
 
 ## System Overview
 
-CardGPT is a Next.js 14+ application that recommends Hong Kong credit cards based on user transactions. The architecture consists of:
+CardGPT is a Next.js 16 (App Router) application that recommends Hong Kong credit cards based on user transactions. The architecture consists of:
 
-- **Data Storage**: Vercel Blob (production) / Local JSON (development)
-- **Server Components**: Data fetching from blob storage
+- **Data Storage**: Upstash Redis (production) / static `src/data/cards.json` fallback (development) — see the note above
+- **Server Components**: Data fetching from the Redis-backed repository
 - **Client Components**: Interactive UI and recommendation calculations
 - **Admin Panel**: CRUD operations for card management
 
