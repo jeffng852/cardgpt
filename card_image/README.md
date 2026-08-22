@@ -4,7 +4,9 @@ This folder contains credit card images used in CardGPT recommendations.
 
 ## 📁 Image Format Requirements
 
-- **Format**: PNG (preferred), JPG, or JPEG
+- **Format**: **PNG only.** `scripts/add-card-images.sh` also copies `.jpg`/`.jpeg` out of
+  this folder, but the `getCardImageUrl()` it generates hardcodes `/cards/${cardId}.png`
+  (`src/lib/cardImages.ts`), so a JPG source is listed as "has an image" and then 404s.
 - **Naming**: Must match the card ID from `src/data/cards.json`
 - **Example**: `hsbc-everymile.png`, `sc-simply-cash.png`
 - **Recommended Size**: 300x200px (3:2 aspect ratio)
@@ -39,6 +41,10 @@ This folder contains credit card images used in CardGPT recommendations.
      'your-new-card-id',  // Add here
    ];
    ```
+
+> `src/lib/cardImages.ts` is **auto-generated** — `add-card-images.sh` rewrites the whole
+> file from whatever is in `public/cards/`. A hand-added id survives only until the next
+> script run, so also drop the image into `card_image/` (Method 1) to make it stick.
 
 ## 📋 Card IDs Reference
 
